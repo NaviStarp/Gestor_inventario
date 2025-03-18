@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -17,7 +17,8 @@ class Inventario(db.Model):
     cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=False)
     cliente = db.relationship('Cliente', backref=db.backref('inventarios', lazy=True))
     estado = db.Column(db.String(100), nullable=False)
-    Categoria_id = db.Column(db.Integer, db.ForeignKey('categoria.id'), nullable=False)
+    categoria = db.relationship('Categoria', backref=db.backref('inventarios', lazy=True))
+    categoria_id = db.Column(db.Integer, db.ForeignKey('categoria.id', ondelete='CASCADE'), nullable=False)
     precio = db.Column(db.Integer, nullable=False) 
     numero_serie_f = db.Column(db.String(100), nullable=False)  # Numero de serie del fabricante
     numero_serie_i = db.Column(db.String(100), nullable=False)  # Numero de serie interno
@@ -25,12 +26,15 @@ class Inventario(db.Model):
 
     def __repr__(self):
         return f'<Inventario {self.id}>'
+
 class Categoria(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
     descripcion = db.Column(db.String(255), nullable=True)
+    
     def __repr__(self):
         return f'<Categoria {self.id}>'
+
 # Se crea la tabla Cliente
 class Cliente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -63,7 +67,47 @@ class Alquiler(db.Model):
 # Ruta de inicio
 @app.route('/')
 def inicio():
-    return render_template('index.html')
+    categorias = Categoria.query.all()
+    clientes = Cliente.query.all()
+    inventarios = Inventario.query.all()
+    alquileres = Alquiler.query.all()
+    return render_template('index.html', alquileres=alquileres, categorias=categorias, clientes=clientes, inventarios=inventarios)
+
+@app.route('/categoria/editar', methods=['POST'])
+def editar_categoria():
+    categoria = Categoria.query.get_or_404(request.form['id'])
+    categoria.nombre = request.form['nombre']
+    categoria.descripcion = request.form.get('descripcion')
+    db.session.commit()
+    return redirect(url_for('inicio'))
+
+@app.route('/categoria/eliminar/<int:id>', methods=['POST'])
+def eliminar_categoria(id):
+    categoria = Categoria.query.get_or_404(id)
+    db.session.delete(categoria)
+    db.session.commit()
+    return redirect(url_for('inicio'))
+
+@app.route('/cliente/eliminar/<int:id>', methods=['POST'])
+def eliminar_cliente(id):
+    cliente = Cliente.query.get_or_404(id)
+    db.session.delete(cliente)
+    db.session.commit()
+    return redirect(url_for('inicio'))
+
+@app.route('/inventario/eliminar/<int:id>', methods=['POST'])
+def eliminar_producto(id):
+    inventario = Inventario.query.get_or_404(id)
+    db.session.delete(inventario)
+    db.session.commit()
+    return redirect(url_for('inicio'))
+
+@app.route('/alquiler/eliminar/<int:id>', methods=['POST'])
+def eliminar_alquiler(id):
+    alquiler = Alquiler.query.get_or_404(id)
+    db.session.delete(alquiler)
+    db.session.commit()
+    return redirect(url_for('inicio'))
 
 # Ruta para ver inventario
 @app.route('/inventario')
@@ -78,41 +122,49 @@ def ver_clientes():
     return render_template('clientes.html', clientes=clientes)
 
 # Ruta para añadir producto al inventario
-@app.route('/inventario/nuevo', methods=['GET', 'POST'])
+@app.route('/inventario/nuevo', methods=['POST'])
 def crear_producto():
-    if request.method == 'POST':
-        nuevo_producto = Inventario(
-            cliente_id=request.form['cliente_id'],
-            estado=request.form['estado'],
-            precio=request.form['precio'],
-            numero_serie_f=request.form['numero_serie_f'],
-            numero_serie_i=request.form['numero_serie_i'],
-            observaciones=request.form.get('observaciones')
-        )
-        db.session.add(nuevo_producto)
-        db.session.commit()
-        return redirect(url_for('ver_inventario'))
-    clientes = Cliente.query.all()
-    return render_template('crear_producto.html', clientes=clientes)
+    nuevo_producto = Inventario(
+        cliente_id=request.form['cliente_id'],
+        estado=request.form['estado'],
+        precio=request.form['precio'],
+        categoria_id=request.form['categoria_id'],
+        numero_serie_f=request.form['numero_serie_f'],
+        numero_serie_i=request.form['numero_serie_i'],
+        observaciones=request.form.get('observaciones')
+    )
+    db.session.add(nuevo_producto)
+    db.session.commit()
+    return redirect(url_for('inicio'))
 
 # Ruta para añadir cliente
-@app.route('/clientes/nuevo', methods=['GET', 'POST'])
+@app.route('/clientes/nuevo', methods=['POST'])
 def crear_cliente():
-    if request.method == 'POST':
-        if Cliente.query.filter_by(email=request.form['email']).first()  or Cliente.query.filter_by(nombre=request.form['nombre']).first():
-            return "El cliente ya existe.", 400
-        nuevo_cliente = Cliente(
-            nombre=request.form['nombre'],
-            email=request.form['email'],
-            dni=request.form['dni'],
-            telefono=request.form['telefono'],
-            id_cliente=request.form.get('id_cliente'),  # Cambiado a get para manejar None
-            prioridad=request.form['prioridad']
-        )
-        db.session.add(nuevo_cliente)
-        db.session.commit()
-        return redirect(url_for('inicio'))
-    return render_template('añadir_cliente.html')
+    if Cliente.query.filter_by(email=request.form['email']).first() or Cliente.query.filter_by(nombre=request.form['nombre']).first():
+        return "El cliente ya existe.", 400
+    
+    nuevo_cliente = Cliente(
+        nombre=request.form['nombre'],
+        email=request.form['email'],
+        dni=request.form['dni'],
+        telefono=request.form['telefono'],
+        id_cliente=request.form.get('id_cliente'),  # Cambiado a get para manejar None
+        prioridad=request.form['prioridad']
+    )
+    db.session.add(nuevo_cliente)
+    db.session.commit()
+    return redirect(url_for('inicio'))
+
+# Ruta para añadir categoria
+@app.route('/categoria/nuevo', methods=['POST'])
+def crear_categoria():
+    nueva_categoria = Categoria(
+        nombre=request.form['nombre'],
+        descripcion=request.form.get('descripcion')
+    )
+    db.session.add(nueva_categoria)
+    db.session.commit()
+    return redirect(url_for('inicio'))
 
 # Ruta para editar inventario
 @app.route('/inventario/editar/<int:id>', methods=['GET', 'POST'])
@@ -124,9 +176,11 @@ def editar_inventario(id):
         inventario.numero_serie_f = request.form['numero_serie_f']
         inventario.numero_serie_i = request.form['numero_serie_i']
         inventario.observaciones = request.form.get('observaciones')
+        inventario.categoria_id = request.form['categoria_id']  # Ensure categoria_id is set
         db.session.commit()
         return redirect(url_for('ver_inventario'))
-    return render_template('editar_inventario.html', inventario=inventario)
+    categorias = Categoria.query.all()
+    return render_template('editar_inventario.html', inventario=inventario, categorias=categorias)
 
 # Ruta para editar cliente
 @app.route('/clientes/editar/<int:id>', methods=['GET', 'POST'])
@@ -143,23 +197,19 @@ def editar_cliente(id):
     return render_template('crear_cliente.html', cliente=cliente)
 
 # Ruta para crear alquiler
-@app.route('/alquiler/nuevo', methods=['GET', 'POST'])
+@app.route('/alquiler/nuevo', methods=['POST'])
 def crear_alquiler():
-    if request.method == 'POST':
-        nuevo_alquiler = Alquiler(
-            inventario_id=request.form['inventario_id'],
-            cliente_id=request.form['cliente_id'],
-            fecha_entrega=datetime.strptime(request.form['fecha_entrega'], '%Y-%m-%d'),
-            fecha_recojida=datetime.strptime(request.form['fecha_recojida'], '%Y-%m-%d'),
-            estado=request.form['estado'],  # Corregido: Era "Estado" (inconsistente)
-            precio=request.form['precio']
-        )
-        db.session.add(nuevo_alquiler)
-        db.session.commit()
-        return redirect(url_for('ver_alquileres'))
-    inventarios = Inventario.query.all()
-    clientes = Cliente.query.all()
-    return render_template('crear_alquiler.html', inventarios=inventarios, clientes=clientes)
+    nuevo_alquiler = Alquiler(
+        inventario_id=request.form['inventario_id'],
+        cliente_id=request.form['cliente_id'],
+        fecha_entrega=datetime.strptime(request.form['fecha_entrega'], '%Y-%m-%d'),
+        fecha_recojida=datetime.strptime(request.form['fecha_recojida'], '%Y-%m-%d'),
+        estado=request.form['Estado'],  # Nota: Mantuve "Estado" para coincidir con el nombre del campo en el formulario
+        precio=request.form['precio']
+    )
+    db.session.add(nuevo_alquiler)
+    db.session.commit()
+    return redirect(url_for('inicio'))
 
 # Ruta para ver alquileres
 @app.route('/alquileres')
@@ -174,7 +224,7 @@ def editar_alquiler(id):
     if request.method == 'POST':
         alquiler.fecha_entrega = datetime.strptime(request.form['fecha_entrega'], '%Y-%m-%d')
         alquiler.fecha_recojida = datetime.strptime(request.form['fecha_recojida'], '%Y-%m-%d')
-        alquiler.estado = request.form['estado']  # Corregido: Era "Estado" (inconsistente)
+        alquiler.estado = request.form['Estado']  # Nota: Mantuve "Estado" para coincidir con el nombre del campo en el formulario
         alquiler.precio = request.form['precio']
         db.session.commit()
         return redirect(url_for('ver_alquileres'))

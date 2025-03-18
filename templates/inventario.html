@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mx-auto mt-10">
+        <h1 class="text-2xl font-bold mb-5">Inventario de Productos</h1>
+        <table class="min-w-full bg-white">
+            <thead>
+                <tr>
+                    <th class="py-2 px-4 border-b-2 border-gray-300 text-center">ID</th>
+                    <th class="py-2 px-4 border-b-2 border-gray-300 text-center">Cliente</th>
+                    <th class="py-2 px-4 border-b-2 border-gray-300 text-center">Estado</th>
+                    <th class="py-2 px-4 border-b-2 border-gray-300 text-center">Categoría</th>
+                    <th class="py-2 px-4 border-b-2 border-gray-300 text-center">Precio</th>
+                    <th class="py-2 px-4 border-b-2 border-gray-300 text-center">Número de Serie (Fabricante)</th>
+                    <th class="py-2 px-4 border-b-2 border-gray-300 text-center">Número de Serie (Interno)</th>
+                    <th class="py-2 px-4 border-b-2 border-gray-300 text-center">Observaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Aquí puedes iterar sobre tus productos y mostrarlos -->
+                {% for producto in inventarios %}
+                <tr>
+                    <td class="py-2 px-4 border-b border-gray-300 text-center">{{ producto.id }}</td>
+                    <td class="py-2 px-4 border-b border-gray-300 text-center">{{ producto.cliente.nombre }}</td>
+                    <td class="py-2 px-4 border-b border-gray-300 text-center">{{ producto.estado }}</td>
+                    <td class="py-2 px-4 border-b border-gray-300 text-center">{{ producto.categoria.nombre }}</td>
+                    <td class="py-2 px-4 border-b border-gray-300 text-center">{{ producto.precio }}</td>
+                    <td class="py-2 px-4 border-b border-gray-300 text-center">{{ producto.numero_serie_f }}</td>
+                    <td class="py-2 px-4 border-b border-gray-300 text-center">{{ producto.numero_serie_i }}</td>
+                    <td class="py-2 px-4 border-b border-gray-300 text-center">{{ producto.observaciones }}</td>
+                </tr>
+                {% endfor %}
+                <!-- Fin de la iteración -->
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
