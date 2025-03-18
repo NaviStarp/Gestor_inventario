@@ -73,7 +73,7 @@ def ver_clientes():
 
 # Ruta para añadir producto al inventario
 @app.route('/inventario/nuevo', methods=['GET', 'POST'])
-def añadir_producto():
+def crear_producto():
     if request.method == 'POST':
         nuevo_producto = Inventario(
             cliente_id=request.form['cliente_id'],
@@ -87,11 +87,11 @@ def añadir_producto():
         db.session.commit()
         return redirect(url_for('ver_inventario'))
     clientes = Cliente.query.all()
-    return render_template('añadir_producto.html', clientes=clientes)
+    return render_template('crear_producto.html', clientes=clientes)
 
 # Ruta para añadir cliente
 @app.route('/clientes/nuevo', methods=['GET', 'POST'])
-def añadir_cliente():
+def crear_cliente():
     if request.method == 'POST':
         nuevo_cliente = Cliente(
             nombre=request.form['nombre'],
@@ -132,7 +132,7 @@ def editar_cliente(id):
         cliente.prioridad = request.form['prioridad']
         db.session.commit()
         return redirect(url_for('ver_clientes'))
-    return render_template('editar_cliente.html', cliente=cliente)
+    return render_template('crear_cliente.html', cliente=cliente)
 
 # Ruta para crear alquiler
 @app.route('/alquiler/nuevo', methods=['GET', 'POST'])
