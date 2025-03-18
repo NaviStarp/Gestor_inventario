@@ -87,7 +87,7 @@ def crear_producto():
         db.session.commit()
         return redirect(url_for('ver_inventario'))
     clientes = Cliente.query.all()
-    return render_template('añadir_producto.html', clientes=clientes)
+    return render_template('crear_producto.html', clientes=clientes)
 
 # Ruta para añadir cliente
 @app.route('/clientes/nuevo', methods=['GET', 'POST'])
@@ -132,7 +132,7 @@ def editar_cliente(id):
         cliente.prioridad = request.form['prioridad']
         db.session.commit()
         return redirect(url_for('ver_clientes'))
-    return render_template('editar_cliente.html', cliente=cliente)
+    return render_template('crear_cliente.html', cliente=cliente)
 
 # Ruta para crear alquiler
 @app.route('/alquiler/nuevo', methods=['GET', 'POST'])
