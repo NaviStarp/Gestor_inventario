@@ -17,6 +17,7 @@ class Inventario(db.Model):
     cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=False)
     cliente = db.relationship('Cliente', backref=db.backref('inventarios', lazy=True))
     estado = db.Column(db.String(100), nullable=False)
+    Categoria_id = db.Column(db.Integer, db.ForeignKey('categoria.id'), nullable=False)
     precio = db.Column(db.Integer, nullable=False) 
     numero_serie_f = db.Column(db.String(100), nullable=False)  # Numero de serie del fabricante
     numero_serie_i = db.Column(db.String(100), nullable=False)  # Numero de serie interno
@@ -24,7 +25,12 @@ class Inventario(db.Model):
 
     def __repr__(self):
         return f'<Inventario {self.id}>'
-
+class Categoria(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    descripcion = db.Column(db.String(255), nullable=True)
+    def __repr__(self):
+        return f'<Categoria {self.id}>'
 # Se crea la tabla Cliente
 class Cliente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
