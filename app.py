@@ -73,7 +73,7 @@ def ver_clientes():
 
 # Ruta para añadir producto al inventario
 @app.route('/inventario/nuevo', methods=['GET', 'POST'])
-def añadir_producto():
+def crear_producto():
     if request.method == 'POST':
         nuevo_producto = Inventario(
             cliente_id=request.form['cliente_id'],
@@ -91,7 +91,7 @@ def añadir_producto():
 
 # Ruta para añadir cliente
 @app.route('/clientes/nuevo', methods=['GET', 'POST'])
-def añadir_cliente():
+def crear_cliente():
     if request.method == 'POST':
         nuevo_cliente = Cliente(
             nombre=request.form['nombre'],
