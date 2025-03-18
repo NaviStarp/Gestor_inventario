@@ -99,6 +99,8 @@ def crear_producto():
 @app.route('/clientes/nuevo', methods=['GET', 'POST'])
 def crear_cliente():
     if request.method == 'POST':
+        if Cliente.query.filter_by(email=request.form['email']).first()  or Cliente.query.filter_by(nombre=request.form['nombre']).first():
+            return "El cliente ya existe.", 400
         nuevo_cliente = Cliente(
             nombre=request.form['nombre'],
             email=request.form['email'],
@@ -182,5 +184,6 @@ def editar_alquiler(id):
 
 if __name__ == '__main__':
     with app.app_context():
+        #db.drop_all() # CUIDADO esto borra toda la base de datos
         db.create_all()
     app.run(debug=True)
