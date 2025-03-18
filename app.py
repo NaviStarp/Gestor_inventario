@@ -103,7 +103,7 @@ def crear_cliente():
         )
         db.session.add(nuevo_cliente)
         db.session.commit()
-        return redirect(url_for('ver_clientes'))
+        return redirect(url_for('inicio'))
     return render_template('añadir_cliente.html')
 
 # Ruta para editar inventario
@@ -175,4 +175,6 @@ def editar_alquiler(id):
     return render_template('editar_alquiler.html', alquiler=alquiler, inventarios=inventarios, clientes=clientes)
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
