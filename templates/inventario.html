@@ -99,7 +99,7 @@
                             <td class="py-3 px-6 text-left">{{ producto.observaciones }}</td>
                             <td class="py-3 px-6 text-center">
                                 <div class="flex item-center justify-center">
-                                    <a href="{{ url_for('ver_inventario', id=producto.id) }}" class="text-blue-600 hover:text-blue-800 mr-3">
+                                    <a onclick="event.stopPropagation();alert('Todavia no esta hecho ¯\\_(ツ)_/¯')" class="text-blue-600 hover:text-blue-800 mr-3">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <a onclick="event.stopPropagation();editar_inventario('{{ producto.id }}', '{{ producto.nombre }}', '{{ producto.cliente.id }}', '{{ producto.categoria.id }}', '{{ producto.estado }}', '{{ producto.precio }}', '{{ producto.numero_serie_f }}', '{{ producto.numero_serie_i }}', '{{ producto.observaciones }}')" class="text-yellow-600 hover:text-yellow-800 mr-3">
