@@ -5,50 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Clientes</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body class="bg-gray-100">
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold text-center mb-8">Lista de Clientes</h1>
-        
-        <div class="bg-white shadow-md rounded-lg overflow-hidden">
-            <table class="min-w-full bg-white">
-                <thead>
-                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                        <th class="py-3 px-6 text-left">ID</th>
-                        <th class="py-3 px-6 text-left">Nombre</th>
-                        <th class="py-3 px-6 text-left">Email</th>
-                        <th class="py-3 px-6 text-left">DNI</th>
-                        <th class="py-3 px-6 text-left">Teléfono</th>
-                        <th class="py-3 px-6 text-left">Prioridad</th>
-                        <th class="py-3 px-6 text-center">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody class="text-gray-600 text-sm font-light">
-                    {% for cliente in clientes %}
-                    <tr class="border-b border-gray-200 hover:bg-gray-100">
-                        <td class="py-3 px-6 text-left whitespace-nowrap">{{ cliente.id }}</td>
-                        <td class="py-3 px-6 text-left">{{ cliente.nombre }}</td>
-                        <td class="py-3 px-6 text-left">{{ cliente.email }}</td>
-                        <td class="py-3 px-6 text-left">{{ cliente.dni }}</td>
-                        <td class="py-3 px-6 text-left">{{ cliente.telefono }}</td>
-                        <td class="py-3 px-6 text-left">{{ cliente.prioridad }}</td>
-                        <td class="py-3 px-6 text-center">
-                            <div class="flex item-center justify-center">
-                                <a href="{{ url_for('editar_cliente', id=cliente.id) }}" class="w-4 mr-2 transform hover:text-blue-500 hover:scale-110">
-                                    ✏️
-                                </a>
-                                <form action="{{ url_for('eliminar_cliente', id=cliente.id) }}" method="POST" style="display:inline;">
-                                    <button type="submit" class="w-4 ml-2 transform hover:text-red-500 hover:scale-110">
-                                        🗑️
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+    <nav class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <a href="{{ url_for('inicio') }}" class="text-xl font-bold">Sistema de Gestión</a>
+                <div class="space-x-4">
+                    <a href="{{ url_for('inicio') }}" class="hover:text-blue-200">Inicio</a>
+                    <a href="{{ url_for('ver_clientes') }}" class="hover:text-blue-200">Clientes</a>
+                    <a href="{{ url_for('ver_inventario') }}" class="hover:text-blue-200">Inventario</a>
+                    <a href="{{ url_for('ver_categorias') }}" class="hover:text-blue-200">Categorías</a>
+                    <a href="{{ url_for('ver_alquileres') }}" class="hover:text-blue-200">Alquileres</a>
+                </div>
+            </div>
         </div>
-    </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-6 flex-grow">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h1 class="text-2xl font-bold mb-6">Lista de Clientes</h1>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white">
+                    <thead>
+                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">ID</th>
+                            <th class="py-3 px-6 text-left">Nombre</th>
+                            <th class="py-3 px-6 text-left">Email</th>
+                            <th class="py-3 px-6 text-left">DNI</th>
+                            <th class="py-3 px-6 text-left">Teléfono</th>
+                            <th class="py-3 px-6 text-left">Prioridad</th>
+                            <th class="py-3 px-6 text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm font-light">
+                        {% for cliente in clientes %}
+                        <tr class="border-b border-gray-200 hover:bg-gray-100">
+                            <td class="py-3 px-6 text-left whitespace-nowrap">{{ cliente.id }}</td>
+                            <td class="py-3 px-6 text-left">{{ cliente.nombre }}</td>
+                            <td class="py-3 px-6 text-left">{{ cliente.email }}</td>
+                            <td class="py-3 px-6 text-left">{{ cliente.dni }}</td>
+                            <td class="py-3 px-6 text-left">{{ cliente.telefono }}</td>
+                            <td class="py-3 px-6 text-left">{{ cliente.prioridad }}</td>
+                            <td class="py-3 px-6 text-center">
+                                <div class="flex item-center justify-center">
+                                    <a href="{{ url_for('editar_cliente', id=cliente.id) }}" class="w-4 mr-2 transform hover:text-blue-500 hover:scale-110">
+                                        ✏️
+                                    </a>
+                                    <form action="{{ url_for('eliminar_cliente', id=cliente.id) }}" method="POST" style="display:inline;">
+                                        <button type="submit" class="w-4 ml-2 transform hover:text-red-500 hover:scale-110">
+                                            🗑️
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
 </body>
 </html>
