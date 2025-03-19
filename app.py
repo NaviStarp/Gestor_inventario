@@ -16,6 +16,7 @@ db = SQLAlchemy(app)
 # Se crea la tabla Inventario
 class Inventario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=True)
     cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=True)
     cliente = db.relationship('Cliente', backref=db.backref('inventarios', lazy=True))
     estado = db.Column(db.String(100), nullable=False)
@@ -80,7 +81,22 @@ class FilterForm(FlaskForm):
     fecha_desde = DateField('Desde', format='%Y-%m-%d', validators=[], render_kw={"type": "date"})
     fecha_hasta = DateField('Hasta', format='%Y-%m-%d', validators=[], render_kw={"type": "date"})
     submit = SubmitField('Filtrar')
-
+class filtroInventario(FlaskForm):
+    estado = SelectField('Estado', choices=[
+        ('', 'Todos'), 
+        ('Disponible', 'Disponible'),
+        ('Alquilado', 'Alquilado'),
+        ('Reparacion', 'Reparacion'),
+        ('Vendido', 'Vendido')
+    ])
+    cliente = SelectField('Cliente', choices=[(0, 'Cliente')], coerce=int)
+    categoria = SelectField('Categoria', choices=[(0, 'Categoria')], coerce=int)
+    submit = SubmitField('Filtrar')
+    def __init__(self, *args, **kwargs):
+        super(filtroInventario, self).__init__(*args, **kwargs)
+        self.cliente.choices += [(c.id, c.nombre) for c in Cliente.query.all()]
+        self.categoria.choices += [(c.id, c.nombre) for c in Categoria.query.all()]
+    
 # Ruta de inicio
 @app.route('/')
 def inicio():
@@ -135,7 +151,16 @@ def eliminar_alquiler(id):
 @app.route('/inventario')
 def ver_inventario():
     inventarios = Inventario.query.all()
-    return render_template('inventario.html', inventarios=inventarios)
+    form = filtroInventario()
+    if form.validate_on_submit():
+        if form.estado.data:
+            inventarios = inventarios.filter(Inventario.estado == form.estado.data)
+        if form.cliente.data:
+            inventarios = inventarios.filter(Inventario.cliente == form.cliente.data)
+        if form.categoria.data:
+            inventarios = inventarios.filter(Inventario.categoria == form.categoria.data)
+
+    return render_template('inventario.html', inventarios=inventarios,form=form)
 
 @app.route('/inventario/eliminar/<int:id>', methods=['POST'])
 def eliminar_inventario(id):
