@@ -96,22 +96,22 @@ def editar_categoria():
     categoria.nombre = request.form['nombre']
     categoria.descripcion = request.form.get('descripcion')
     db.session.commit()
-    return redirect(url_for('inicio'))
+    return redirect(request.referrer)
 
-@app.route('/categoria/eliminar/<int:id>', methods=['POST'])
+@app.route('/categoria/eliminar/<int:id>', methods=['GET','POST'])
 def eliminar_categoria(id):
     Inventario.query.filter_by(categoria_id=id).delete()
     categoria = Categoria.query.get_or_404(id)
     db.session.delete(categoria)
     db.session.commit()
-    return redirect(url_for('inicio'))
+    return redirect(request.referrer)
 
 @app.route('/cliente/eliminar/<int:id>', methods=['POST'])
 def eliminar_cliente(id):
     cliente = Cliente.query.get_or_404(id)
     db.session.delete(cliente)
     db.session.commit()
-    return redirect(url_for('inicio'))
+    return redirect(request.referrer)
 @app.route('/categorias/')
 def ver_categorias():
     categorias = Categoria.query.all()
@@ -122,14 +122,14 @@ def eliminar_producto(id):
     inventario = Inventario.query.get_or_404(id)
     db.session.delete(inventario)
     db.session.commit()
-    return redirect(url_for('inicio'))
+    return redirect(request.referrer)
 
 @app.route('/alquiler/eliminar/<int:id>', methods=['POST'])
 def eliminar_alquiler(id):
     alquiler = Alquiler.query.get_or_404(id)
     db.session.delete(alquiler)
     db.session.commit()
-    return redirect(url_for('inicio'))
+    return redirect(request.referrer)
 
 # Ruta para ver inventario
 @app.route('/inventario')
@@ -163,7 +163,7 @@ def crear_producto():
     )
     db.session.add(nuevo_producto)
     db.session.commit()
-    return redirect(url_for('inicio'))
+    return redirect(request.referrer)
 
 # Ruta para añadir cliente
 @app.route('/clientes/nuevo', methods=['POST'])
@@ -181,7 +181,7 @@ def crear_cliente():
     )
     db.session.add(nuevo_cliente)
     db.session.commit()
-    return redirect(url_for('inicio'))
+    return redirect(request.referrer)
 
 # Ruta para añadir categoria
 @app.route('/categoria/nuevo', methods=['POST'])
@@ -192,8 +192,7 @@ def crear_categoria():
     )
     db.session.add(nueva_categoria)
     db.session.commit()
-    return redirect(url_for('inicio'))
-
+    return redirect(request.referrer)
 # Ruta para editar inventario
 @app.route('/inventario/editar/<int:id>', methods=['GET', 'POST'])
 def editar_inventario(id):
@@ -237,7 +236,7 @@ def crear_alquiler():
     )
     db.session.add(nuevo_alquiler)
     db.session.commit()
-    return redirect(url_for('inicio'))
+    return redirect(request.referrer)
 
 # Ruta para ver alquileres
 @app.route('/alquileres', methods=['GET', 'POST'])

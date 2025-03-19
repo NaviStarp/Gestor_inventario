@@ -1,0 +1,214 @@
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Alquileres</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+    <nav class="bg-blue-800 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <a href="{{ url_for('inicio') }}" class="text-xl font-bold">Sistema de Alquileres</a>
+                <div class="space-x-4">
+                    <!--Inicio-->
+                    <a href="{{ url_for('inicio') }}" class="hover:text-blue-200">Inicio</a>
+                    <a href="{{ url_for('ver_clientes') }}" class="hover:text-blue-200">Clientes</a>
+                    <a href="{{ url_for('ver_inventario') }}" class="hover:text-blue-200">Inventario</a>
+                    <a href="{{ url_for('ver_categorias') }}" class="hover:text-blue-200">Categorías</a>
+                    <a href="{{ url_for('ver_alquileres') }}" class="hover:text-blue-200">Alquileres</a>
+                    <!-- Add more navigation links as needed -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-6 flex-grow">
+
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Categorías</h1>
+        <button id="btn-open-categoria" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded shadow transition duration-200">
+            Nueva Categoría
+        </button>
+    </div>
+
+    {% if categorias %}
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for categoria in categorias %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ categoria.id }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ categoria.nombre }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500">
+                            {% if categoria.descripcion %}
+                                {{ categoria.descripcion }}
+                            {% else %}
+                                <span class="text-gray-400 italic">Sin descripción</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div class="flex space-x-2">
+                                <button  onclick="editarCategoria('{{ categoria.id }}', '{{ categoria.nombre }}', '{{ categoria.descripcion }}')" class="text-indigo-600 hover:text-indigo-900 ">Editar</button>
+                                <a href="{{ url_for('eliminar_categoria', id=categoria.id) }}" class="text-red-600 hover:text-red-900" onclick="return confirm('¿Está seguro que desea eliminar esta categoría?')">Eliminar</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="bg-white shadow rounded-lg p-6 text-center">
+            <p class="text-gray-500">No hay categorías disponibles.</p>
+            <a href="{{ url_for('crear_categoria') }}" class="inline-block mt-4 text-blue-500 hover:text-blue-700">Crear la primera categoría</a>
+        </div>
+    {% endif %}
+    <div id="modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden flex items-center justify-center">
+                <!-- Modal para Categoría -->
+                <div id="modal-categoria" class="bg-white rounded-lg shadow-xl w-full max-w-3xl mx-4 hidden">
+                    <div class="flex justify-between items-center p-6 border-b">
+                        <h2 class="text-2xl font-semibold">Nueva Categoría</h2>
+                        <button class="modal-close text-gray-500 hover:text-gray-700">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <form action="{{ url_for('crear_categoria') }}" method="POST">
+                            <div class="grid grid-cols-1 gap-6">
+                                <div>
+                                    <label for="nombre_categoria" class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                                    <input type="text" id="nombre_categoria" name="nombre" required 
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label for="descripcion" class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                                    <textarea id="descripcion" name="descripcion" required rows="3"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                                </div>
+                            </div>
+                            <div class="mt-6 flex justify-end">
+                                <button type="button" class="modal-close px-4 py-2 bg-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-400 mr-2">
+                                    Cancelar
+                                </button>
+                                <button type="submit" class="px-4 py-2 bg-orange-500 text-white font-medium rounded-md hover:bg-orange-600">
+                                    Guardar Categoría
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+    
+                <!-- Modal para Editar Categoría -->
+                <div id="modal-editar-categoria" class="bg-white rounded-lg shadow-xl w-full max-w-3xl mx-4 hidden">
+                    <div class="flex justify-between items-center p-6 border-b">
+                        <h2 class="text-2xl font-semibold">Editar Categoría</h2>
+                        <button class="modal-close text-gray-500 hover:text-gray-700">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <form id="form-editar-categoria" action="{{ url_for('editar_categoria') }}" method="POST">
+                            <input type="hidden" id="editar_categoria_id" name="id">
+                            <div class="grid grid-cols-1 gap-6">
+                                <div>
+                                    <label for="editar_nombre_categoria" class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                                    <input type="text" id="editar_nombre_categoria" name="nombre" required 
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label for="editar_descripcion" class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                                    <textarea id="editar_descripcion" name="descripcion" required rows="3"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                                </div>
+                            </div>
+                            <div class="mt-6 flex justify-end">
+                                <button type="button" class="modal-close px-4 py-2 bg-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-400 mr-2">
+                                    Cancelar
+                                </button>
+                                <button type="submit" class="px-4 py-2 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600">
+                                    Actualizar Categoría
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+</div>
+</main>
+<script>
+    // Funciones para manejar los modales
+    function openModal(modalId) {
+        document.getElementById('modal-overlay').classList.remove('hidden');
+        document.getElementById(modalId).classList.remove('hidden');
+    }
+
+    function closeAllModals() {
+        document.getElementById('modal-overlay').classList.add('hidden');
+        
+        // Ocultar todos los modales
+        const modals = document.querySelectorAll('#modal-overlay > div');
+        modals.forEach(modal => {
+            modal.classList.add('hidden');
+        });
+    }
+    document.getElementById('btn-open-categoria').addEventListener('click', function() {
+        openModal('modal-categoria');
+    });
+
+    // Configurar botones para cerrar modales
+    const closeButtons = document.querySelectorAll('.modal-close');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', closeAllModals);
+    });
+
+    // Cerrar modales al hacer clic fuera de ellos
+    document.getElementById('modal-overlay').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeAllModals();
+        }
+    });
+
+    // Función para editar categoría
+    function editarCategoria(id, nombre, descripcion) {
+        document.getElementById('editar_categoria_id').value = id;
+        document.getElementById('editar_nombre_categoria').value = nombre;
+        document.getElementById('editar_descripcion').value = descripcion;
+        
+        openModal('modal-editar-categoria');
+    }
+
+    // Función para confirmar eliminación
+    function confirmarEliminar(tipo, id) {
+        const form = document.getElementById('form-eliminar');
+        
+        // Configurar la acción del formulario según el tipo
+        if (tipo === 'categoria') {
+            form.action = `/categoria/eliminar/${id}`;
+        } else if (tipo === 'cliente') {
+            form.action = `/cliente/eliminar/${id}`;
+        } else if (tipo === 'inventario') {
+            form.action = `/inventario/eliminar/${id}`;
+        } else if (tipo === 'alquiler') {
+            form.action = `/alquiler/eliminar/${id}`;
+        }
+        
+        openModal('modal-confirmar-eliminar');
+    }
+</script>
+</body>
+</html>
