@@ -81,6 +81,7 @@ class FilterForm(FlaskForm):
     fecha_desde = DateField('Desde', format='%Y-%m-%d', validators=[], render_kw={"type": "date"})
     fecha_hasta = DateField('Hasta', format='%Y-%m-%d', validators=[], render_kw={"type": "date"})
     submit = SubmitField('Filtrar')
+    
 class filtroInventario(FlaskForm):
     estado = SelectField('Estado', choices=[
         ('', 'Todos'), 
@@ -89,13 +90,19 @@ class filtroInventario(FlaskForm):
         ('Reparacion', 'Reparacion'),
         ('Vendido', 'Vendido')
     ])
-    cliente = SelectField('Cliente', choices=[(0, 'Cliente')], coerce=int)
-    categoria = SelectField('Categoria', choices=[(0, 'Categoria')], coerce=int)
+    cliente = SelectField('Cliente', choices=[], coerce=int)
+    categoria = SelectField('Categoria', choices=[], coerce=int)
     submit = SubmitField('Filtrar')
+    
     def __init__(self, *args, **kwargs):
         super(filtroInventario, self).__init__(*args, **kwargs)
+        # Reiniciar las opciones para evitar duplicados en recargas
+        self.cliente.choices = [(0, 'Todos')]
+        self.categoria.choices = [(0, 'Todas')]
+        # Agregar opciones desde la base de datos
         self.cliente.choices += [(c.id, c.nombre) for c in Cliente.query.all()]
         self.categoria.choices += [(c.id, c.nombre) for c in Categoria.query.all()]
+
     
 # Ruta de inicio
 @app.route('/')
@@ -148,19 +155,26 @@ def eliminar_alquiler(id):
     return redirect(request.referrer)
 
 # Ruta para ver inventario
-@app.route('/inventario')
+@app.route('/inventario', methods=['GET', 'POST'])
 def ver_inventario():
-    inventarios = Inventario.query.all()
     form = filtroInventario()
-    if form.validate_on_submit():
+    
+    # Iniciar con la consulta base
+    query = Inventario.query
+    
+    # Procesar el formulario solo si se envía como POST
+    if request.method == 'POST' and form.validate():
         if form.estado.data:
-            inventarios = inventarios.filter(Inventario.estado == form.estado.data)
-        if form.cliente.data:
-            inventarios = inventarios.filter(Inventario.cliente == form.cliente.data)
-        if form.categoria.data:
-            inventarios = inventarios.filter(Inventario.categoria == form.categoria.data)
-
-    return render_template('inventario.html', inventarios=inventarios,form=form)
+            query = query.filter(Inventario.estado == form.estado.data)
+        if form.cliente.data and form.cliente.data != 0:  # Evitar filtrar cuando se selecciona "Todos"
+            query = query.filter(Inventario.cliente_id == form.cliente.data)
+        if form.categoria.data and form.categoria.data != 0:  # Evitar filtrar cuando se selecciona "Todas"
+            query = query.filter(Inventario.categoria_id == form.categoria.data)
+    
+    # Ejecutar la consulta final
+    inventarios = query.all()
+    
+    return render_template('inventario.html', inventarios=inventarios, form=form)
 
 @app.route('/inventario/eliminar/<int:id>', methods=['POST'])
 def eliminar_inventario(id):
@@ -169,13 +183,30 @@ def eliminar_inventario(id):
     db.session.commit()
     return redirect(url_for('ver_inventario'))
 
-#Ruta para ver productos de una categoria
-@app.route('/categoria/<int:id>')
+# Ruta para ver una categoría específica
+@app.route('/categoria/<int:id>', methods=['GET', 'POST'])
 def ver_categoria(id):
     categoria = Categoria.query.get_or_404(id)
-    inventarios = Inventario.query.filter_by(categoria_id=id).all()
-    return render_template('inventario.html', categoria=categoria, inventarios=inventarios)
-
+    form = filtroInventario()
+    
+    # Iniciar con la consulta base filtrada por la categoría
+    query = Inventario.query.filter_by(categoria_id=id)
+    
+    # Pre-seleccionar la categoría en el formulario
+    form.categoria.data = id
+    
+    # Procesar el formulario si se envía como POST
+    if request.method == 'POST' and form.validate():
+        if form.estado.data:
+            query = query.filter(Inventario.estado == form.estado.data)
+        if form.cliente.data and form.cliente.data != 0:
+            query = query.filter(Inventario.cliente_id == form.cliente.data)
+        # No necesitamos filtrar por categoría de nuevo ya que ya está filtrado
+    
+    # Ejecutar la consulta final
+    inventarios = query.all()
+    
+    return render_template('inventario.html', categoria=categoria, inventarios=inventarios, form=form)
 # Ruta para ver clientes
 @app.route('/clientes')
 def ver_clientes():
