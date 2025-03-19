@@ -17,8 +17,10 @@ class Inventario(db.Model):
     cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=False)
     cliente = db.relationship('Cliente', backref=db.backref('inventarios', lazy=True))
     estado = db.Column(db.String(100), nullable=False)
-    categoria = db.relationship('Categoria', backref=db.backref('inventarios', lazy=True))
-    categoria_id = db.Column(db.Integer, db.ForeignKey('categoria.id', ondelete='CASCADE'), nullable=False)
+    
+    categoria_id = db.Column(db.Integer, db.ForeignKey('categoria.id', ondelete='CASCADE'), nullable=False)  # <- Asegurar la clave foránea
+    categoria = db.relationship('Categoria', backref=db.backref('inventarios', lazy=True))  # <- Definir la relación correctamente
+    
     precio = db.Column(db.Integer, nullable=False) 
     numero_serie_f = db.Column(db.String(100), nullable=False)  # Numero de serie del fabricante
     numero_serie_i = db.Column(db.String(100), nullable=False)  # Numero de serie interno
@@ -27,8 +29,9 @@ class Inventario(db.Model):
     def __repr__(self):
         return f'<Inventario {self.id}>'
 
+
 class Categoria(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nombre = db.Column(db.String(100), nullable=False)
     descripcion = db.Column(db.String(255), nullable=True)
     
@@ -83,6 +86,7 @@ def editar_categoria():
 
 @app.route('/categoria/eliminar/<int:id>', methods=['POST'])
 def eliminar_categoria(id):
+    Inventario.query.filter_by(categoria_id=id).delete()
     categoria = Categoria.query.get_or_404(id)
     db.session.delete(categoria)
     db.session.commit()
@@ -114,6 +118,12 @@ def eliminar_alquiler(id):
 def ver_inventario():
     inventarios = Inventario.query.all()
     return render_template('inventario.html', inventarios=inventarios)
+#Ruta para ver productos de una categoria
+@app.route('/categoria/<int:id>')
+def ver_categoria(id):
+    categoria = Categoria.query.get_or_404(id)
+    inventarios = Inventario.query.filter_by(categoria_id=id).all()
+    return render_template('inventario.html', categoria=categoria, inventarios=inventarios)
 
 # Ruta para ver clientes
 @app.route('/clientes')
@@ -234,6 +244,6 @@ def editar_alquiler(id):
 
 if __name__ == '__main__':
     with app.app_context():
-        #db.drop_all() # CUIDADO esto borra toda la base de datos
+       # db.drop_all() # CUIDADO esto borra toda la base de datos
         db.create_all()
     app.run(debug=True)

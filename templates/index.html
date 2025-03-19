@@ -40,7 +40,7 @@
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                         {% for categoria in categorias %}
-                        <tr class="hover:bg-gray-50">
+                        <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location.href='/categoria/{{ categoria.id }}'">
                             <td class="py-3 px-4">{{ categoria.nombre }}</td>
                             <td class="py-3 px-4">{{ categoria.descripcion }}</td>
                             <td class="py-3 px-4">
@@ -348,7 +348,7 @@
             <div id="modal-confirmar-eliminar" class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 hidden">
                 <div class="p-6">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Confirmar eliminación</h3>
-                    <p class="text-gray-600 mb-6">¿Estás seguro de que deseas eliminar este elemento? Esta acción no se puede deshacer.</p>
+                    <p class="text-gray-600 mb-6">¿Estás seguro de que deseas eliminar este elemento? Esta acción borrara todos los productos de esta categoria tambien.</p>
                     <div class="flex justify-end">
                         <button type="button" class="modal-close px-4 py-2 bg-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-400 mr-2">
                             Cancelar
