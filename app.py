@@ -103,6 +103,18 @@ class filtroInventario(FlaskForm):
         self.cliente.choices += [(c.id, c.nombre) for c in Cliente.query.all()]
         self.categoria.choices += [(c.id, c.nombre) for c in Categoria.query.all()]
 
+class filtroCliente(FlaskForm):
+    prioridad = SelectField('Prioridad', choices=[
+        ('', 'Todos'), 
+        ('Alta', 'Alta'),
+        ('Media', 'Media'),
+        ('Baja', 'Baja')
+    ])
+    email = StringField('Email')
+    nombre = StringField('Nombre')
+    DNI = StringField('Dni')
+    submit = SubmitField('Filtrar')
+
     
 # Ruta de inicio
 @app.route('/')
@@ -209,10 +221,22 @@ def ver_categoria(id):
     
     return render_template('inventario.html', categoria=categoria, inventarios=inventarios, form=form)
 # Ruta para ver clientes
-@app.route('/clientes')
+@app.route('/clientes', methods=['GET', 'POST'])
 def ver_clientes():
     clientes = Cliente.query.all()
-    return render_template('clientes.html', clientes=clientes)
+    form = filtroCliente()
+    query = Cliente.query
+    if request.method == 'POST' and form.validate():
+        if form.prioridad.data:
+            query = query.filter(Cliente.prioridad == form.prioridad.data)
+        if form.email.data:
+            query = query.filter(Cliente.email.like(f'%{form.email.data}%'))
+        if form.nombre.data:
+            query = query.filter(Cliente.nombre.like(f'%{form.nombre.data}%'))
+        if form.DNI.data:
+            query = query.filter(Cliente.dni == form.DNI.data)
+    clientes = query.all()
+    return render_template('clientes.html', clientes=clientes,form=form)
 
 # Ruta para añadir producto al inventario
 @app.route('/inventario/nuevo', methods=['POST'])
