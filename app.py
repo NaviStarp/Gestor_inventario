@@ -81,7 +81,7 @@ class FilterForm(FlaskForm):
     fecha_desde = DateField('Desde', format='%Y-%m-%d', validators=[], render_kw={"type": "date"})
     fecha_hasta = DateField('Hasta', format='%Y-%m-%d', validators=[], render_kw={"type": "date"})
     submit = SubmitField('Filtrar')
-    
+
 class filtroInventario(FlaskForm):
     estado = SelectField('Estado', choices=[
         ('', 'Todos'), 
@@ -173,8 +173,9 @@ def ver_inventario():
     
     # Ejecutar la consulta final
     inventarios = query.all()
-    
-    return render_template('inventario.html', inventarios=inventarios, form=form)
+    categorias = Categoria.query.all()
+    clientes = Cliente.query.all()
+    return render_template('inventario.html',clientes=clientes,categorias=categorias, inventarios=inventarios, form=form)
 
 @app.route('/inventario/eliminar/<int:id>', methods=['POST'])
 def eliminar_inventario(id):
@@ -218,6 +219,7 @@ def ver_clientes():
 def crear_producto():
     nuevo_producto = Inventario(
         cliente_id=request.form['cliente_id'],
+        nombre=request.form['nombre'],
         estado=request.form['estado'],
         precio=request.form['precio'],
         categoria_id=request.form['categoria_id'],
@@ -263,6 +265,7 @@ def editar_inventario(id):
     inventario = Inventario.query.get_or_404(id)
     if request.method == 'POST':
         inventario.estado = request.form['estado']
+        inventario.nombre = request.form['nombre']
         inventario.precio = request.form['precio']
         inventario.numero_serie_f = request.form['numero_serie_f']
         inventario.numero_serie_i = request.form['numero_serie_i']
