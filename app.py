@@ -136,6 +136,14 @@ def eliminar_alquiler(id):
 def ver_inventario():
     inventarios = Inventario.query.all()
     return render_template('inventario.html', inventarios=inventarios)
+
+@app.route('/inventario/eliminar/<int:id>', methods=['POST'])
+def eliminar_inventario(id):
+    inventario = Inventario.query.get_or_404(id)
+    db.session.delete(inventario)
+    db.session.commit()
+    return redirect(url_for('ver_inventario'))
+
 #Ruta para ver productos de una categoria
 @app.route('/categoria/<int:id>')
 def ver_categoria(id):
