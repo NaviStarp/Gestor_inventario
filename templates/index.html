@@ -15,11 +15,12 @@
                     <span class="text-xl font-bold">Sistema de Gestión</span>
                 </div>
                 <div class="hidden md:flex items-center space-x-4">
-                    <a href="#" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-dashboard">Dashboard</a>
-                    <a href="#" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-clientes">Clientes</a>
-                    <a href="#" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-inventario">Inventario</a>
-                    <a href="#" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-alquileres">Alquileres</a>
-                    <a href="#" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-categorias">Categorías</a>
+
+                    <a href="{{ url_for('inicio') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-dashboard">Dashboard</a>
+                    <a href="{{ url_for('ver_clientes') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-clientes">Clientes</a>
+                    <a href="{{ url_for('ver_inventario') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-inventario">Inventario</a>
+                    <a href="{{ url_for('ver_alquileres') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-alquileres">Alquileres</a>
+                    <a href="{{ url_for('ver_categorias') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-categorias">Categorías</a>
                 </div>
                 <div class="md:hidden">
                     <button id="mobile-menu-button" class="flex items-center p-2 rounded hover:bg-blue-700 transition">

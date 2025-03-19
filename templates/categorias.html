@@ -47,8 +47,7 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     {% for categoria in categorias %}
-                    <tr class="hover:bg-gray-50" onclick="window.location.href='{{ url_for('ver_categoria', id=categoria.id) }}'">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ categoria.id }}</td>
+                    <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location.href='/categoria/{{ categoria.id }}'">                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ categoria.id }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ categoria.nombre }}</td>
                         <td class="px-6 py-4 text-sm text-gray-500">
                             {% if categoria.descripcion %}
@@ -59,8 +58,8 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex space-x-2">
-                                <button  onclick="editarCategoria('{{ categoria.id }}', '{{ categoria.nombre }}', '{{ categoria.descripcion }}')" class="text-indigo-600 hover:text-indigo-900 ">Editar</button>
-                                <a href="{{ url_for('eliminar_categoria', id=categoria.id) }}" class="text-red-600 hover:text-red-900" onclick="return confirm('¿Está seguro que desea eliminar esta categoría?')">Eliminar</a>
+                                <button  onclick="event.stopPropagation();editarCategoria('{{ categoria.id }}', '{{ categoria.nombre }}', '{{ categoria.descripcion }}')" class="text-indigo-600 hover:text-indigo-900 ">Editar</button>
+                                <a href="{{ url_for('eliminar_categoria', id=categoria.id) }}" class="text-red-600 hover:text-red-900" onclick="event.stopPropagation();return confirm('¿Está seguro que desea eliminar esta categoría?')">Eliminar</a>
                             </div>
                         </td>
                     </tr>
