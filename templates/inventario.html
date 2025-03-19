@@ -93,7 +93,7 @@
                                 </span>
                             </td>
                             <td class="py-3 px-6 text-left">{{ producto.categoria.nombre }}</td>
-                            <td class="py-3 px-6 text-left">€{{ producto.precio }}</td>
+                            <td class="py-3 px-6 text-left">{{ producto.precio }}€</td>
                             <td class="py-3 px-6 text-left">{{ producto.numero_serie_f }}</td>
                             <td class="py-3 px-6 text-left">{{ producto.numero_serie_i }}</td>
                             <td class="py-3 px-6 text-left">{{ producto.observaciones }}</td>
@@ -105,7 +105,7 @@
                                     <a onclick="event.stopPropagation();editar_inventario('{{ producto.id }}', '{{ producto.nombre }}', '{{ producto.cliente.id }}', '{{ producto.categoria.id }}', '{{ producto.estado }}', '{{ producto.precio }}', '{{ producto.numero_serie_f }}', '{{ producto.numero_serie_i }}', '{{ producto.observaciones }}')" class="text-yellow-600 hover:text-yellow-800 mr-3">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="{{ url_for('eliminar_inventario', id=producto.id) }}" method="POST" style="display:inline;">
+                                    <form action="{{ url_for('eliminar_inventario', id=producto.id) }}" onclick="event.stopPropagation();return confirm('¿Está seguro que desea eliminar este producto?')" method="POST" style="display:inline;">
                                         <button type="submit" class="text-red-600 hover:text-red-800">
                                             <i class="fas fa-trash"></i>
                                         </button>

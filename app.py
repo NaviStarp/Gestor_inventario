@@ -321,8 +321,9 @@ def ver_alquileres():
             query = query.filter(Alquiler.fecha_entrega <= form.fecha_hasta.data)
     
     alquileres = query.order_by(Alquiler.fecha_entrega.desc()).all()
-    
-    return render_template('alquileres.html', alquileres=alquileres, form=form)
+    clientes = Cliente.query.all()
+    inventarios = Inventario.query.all()
+    return render_template('alquileres.html', alquileres=alquileres, form=form,clientes=clientes, inventarios=inventarios)
 
 @app.route('/alquileres/<int:id>')
 def ver_alquiler(id):
