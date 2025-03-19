@@ -32,11 +32,11 @@
             </div>
         </div>
         <div id="mobile-menu" class="hidden md:hidden bg-blue-800 pb-4 px-4">
-            <a href="#" class="block py-2 px-3 rounded hover:bg-blue-700 transition" id="mobile-dashboard">Dashboard</a>
-            <a href="#" class="block py-2 px-3 rounded hover:bg-blue-700 transition" id="mobile-clientes">Clientes</a>
-            <a href="#" class="block py-2 px-3 rounded hover:bg-blue-700 transition" id="mobile-inventario">Inventario</a>
-            <a href="#" class="block py-2 px-3 rounded hover:bg-blue-700 transition" id="mobile-alquileres">Alquileres</a>
-            <a href="#" class="block py-2 px-3 rounded hover:bg-blue-700 transition" id="mobile-categorias">Categorías</a>
+            <a href="{{ url_for('inicio') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-dashboard">Dashboard</a>
+            <a href="{{ url_for('ver_clientes') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-clientes">Clientes</a>
+            <a href="{{ url_for('ver_inventario') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-inventario">Inventario</a>
+            <a href="{{ url_for('ver_alquileres') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-alquileres">Alquileres</a>
+            <a href="{{ url_for('ver_categorias') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-categorias">Categorías</a>
         </div>
     </nav>
 
