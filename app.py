@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-
+from flask_wtf import FlaskForm
+from wtforms import StringField, DateField, SelectField, IntegerField, SubmitField
+from wtforms.validators import DataRequired, NumberRange
 # Se crea la instancia de la aplicación Flask
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Necesario para usar sesiones
@@ -14,7 +16,7 @@ db = SQLAlchemy(app)
 # Se crea la tabla Inventario
 class Inventario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=False)
+    cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=True)
     cliente = db.relationship('Cliente', backref=db.backref('inventarios', lazy=True))
     estado = db.Column(db.String(100), nullable=False)
     
@@ -66,6 +68,18 @@ class Alquiler(db.Model):
 
     def __repr__(self):
         return f'<Alquiler {self.id}>'
+# Formularios
+class FilterForm(FlaskForm):
+    estado = SelectField('Estado', choices=[
+        ('', 'Todos'), 
+        ('Pendiente', 'Pendiente'),
+        ('Entregado', 'Entregado'),
+        ('Devuelto', 'Devuelto'),
+        ('Cancelado', 'Cancelado')
+    ])
+    fecha_desde = DateField('Desde', format='%Y-%m-%d', validators=[], render_kw={"type": "date"})
+    fecha_hasta = DateField('Hasta', format='%Y-%m-%d', validators=[], render_kw={"type": "date"})
+    submit = SubmitField('Filtrar')
 
 # Ruta de inicio
 @app.route('/')
@@ -98,6 +112,10 @@ def eliminar_cliente(id):
     db.session.delete(cliente)
     db.session.commit()
     return redirect(url_for('inicio'))
+@app.route('/categorias/')
+def ver_categorias():
+    categorias = Categoria.query.all()
+    return render_template('categorias.html', categorias=categorias)
 
 @app.route('/inventario/eliminar/<int:id>', methods=['POST'])
 def eliminar_producto(id):
@@ -222,10 +240,33 @@ def crear_alquiler():
     return redirect(url_for('inicio'))
 
 # Ruta para ver alquileres
-@app.route('/alquileres')
+@app.route('/alquileres', methods=['GET', 'POST'])
 def ver_alquileres():
-    alquileres = Alquiler.query.all()
-    return render_template('alquileres.html', alquileres=alquileres)
+    form = FilterForm()
+    
+    query = Alquiler.query
+    
+    if form.validate_on_submit():
+        if form.estado.data:
+            query = query.filter(Alquiler.estado == form.estado.data)
+        if form.fecha_desde.data:
+            query = query.filter(Alquiler.fecha_entrega >= form.fecha_desde.data)
+        if form.fecha_hasta.data:
+            query = query.filter(Alquiler.fecha_entrega <= form.fecha_hasta.data)
+    
+    alquileres = query.order_by(Alquiler.fecha_entrega.desc()).all()
+    
+    return render_template('alquileres.html', alquileres=alquileres, form=form)
+
+@app.route('/alquileres/<int:id>')
+def ver_alquiler(id):
+    alquiler = Alquiler.query.get_or_404(id)
+    return render_template('detalles_alquiler.html', alquiler=alquiler)
+@app.template_filter('date_format')
+def date_format(value):
+    if value:
+        return value.strftime('%d/%m/%Y')
+    return ''
 
 # Ruta para editar alquiler
 @app.route('/alquiler/editar/<int:id>', methods=['GET', 'POST'])
@@ -241,6 +282,11 @@ def editar_alquiler(id):
     inventarios = Inventario.query.all()
     clientes = Cliente.query.all()
     return render_template('editar_alquiler.html', alquiler=alquiler, inventarios=inventarios, clientes=clientes)
+@app.context_processor
+def utility_processor():
+        def productos_por_categoria(categoria_id):
+            return Inventario.query.filter_by(categoria_id=categoria_id).count()
+        return dict(productos_por_categoria=productos_por_categoria)
 
 if __name__ == '__main__':
     with app.app_context():

@@ -1,0 +1,100 @@
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Alquileres</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <nav class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <a href="{{ url_for('inicio') }}" class="text-xl font-bold">Sistema de Alquileres</a>
+                <div class="space-x-4">
+                    <a href="{{ url_for('ver_alquileres') }}" class="hover:text-blue-200">Alquileres</a>
+                    <!-- Add more navigation links as needed -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-6">
+<div class="bg-white rounded-lg shadow-md p-6">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">Detalle del Alquiler #{{ alquiler.id }}</h1>
+        <a href="{{ url_for('ver_alquileres') }}" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+            <i class="fas fa-arrow-left mr-1"></i> Volver
+        </a>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-gray-50 p-4 rounded-md">
+            <h2 class="text-xl font-semibold mb-4 text-blue-600">Información del Alquiler</h2>
+            <div class="space-y-3">
+                <div class="flex justify-between">
+                    <span class="font-medium">Estado:</span>
+                    <span class="px-2 py-1 rounded-full text-xs font-medium
+                        {% if alquiler.estado == 'Pendiente' %}bg-yellow-100 text-yellow-800
+                        {% elif alquiler.estado == 'Entregado' %}bg-green-100 text-green-800
+                        {% elif alquiler.estado == 'Devuelto' %}bg-blue-100 text-blue-800
+                        {% elif alquiler.estado == 'Cancelado' %}bg-red-100 text-red-800
+                        {% else %}bg-gray-100 text-gray-800{% endif %}">
+                        {{ alquiler.estado }}
+                    </span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-medium">Fecha de Entrega:</span>
+                    <span>{{ alquiler.fecha_entrega|date_format }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-medium">Fecha de Recogida:</span>
+                    <span>{{ alquiler.fecha_recojida|date_format }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-medium">Precio:</span>
+                    <span>€{{ alquiler.precio }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gray-50 p-4 rounded-md">
+            <h2 class="text-xl font-semibold mb-4 text-blue-600">Información del Cliente</h2>
+            <div class="space-y-3">
+                <div class="flex justify-between">
+                    <span class="font-medium">Nombre:</span>
+                    <span>{{ alquiler.cliente.nombre }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-medium">Email:</span>
+                    <span>{{ alquiler.cliente.email }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-medium">Teléfono:</span>
+                    <span>{{ alquiler.cliente.telefono }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gray-50 p-4 rounded-md md:col-span-2">
+            <h2 class="text-xl font-semibold mb-4 text-blue-600">Información del Artículo</h2>
+            <div class="space-y-3">
+                <div class="flex justify-between">
+                    <span class="font-medium">Nombre:</span>
+                    <span>{{ alquiler.inventario.nombre }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-medium">Descripción:</span>
+                    <span>{{ alquiler.inventario.descripcion }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-medium">Precio Diario:</span>
+                    <span>€{{ alquiler.inventario.precio_diario }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>
