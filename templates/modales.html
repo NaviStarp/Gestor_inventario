@@ -84,6 +84,7 @@
                         </div>
                         <div>
                             <label for="categoria_id" class="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
+                            {% if categorias %}
                             <select id="categoria_id" name="categoria_id" required 
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="">-- Seleccionar Categoría --</option>
@@ -91,6 +92,10 @@
                                 <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
                                 {% endfor %}
                             </select>
+                            {% else %}
+                            <p>No hay categorías disponibles</p>
+                            <button  class="bg-orange-500 text-white font-medium py-2 px-4 rounded shadow transition duration-200">Nueva Categoría</button>
+                            {% endif %}
                         </div>
                         <div>
                             <label for="estado" class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
