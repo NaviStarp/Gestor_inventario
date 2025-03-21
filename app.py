@@ -87,9 +87,9 @@ class filtroInventario(FlaskForm):
     estado = SelectField('Estado', choices=[
         ('', 'Todos'), 
         ('Disponible', 'Disponible'),
-        ('Alquilado', 'Alquilado'),
-        ('Reparacion', 'Reparacion'),
-        ('Vendido', 'Vendido')
+        ('En uso', 'En uso'),
+        ('Reparación', 'Reparación'),
+        ('Baja', 'Baja')
     ])
     cliente = SelectField('Cliente', choices=[], coerce=int)
     categoria = SelectField('Categoria', choices=[], coerce=int)
