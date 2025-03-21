@@ -92,10 +92,10 @@
                             <td class="py-3 px-6 text-left">{{ producto.precio }}</td>
                             <td class="py-3 px-6 text-center">
                                 <div class="flex item-center justify-center">
-                                    <a onclick="event.stopPropagation();editar_inventario('{{ producto.id }}', '{{ producto.nombre }}', '{{ producto.cliente.id }}', '{{ producto.categoria.id }}', '{{ producto.estado }}', '{{ producto.precio }}', '{{ producto.numero_serie_f }}', '{{ producto.numero_serie_i }}', '{{ producto.observaciones }}')" class="text-yellow-600 hover:text-yellow-800 mr-3">
+                                    <a onclick="event.stopPropagation();editar_inventario('{{ producto.id }}', '{{ producto.numero }}', '{{ producto.marca }}', '{{ producto.modelo }}', '{{ producto.estado }}', '{{ producto.ubicacion }}', '{{ producto.observacion }}', '{{ producto.numero_serie_f }}', '{{ producto.numero_serie_i }}', '{{ producto.categoria.id }}', '{{ producto.cliente.id if producto.cliente else '' }}', '{{ producto.precio }}')" class="text-yellow-600 hover:text-yellow-800 mr-3">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="{{ url_for('eliminar_inventario', id=producto.id) }}" onclick="event.stopPropagation();return confirm('¿Está seguro que desea eliminar este producto?')" method="POST" style="display:inline;">
+                                    <form action="{{ url_for('eliminar_producto', id=producto.id) }}" onclick="event.stopPropagation();return confirm('¿Está seguro que desea eliminar este producto?')" method="POST" style="display:inline;">
  
 
                                         <button type="submit" class="text-red-600 hover:text-red-800">
@@ -148,16 +148,19 @@
                 modal.classList.add('hidden');
             });
         }
-        function editar_inventario(id, nombre, cliente_id, categoria_id, estado, precio, numero_serie_f, numero_serie_i, observaciones) {
+        function editar_inventario(id, numero, marca, modelo, estado, ubicacion, observacion, numero_serie_f, numero_serie_i, categoria_id, cliente, precio) {
             openModal('modal-inventario');
-            document.getElementById('nombre_producto').value = nombre;
-            document.getElementById('cliente_id').value = cliente_id;
-            document.getElementById('categoria_id').value = categoria_id;
+            document.getElementById('numero').value = numero;
+            document.getElementById('marca').value = marca;
+            document.getElementById('modelo').value = modelo;
             document.getElementById('estado').value = estado;
-            document.getElementById('precio').value = precio;
+            document.getElementById('ubicacion').value = ubicacion;
+            document.getElementById('observacion').value = observacion;
             document.getElementById('numero_serie_f').value = numero_serie_f;
             document.getElementById('numero_serie_i').value = numero_serie_i;
-            document.getElementById('observaciones').value = observaciones;
+            document.getElementById('categoria_id').value = categoria_id;
+            document.getElementById('cliente').value = cliente || '';
+            document.getElementById('precio').value = precio;
             document.querySelector('#modal-inventario form').action = `/inventario/editar/${id}`;
         }
         </script>
