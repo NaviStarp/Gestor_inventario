@@ -8,20 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
-    <nav class="bg-blue-800 text-white shadow-lg">
-        <div class="container mx-auto px-4 py-3">
-            <div class="flex justify-between items-center">
-                <a href="{{ url_for('inicio') }}" class="text-xl font-bold">Sistema de Gestión</a>
-                <div class="space-x-4">
-                    <a href="{{ url_for('inicio') }}" class="hover:text-blue-200">Inicio</a>
-                    <a href="{{ url_for('ver_clientes') }}" class="hover:text-blue-200">Clientes</a>
-                    <a href="{{ url_for('ver_inventario') }}" class="hover:text-blue-200">Inventario</a>
-                    <a href="{{ url_for('ver_categorias') }}" class="hover:text-blue-200">Categorías</a>
-                    <a href="{{ url_for('ver_alquileres') }}" class="hover:text-blue-200">Alquileres</a>
-                </div>
-            </div>
-        </div>
-    </nav>
+    {% include 'header.html' %}
 
     <main class="container mx-auto px-4 py-6 flex-grow">
         <div class="bg-white rounded-lg shadow-md p-6">
@@ -78,7 +65,7 @@
                         </tr>
                     </thead>
                     <tbody class="text-gray-600 text-sm font-light">
-                        {% for producto in productos %}
+                        {% for producto in inventarios %}
                         <tr class="border-b border-gray-200 hover:bg-gray-100">
                             <td class="py-3 px-6 text-left">{{ producto.numero }}</td>
                             <td class="py-3 px-6 text-left">{{ producto.marca }}</td>
@@ -98,12 +85,22 @@
                             <td class="py-3 px-6 text-left">{{ producto.precio }}</td>
                             <td class="py-3 px-6 text-center">
                                 <div class="flex item-center justify-center">
-                                    <a href="{{ url_for('editar_producto', id=producto.id) }}" class="w-4 mr-2 transform hover:text-blue-500 hover:scale-110">
+                                    <a onclick="event.stopPropagation();editar_inventario('{{ producto.id }}', '{{ producto.nombre }}', '{{ producto.cliente.id }}', '{{ producto.categoria.id }}', '{{ producto.estado }}', '{{ producto.precio }}', '{{ producto.numero_serie_f }}', '{{ producto.numero_serie_i }}', '{{ producto.observaciones }}')" class="text-yellow-600 hover:text-yellow-800 mr-3">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="{{ url_for('eliminar_producto', id=producto.id) }}" class="w-4 mr-2 transform hover:text-red-500 hover:scale-110">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
+                                    <form action="{{ url_for('eliminar_inventario', id=producto.id) }}" onclick="event.stopPropagation();return confirm('¿Está seguro que desea eliminar este producto?')" method="POST" style="display:inline;">
+ 
+
+                                        <button type="submit" class="text-red-600 hover:text-red-800">
+ 
+
+                                            <i class="fas fa-trash"></i>
+ 
+
+                                        </button>
+ 
+
+                                    </form>
                                 </div>
                             </td>
                         </tr>
