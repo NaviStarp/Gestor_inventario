@@ -15,8 +15,7 @@
                     <span class="text-xl font-bold">Sistema de Gestión</span>
                 </div>
                 <div class="hidden md:flex items-center space-x-4">
-
-                    <a href="{{ url_for('inicio') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-dashboard">Dashboard</a>
+                    <a href="{{ url_for('inicio') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-dashboard">Inicio</a>
                     <a href="{{ url_for('ver_clientes') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-clientes">Clientes</a>
                     <a href="{{ url_for('ver_inventario') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-inventario">Inventario</a>
                     <a href="{{ url_for('ver_alquileres') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-alquileres">Alquileres</a>
@@ -32,7 +31,7 @@
             </div>
         </div>
         <div id="mobile-menu" class="hidden md:hidden bg-blue-800 pb-4 px-4">
-            <a href="{{ url_for('inicio') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-dashboard">Dashboard</a>
+            <a href="{{ url_for('inicio') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-dashboard">Inicio</a>
             <a href="{{ url_for('ver_clientes') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-clientes">Clientes</a>
             <a href="{{ url_for('ver_inventario') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-inventario">Inventario</a>
             <a href="{{ url_for('ver_alquileres') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-alquileres">Alquileres</a>
@@ -70,7 +69,7 @@
                 <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500 cursor-pointer" onclick="window.location.href='{{ url_for('ver_alquileres') }}'">
                     <div class="flex justify-between items-center">
                         <div>
-                            <p class="text-sm text-gray-500">Alquileres Activos</p>
+                            <p class="text-sm text-gray-500">Total Alquileres</p>
                             <p class="text-2xl font-bold">{{ alquileres|length }}</p>
                         </div>
                         <div class="bg-purple-100 p-3 rounded-full">
@@ -97,7 +96,7 @@
                     <i class="fas fa-plus mr-2"></i> Nuevo Cliente
                 </button>
                 <button id="btn-open-inventario" class="flex items-center py-2 px-6 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition">
-                    <i class="fas fa-plus mr-2"></i> Nuevo Inventario
+                    <i class="fas fa-plus mr-2"></i> Nuevo Producto
                 </button>
                 <button id="btn-open-alquiler" class="flex items-center py-2 px-6 bg-purple-500 text-white font-semibold rounded-lg hover:bg-purple-600 transition">
                     <i class="fas fa-plus mr-2"></i> Nuevo Alquiler
