@@ -244,6 +244,7 @@ def crear_producto():
     try:
         print("Datos recibidos:", request.form)
         nuevo_producto = Inventario(
+            categoria_id=request.form['categoria_id'],
             numero=request.form['numero'],
             marca=request.form['marca'],
             modelo=request.form['modelo'],
@@ -296,11 +297,15 @@ def crear_categoria():
 def editar_inventario(id):
     inventario = Inventario.query.get_or_404(id)
     if request.method == 'POST':
+        inventario.numero = request.form['numero']
+        inventario.modelo = request.form['modelo']
+        inventario.marca = request.form['marca']
         inventario.estado = request.form['estado']
-        inventario.nombre = request.form['nombre']
         inventario.precio = request.form['precio']
         inventario.numero_serie_f = request.form['numero_serie_f']
         inventario.numero_serie_i = request.form['numero_serie_i']
+        inventario.ubicacion = request.form['ubicacion']
+        inventario.cliente_id = request.form.get('cliente_id')  # Ensure cliente_id is set
         inventario.observaciones = request.form.get('observaciones')
         inventario.categoria_id = request.form['categoria_id']  # Ensure categoria_id is set
         db.session.commit()
@@ -389,6 +394,6 @@ def utility_processor():
 
 if __name__ == '__main__':
     with app.app_context():
-        #db.drop_all() # CUIDADO esto borra toda la base de datos
+        db.drop_all() # CUIDADO esto borra toda la base de datos
         db.create_all()
     app.run(host='0.0.0.0', port=5000, debug=True)
