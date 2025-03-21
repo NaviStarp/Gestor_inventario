@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from flask import jsonify
 from flask_wtf import FlaskForm
 from wtforms import StringField, DateField, SelectField, IntegerField, SubmitField
 from wtforms.validators import DataRequired, NumberRange
@@ -218,7 +219,25 @@ def ver_categoria(id):
     # Ejecutar la consulta final
     inventarios = query.all()
     
-    return render_template('inventario.html', categoria=categoria, inventarios=inventarios, form=form)
+    return render_template('inventario.html', categoria=categoria, inventarios=inventarios, form=form,es_categoria=True)
+
+@app.route('/inventario/get', methods=['GET'])
+def get_inventario():
+    inventario = Inventario.query.all()
+    return jsonify([{
+    'id': item.id,
+    'numero': item.numero,
+    'marca': item.marca,
+    'modelo': item.modelo,
+    'estado': item.estado,
+    'ubicacion': item.ubicacion,
+    'observacion': item.observacion,
+    'numero_serie_f': item.numero_serie_f,
+    'numero_serie_i': item.numero_serie_i,
+    'categoria_id': item.categoria_id,
+    'cliente': item.cliente,
+    'precio': item.precio
+    } for item in inventario])
 # Ruta para ver clientes
 @app.route('/clientes', methods=['GET', 'POST'])
 def ver_clientes():
@@ -253,7 +272,7 @@ def crear_producto():
             ubicacion=request.form['ubicacion'], # Temporal
             numero_serie_f=request.form['numero_serie_f'],
             numero_serie_i=request.form['numero_serie_i'],
-            observacion=request.form.get('observaciones'),  # Puede ser None
+            observacion=request.form.get('observacion'),  # Puede ser None
             cliente= cliente if cliente else None
         )
         categoria = Categoria.query.get(nuevo_producto.categoria_id)
@@ -308,7 +327,7 @@ def editar_inventario(id):
         inventario.numero_serie_i = request.form['numero_serie_i']
         inventario.ubicacion = request.form['ubicacion']
         inventario.cliente_id = request.form.get('cliente_id')  # Ensure cliente_id is set
-        inventario.observaciones = request.form.get('observaciones')
+        inventario.observacion = request.form.get('observacion')
         inventario.categoria_id = request.form['categoria_id']  # Ensure categoria_id is set
         db.session.commit()
         return redirect(url_for('ver_inventario'))
