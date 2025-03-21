@@ -1,8 +1,8 @@
-<nav class="bg-blue-800 text-white shadow-md">
+<nav class="bg-gray-800 text-white shadow-md">
     <div class="container mx-auto px-4 py-3">
         <div class="flex justify-between items-center">
             <div class="flex items-center">
-                <span class="text-xl font-bold">Sistema de Gestión</span>
+                <img class="h-8" src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo">
             </div>
             <div class="hidden md:flex items-center space-x-4">
                 <a href="{{ url_for('inicio') }}" class="py-2 px-3 rounded hover:bg-blue-700 transition" id="nav-dashboard">Inicio</a>
