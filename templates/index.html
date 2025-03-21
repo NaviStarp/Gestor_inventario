@@ -6,8 +6,9 @@
     <title>Sistema de Gestión</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fuente.css') }}">
 </head>
-<body class="bg-gray-700 min-h-screen flex flex-col">
+<body class="bg-gray-900 min-h-screen flex flex-col">
     {% include 'header.html' %}
     <main class="container mx-auto px-4 py-6 flex-grow">
 
@@ -19,7 +20,7 @@
                 <div class="bg-blue-600 p-6 rounded-lg shadow-md border-l-4 border-blue-300 cursor-pointer" onclick="window.location.href='{{ url_for('ver_clientes') }}'">
                     <div class="flex justify-between items-center">
                         <div>
-                            <p class="text-sm text-white">Total Clientes</p>
+                            <p class="font-bold text-white">Total Clientes</p>
                             <p class="text-2xl font-bold text-white">{{ clientes|length }}</p>
                         </div>
                         <div class="bg-blue-100 p-3 rounded-full">
@@ -30,7 +31,7 @@
                 <div class="bg-green-500 p-6 rounded-lg shadow-md border-l-4 border-green-200 cursor-pointer" onclick="window.location.href='{{ url_for('ver_inventario') }}'">
                     <div class="flex justify-between items-center">
                         <div>
-                            <p class="text-sm text-white">Total Inventario</p>
+                            <p class="font-bold text-white">Total Inventario</p>
                             <p class="text-2xl font-bold text-white">{{ inventarios|length }}</p>
                         </div>
                         <div class="bg-green-100 p-3 rounded-full">
@@ -41,7 +42,7 @@
                 <div class="bg-purple-500 p-6 rounded-lg shadow-md border-l-4 border-purple-200 cursor-pointer" onclick="window.location.href='{{ url_for('ver_alquileres') }}'">
                     <div class="flex justify-between items-center">
                         <div>
-                            <p class="text-sm text-white">Total Alquileres</p>
+                            <p class="font-bold text-white">Total Alquileres</p>
                             <p class="text-2xl font-bold text-white">{{ alquileres|length }}</p>
                         </div>
                         <div class="bg-purple-100 p-3 rounded-full">
@@ -52,7 +53,7 @@
                 <div class="bg-orange-500 p-6 rounded-lg shadow-md border-l-4 border-orange-200 cursor-pointer" onclick="window.location.href='{{ url_for('ver_categorias') }}'">
                     <div class="flex justify-between items-center">
                         <div>
-                            <p class="text-sm text-white">Categorías</p>
+                            <p class="font-bold text-white">Categorías</p>
                             <p class="text-2xl font-bold text-white">{{ categorias|length }}</p>
                         </div>
                         <div class="bg-orange-100 p-3 rounded-full">

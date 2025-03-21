@@ -5,6 +5,7 @@
     <title>Sistema de Alquileres</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fuente.css') }}">
 </head>
 <body class="bg-gray-900 min-h-screen flex flex-col">
     {% include 'header.html' %}
@@ -26,12 +27,14 @@
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">ID</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Nombre</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Descripción</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Productos</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Acciones</th>
                     </tr>
                 </thead>
                 <tbody class="bg-gray-300 divide-y divide-gray-200">
                     {% for categoria in categorias %}
-                    <tr class="hover:bg-orange-300 cursor-pointer text-black " onclick="window.location.href='/categoria/{{ categoria.id }}'">                        <td class="text-black px-6 py-4 whitespace-nowrap text-sm">{{ categoria.id }}</td>
+                    <tr class="hover:bg-orange-300 transition duration-400 cursor-pointer text-black" onclick="window.location.href='/categoria/{{ categoria.id }}'">
+                        <td class="text-black px-6 py-4 whitespace-nowrap text-sm">{{ categoria.id }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-black">{{ categoria.nombre }}</td>
                         <td class="px-6 py-4 text-sm text-black">
                             {% if categoria.descripcion %}
@@ -40,10 +43,11 @@
                                 <span class="text-black italic">Sin descripción</span>
                             {% endif %}
                         </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-black">{{ categoria.productos }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex space-x-2">
-                                <button  onclick="event.stopPropagation();editarCategoria('{{ categoria.id }}', '{{ categoria.nombre }}', '{{ categoria.descripcion }}')" class="text-indigo-600 hover:text-indigo-900 ">Editar</button>
-                                <a href="{{ url_for('eliminar_categoria', id=categoria.id) }}" class="text-red-600 hover:text-red-900" onclick="event.stopPropagation();return confirm('¿Está seguro que desea eliminar esta categoría?')">Eliminar</a>
+                                <button onclick="event.stopPropagation();editarCategoria('{{ categoria.id }}', '{{ categoria.nombre }}', '{{ categoria.descripcion }}')" class="text-indigo-600 hover:text-indigo-900 transition duration-200">Editar</button>
+                                <a href="{{ url_for('eliminar_categoria', id=categoria.id) }}" class="text-red-600 hover:text-red-900 transition duration-200" onclick="event.stopPropagation();return confirm('¿Está seguro que desea eliminar esta categoría?')">Eliminar</a>
                             </div>
                         </td>
                     </tr>
@@ -52,8 +56,8 @@
             </table>
         </div>
     {% else %}
-        <div class="bg-white shadow rounded-lg p-6 text-center">
-            <p class="text-gray-500">No hay categorías disponibles.</p>
+        <div class="bg-gray-600 shadow rounded-lg p-6 text-center">
+            <p class="text-white">No hay categorías disponibles.</p>
                 </div>
     {% endif %}
     <div id="modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden flex items-center justify-center">

@@ -37,6 +37,7 @@ class Categoria(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nombre = db.Column(db.String(100), nullable=False)
     descripcion = db.Column(db.String(255), nullable=True)
+    productos = db.Column(db.Integer, nullable=False, default=0)
     
     def __repr__(self):
         return f'<Categoria {self.id}>'
@@ -150,6 +151,11 @@ def eliminar_cliente(id):
 @app.route('/categorias/')
 def ver_categorias():
     categorias = Categoria.query.all()
+    productos = Inventario.query.all()
+    for producto in productos:
+        categoria = Categoria.query.get(producto.categoria_id)
+        categoria.productos += 1
+    db.session.commit()
     return render_template('categorias.html', categorias=categorias)
 
 @app.route('/inventario/eliminar/<int:id>', methods=['POST'])

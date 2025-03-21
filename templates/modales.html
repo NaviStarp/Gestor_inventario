@@ -2,39 +2,39 @@
       <div id="modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden flex items-center justify-center">
         <!-- Modal para Cliente -->
         <div id="modal-cliente" class="bg-white rounded-lg shadow-xl w-full max-w-3xl mx-4 hidden">
-            <div class="flex justify-between items-center p-6 border-b">
-                <h2 class="text-2xl font-semibold">Nuevo Cliente</h2>
-                <button class="modal-close text-gray-500 hover:text-gray-700">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <div class="flex justify-between items-center p-6  bg-blue-600">
+                <h2 class="text-2xl font-semibold text-white">Nuevo Cliente</h2>
+                <button class="modal-close text-white hover:text-blue-300">
+                    <svg class="w-6 h-6" fill="white" stroke="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
             </div>
             <div class="p-6">
-                <form action="{{ url_for('crear_cliente') }}" method="POST">
+                <form action="{{ url_for('crear_cliente') }}"  method="POST">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="nombre" class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                            <label for="nombre" class="block text-sm font-medium text-black mb-1">Nombre</label>
                             <input type="text" id="nombre" name="nombre" required 
                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <label for="email" class="block text-sm font-medium text-black mb-1">Email</label>
                             <input type="email" id="email" name="email" required 
                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
-                            <label for="dni" class="block text-sm font-medium text-gray-700 mb-1">DNI</label>
+                            <label for="dni" class="block text-sm font-medium text-black mb-1">DNI</label>
                             <input type="text" id="dni" name="dni" required 
                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
-                            <label for="telefono" class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                            <label for="telefono" class="block text-sm font-medium text-black mb-1">Teléfono</label>
                             <input type="text" id="telefono" name="telefono" required 
                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
-                            <label for="id_cliente" class="block text-sm font-medium text-gray-700 mb-1">Cliente Superior (jerárquico)</label>
+                            <label for="id_cliente" class="block text-sm font-medium text-black mb-1">Cliente Superior (jerárquico)</label>
                             <select id="id_cliente" name="id_cliente" 
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="">-- Sin cliente superior --</option>
@@ -44,7 +44,7 @@
                             </select>
                         </div>
                         <div>
-                            <label for="prioridad" class="block text-sm font-medium text-gray-700 mb-1">Prioridad</label>
+                            <label for="prioridad" class="block text-sm font-medium text-black mb-1">Prioridad</label>
                             <select id="prioridad" name="prioridad" required 
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="Alta">Alta</option>
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                     <div class="mt-6 flex justify-end">
-                        <button type="button" class="modal-close px-4 py-2 bg-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-400 mr-2">
+                        <button type="button" class="modal-close px-4 py-2 bg-gray-300 text-black font-medium rounded-md hover:bg-gray-400 mr-2">
                             Cancelar
                         </button>
                         <button type="submit" class="px-4 py-2 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600">
@@ -66,9 +66,9 @@
         </div>                         
         <!-- Modal para Inventario -->
         <div id="modal-inventario" class="bg-white rounded-lg shadow-xl w-full max-w-3xl mx-auto hidden">
-            <div class="flex justify-between items-center p-6 border-b">
-                <h2 class="text-2xl font-semibold">Nuevo Inventario</h2>
-                <button class="modal-close text-gray-500 hover:text-gray-700">
+            <div class="flex justify-between items-center p-6 border-b bg-green-600">
+                <h2 class="text-2xl font-semibold text-white">Nuevo Inventario</h2>
+                <button class="modal-close text-white hover:text-green-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -76,7 +76,7 @@
             </div>
             <div class="p-6">
                 <form action="{{ url_for('crear_producto') }}" method="POST">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 ">
                         <div>
                             <label for="nombre_producto" class="block text-sm font-medium text-gray-700 mb-1">Nombre de Producto</label>
                             <input type="text" id="nombre_producto" name="nombre" required 
@@ -147,7 +147,7 @@
                         <button type="button" class="modal-close px-4 py-2 bg-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-400 mr-2">
                             Cancelar
                         </button>
-                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600">
+                        <button type="submit" class="px-4 py-2 bg-green-500 text-white font-medium rounded-md hover:bg-green-600">
                             Guardar Inventario
                         </button>
                     </div>
@@ -155,9 +155,9 @@
             </div>
         </div>      <!-- Modal para Alquiler -->
         <div id="modal-alquiler" class="bg-white rounded-lg shadow-xl w-full max-w-3xl mx-4 hidden">
-            <div class="flex justify-between items-center p-6 border-b">
-                <h2 class="text-2xl font-semibold">Nuevo Alquiler</h2>
-                <button class="modal-close text-gray-500 hover:text-gray-700">
+            <div class="flex justify-between items-center p-6 border-b bg-purple-500">
+                <h2 class="text-2xl font-semibold text-white">Nuevo Alquiler</h2>
+                <button class="modal-close text-white hover:text-purple-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -225,9 +225,9 @@
 
         <!-- Modal para Categoría -->
         <div id="modal-categoria" class="bg-white rounded-lg shadow-xl w-full max-w-3xl mx-4 hidden">
-            <div class="flex justify-between items-center p-6 border-b">
-                <h2 class="text-2xl font-semibold">Nueva Categoría</h2>
-                <button class="modal-close text-gray-500 hover:text-gray-700">
+            <div class="flex justify-between items-center p-6 bg-orange-500 border-b">
+                <h2 class="text-2xl font-semibold text-white">Nueva Categoría</h2>
+                <button class="modal-close text-white hover:text-orange-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
