@@ -26,7 +26,7 @@ class Inventario(db.Model):
     numero_serie_i = db.Column(db.String(100), nullable=False)  # Número de serie interno
     categoria_id = db.Column(db.Integer, db.ForeignKey('categoria.id'), nullable=False)  # Categoría del producto
     categoria = db.relationship('Categoria', backref=db.backref('inventarios', lazy=True)) # Relación con la tabla Categoría
-    cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=True)  # Cliente asociado
+    cliente = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=True)  # Cliente asociado
     precio = db.Column(db.Integer, nullable=False)  # Precio del producto
 
     def __repr__(self):
@@ -243,23 +243,24 @@ def ver_clientes():
 def crear_producto():
     try:
         print("Datos recibidos:", request.form)
+        cliente = Cliente.query.filter_by(id=request.form.get('cliente_id')).first()
         nuevo_producto = Inventario(
             categoria_id=request.form['categoria_id'],
-            numero=request.form['numero'],
-            marca=request.form['marca'],
-            modelo=request.form['modelo'],
+            numero=request.form.get('numero', ''),
+            marca=request.form.get('marca', ''),
+            modelo=request.form.get('modelo', ''),
             estado=request.form['estado'],
             precio=request.form['precio'],
-            ubicacion=request.form['ubicacion'],
+            ubicacion=request.form['ubicacion'], # Temporal
             numero_serie_f=request.form['numero_serie_f'],
             numero_serie_i=request.form['numero_serie_i'],
             observacion=request.form.get('observaciones'),  # Puede ser None
-            cliente_id=request.form.get('cliente_id')  # Puede ser None
+            cliente= cliente if cliente else None
         )
         db.session.add(nuevo_producto)
         db.session.commit()
         print("Producto guardado correctamente")
-        return redirect(url_for('ver_inventario'))
+        return redirect(request.referrer)
     except Exception as e:
         print(f"Error al guardar el producto: {e}")
         return "Error al guardar el producto", 400
