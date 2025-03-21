@@ -220,24 +220,6 @@ def ver_categoria(id):
     inventarios = query.all()
     
     return render_template('inventario.html', categoria=categoria, inventarios=inventarios, form=form,es_categoria=True)
-
-@app.route('/inventario/get', methods=['GET'])
-def get_inventario():
-    inventario = Inventario.query.all()
-    return jsonify([{
-    'id': item.id,
-    'numero': item.numero,
-    'marca': item.marca,
-    'modelo': item.modelo,
-    'estado': item.estado,
-    'ubicacion': item.ubicacion,
-    'observacion': item.observacion,
-    'numero_serie_f': item.numero_serie_f,
-    'numero_serie_i': item.numero_serie_i,
-    'categoria_id': item.categoria_id,
-    'cliente': item.cliente,
-    'precio': item.precio
-    } for item in inventario])
 # Ruta para ver clientes
 @app.route('/clientes', methods=['GET', 'POST'])
 def ver_clientes():
