@@ -8,21 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
-    <nav class="bg-blue-800 text-white shadow-lg">
-        <div class="container mx-auto px-4 py-3">
-            <div class="flex justify-between items-center">
-                <a href="{{ url_for('inicio') }}" class="text-xl font-bold">Sistema de Gestión</a>
-                <div class="space-x-4">
-                    <a href="{{ url_for('inicio') }}" class="hover:text-blue-200">Inicio</a>
-                    <a href="{{ url_for('ver_clientes') }}" class="hover:text-blue-200">Clientes</a>
-                    <a href="{{ url_for('ver_inventario') }}" class="hover:text-blue-200">Inventario</a>
-                    <a href="{{ url_for('ver_categorias') }}" class="hover:text-blue-200">Categorías</a>
-                    <a href="{{ url_for('ver_alquileres') }}" class="hover:text-blue-200">Alquileres</a>
-                </div>
-            </div>
-        </div>
-    </nav>
-
+    {% include 'header.html' %}
     <main class="container mx-auto px-4 py-6 flex-grow">
         <div class="bg-white rounded-lg shadow-md p-6">
             <div class="flex justify-between items-center mb-6">
