@@ -7,50 +7,50 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
+<body class="bg-gray-900 min-h-screen flex flex-col">
     {% include 'header.html' %}
 
-    <main class="container mx-auto px-4 py-6 flex-grow">
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="flex justify-between items-center mb-6">
+    <main class="container mx-auto px-4 py-6 flex-grow ">
+        <div class=" rounded-lg shadow-md p-6 bg-gray-800">
+            <div class="flex justify-between items-center mb-6 text-green-500">
                 {% if categoria %}
                 <h1 class="text-2xl font-bold">Inventario de Productos de la categoria {{ categoria.nombre }}</h1>
                 {% else %}
                 <h1 class="text-2xl font-bold">Inventario de Productos</h1>
                 {% endif %}
-                <button id="btn-open-inventario" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                <button id="btn-open-inventario" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                     <i class="fas fa-plus mr-2"></i>Crear Producto
                 </button>
             </div>
             <div class="mb-6">
-                <form method="POST" class="bg-gray-50 p-4 rounded-md">
+                <form method="POST" class="bg-gray-700 p-4 rounded-md text-white">
                     {{ form.hidden_tag() }}
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         {% if categoria %}
                         {% else %}
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.categoria.label }}</label>
-                            {{ form.categoria(class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50") }}
+                            <label class="block text-sm font-medium text-white mb-1">{{ form.categoria.label }}</label>
+                            {{ form.categoria(class="w-full rounded-md bg-gray-600 border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50") }}
                         </div>
                         {% endif %}
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.estado.label }}</label>
-                            {{ form.estado(class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50") }}
+                            <label class="block text-sm font-medium text-white mb-1">{{ form.estado.label }}</label>
+                            {{ form.estado(class="w-full rounded-md bg-gray-600 border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50") }}
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.cliente.label }}</label>
-                            {{ form.cliente(class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50") }}
+                            <label class="block text-sm font-medium text-white mb-1">{{ form.cliente.label }}</label>
+                            {{ form.cliente(class="w-full rounded-md bg-gray-600 border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50") }}
                         </div>
                         <div class="flex items-end">
-                            {{ form.submit(class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline") }}
+                            {{ form.submit(class="bg-green-600 hover:bg-green-700  text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline") }}
                         </div>
                     </div>
                 </form>
             </div>
             <div class="overflow-x-auto">
-                <table class="min-w-full bg-white border border-gray-200">
+                <table class="min-w-full bg-white rounded-lg">
                     <thead>
-                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                        <tr class="bg-green-600 text-green-200 uppercase text-sm leading-normal">
                             <th class="py-3 px-6 text-left">Número</th>
                             <th class="py-3 px-6 text-left">Marca</th>
                             <th class="py-3 px-6 text-left">Modelo</th>
@@ -64,9 +64,9 @@
                             <th class="py-3 px-6 text-center">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="text-gray-600 text-sm font-light">
+                    <tbody class="text-white text-sm font-light">
                         {% for producto in inventarios %}
-                        <tr class="border-b border-gray-200 hover:bg-gray-100">
+                        <tr class="border-b bg-gray-400 border-green-200 hover:bg-green-500">
                             <td class="py-3 px-6 text-left">{{ producto.numero }}</td>
                             <td class="py-3 px-6 text-left">{{ producto.marca }}</td>
                             <td class="py-3 px-6 text-left">{{ producto.modelo }}</td>

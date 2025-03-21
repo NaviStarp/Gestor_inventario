@@ -7,36 +7,36 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
+<body class="bg-gray-900 min-h-screen flex flex-col">
     {% include 'header.html' %}
     <main class="container mx-auto px-4 py-6 flex-grow">
-        <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="bg-gray-800 rounded-lg shadow-md p-6">
              <div class="flex justify-between items-center mb-6">
 
-                <h1 class="text-2xl font-bold mb-6">Listado de clientes</h1>
+                <h1 class="text-2xl font-bold mb-6 text-blue-500">Listado de clientes</h1>
                 <button id="btn-open-cliente" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded shadow transition duration-200">
                     Nuevo cliente
                 </button>
             </div>   
             <div class="mb-6">
-                <form method="POST" class="bg-gray-50 p-4 rounded-md">
+                <form method="POST" class="bg-gray-700 p-4 rounded-md">
                     {{ form.hidden_tag() }}
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.prioridad.label }}</label>
-                            {{ form.prioridad(class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50") }}
+                            <label class="block text-sm  font-medium text-white mb-1">{{ form.prioridad.label }}</label>
+                            {{ form.prioridad(class="w-full bg-gray-500 text-white rounded-md border-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50") }}
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.email.label }}</label>
-                            {{ form.email(class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50", oninput="this.form.submit()") }}
+                            <label class="block text-sm font-medium text-white mb-1">{{ form.email.label }}</label>
+                            {{ form.email(class="w-full bg-gray-500 text-white rounded-md border-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50", oninput="this.form.submit()") }}
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.nombre.label }}</label>
-                            {{ form.nombre(class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50", oninput="this.form.submit()") }}
+                            <label class="block text-sm font-medium text-white mb-1">{{ form.nombre.label }}</label>
+                            {{ form.nombre(class="w-full bg-gray-500 text-white  rounded-md border-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50", oninput="this.form.submit()") }}
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.DNI.label }}</label>
-                            {{ form.DNI(class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50", oninput="this.form.submit()") }}
+                            <label class="block text-sm font-medium text-white mb-1">{{ form.DNI.label }}</label>
+                            {{ form.DNI(class="w-full bg-gray-500 text-white rounded-md border-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50", oninput="this.form.submit()") }}
                         </div>
                         <div class="flex items-end">
                             {{ form.submit(class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline") }}
@@ -45,21 +45,21 @@
                 </form>
             </div>
             <div class="overflow-x-auto">
-                <table class="min-w-full bg-white">
+                <table class="min-w-full bg-blue-500 text-white">
                     <thead>
-                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                            <th class="py-3 px-6 text-left">ID</th>
-                            <th class="py-3 px-6 text-left">Nombre</th>
-                            <th class="py-3 px-6 text-left">Email</th>
-                            <th class="py-3 px-6 text-left">DNI</th>
-                            <th class="py-3 px-6 text-left">Teléfono</th>
-                            <th class="py-3 px-6 text-left">Prioridad</th>
-                            <th class="py-3 px-6 text-center">Acciones</th>
+                        <tr class="bg-blue-700 text-blue-50 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left text-blue-200">ID</th>
+                            <th class="py-3 px-6 text-left text-blue-200">Nombre</th>
+                            <th class="py-3 px-6 text-left text-blue-200">Email</th>
+                            <th class="py-3 px-6 text-left text-blue-200">DNI</th>
+                            <th class="py-3 px-6 text-left text-blue-200">Teléfono</th>
+                            <th class="py-3 px-6 text-left text-blue-200">Prioridad</th>
+                            <th class="py-3 px-6 text-center text-blue-200">Acciones</th>
                         </tr>
                     </thead>
                     <tbody class="text-gray-600 text-sm font-light">
                         {% for cliente in clientes %}
-                        <tr class="border-b border-gray-200 hover:bg-gray-100">
+                        <tr class="border-b border-white bg-white hover:bg-blue-500 hover:text-white transition duration-150">
                             <td class="py-3 px-6 text-left whitespace-nowrap">{{ cliente.id }}</td>
                             <td class="py-3 px-6 text-left">{{ cliente.nombre }}</td>
                             <td class="py-3 px-6 text-left">{{ cliente.email }}</td>
@@ -80,8 +80,13 @@
                             </td>
                         </tr>
                         {% endfor %}
+                      
                     </tbody>
                 </table>
+                {% if clientes|length == 0 %}
+                <h3 class="text-center text-white mt-6">No se encontraron clientes</h3>
+            {% endif %}
+
             </div>
         </div>
         <div id="modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden flex items-center justify-center">
@@ -89,7 +94,7 @@
                <div id="modal-cliente" class="bg-white rounded-lg shadow-xl w-full max-w-3xl mx-4 hidden">
                 <div class="flex justify-between items-center p-6 border-b">
                     <h2 class="text-2xl font-semibold">Nuevo Cliente</h2>
-                    <button class="modal-close text-gray-500 hover:text-gray-700">
+                    <button class="modal-close text-gray-500 hover:text-white">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
@@ -99,27 +104,27 @@
                     <form method="POST" id="form-cliente">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label for="modal-nombre" class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                                <label for="modal-nombre" class="block text-sm font-medium text-white mb-1">Nombre</label>
                                 <input type="text" id="modal-nombre" name="nombre" required 
                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                             <div>
-                                <label for="modal-email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <label for="modal-email" class="block text-sm font-medium text-white mb-1">Email</label>
                                 <input type="email" id="modal-email" name="email" required 
                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                             <div>
-                                <label for="modal-dni" class="block text-sm font-medium text-gray-700 mb-1">DNI</label>
+                                <label for="modal-dni" class="block text-sm font-medium text-white mb-1">DNI</label>
                                 <input type="text" id="modal-dni" name="dni" required 
                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                             <div>
-                                <label for="modal-telefono" class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                                <label for="modal-telefono" class="block text-sm font-medium text-white mb-1">Teléfono</label>
                                 <input type="text" id="modal-telefono" name="telefono" required 
                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                             <div>
-                                <label for="modal-id_cliente" class="block text-sm font-medium text-gray-700 mb-1">Cliente Superior (jerárquico)</label>
+                                <label for="modal-id_cliente" class="block text-sm font-medium text-white mb-1">Cliente Superior (jerárquico)</label>
                                 <select id="modal-id_cliente" name="id_cliente" 
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     <option value="">-- Sin cliente superior --</option>
@@ -129,7 +134,7 @@
                                 </select>
                             </div>
                             <div>
-                                <label for="modal-prioridad" class="block text-sm font-medium text-gray-700 mb-1">Prioridad</label>
+                                <label for="modal-prioridad" class="block text-sm font-medium text-white mb-1">Prioridad</label>
                                 <select id="modal-prioridad" name="prioridad" required 
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     <option value="Alta">Alta</option>
@@ -139,7 +144,7 @@
                             </div>
                         </div>
                         <div class="mt-6 flex justify-end">
-                            <button type="button" class="modal-close px-4 py-2 bg-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-400 mr-2">
+                            <button type="button" class="modal-close px-4 py-2 bg-gray-300 text-white font-medium rounded-md hover:bg-gray-400 mr-2">
                                 Cancelar
                             </button>
                             <button type="submit" class="px-4 py-2 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600">

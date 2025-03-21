@@ -6,38 +6,38 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
+<body class="bg-gray-900 min-h-screen flex flex-col">
     {% include 'header.html' %}
     <main class="container mx-auto px-4 py-6 flex-grow">
 
-<div class="container mx-auto px-4 py-8">
+<div class="container mx-auto px-4 py-8 bg-gray-800">
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-800">Categorías</h1>
-        <button id="btn-open-categoria" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded shadow transition duration-200">
+        <h1 class="text-2xl font-bold text-orange-600">Categorías</h1>
+        <button id="btn-open-categoria" class="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded shadow transition duration-200">
             Nueva Categoría
         </button>
     </div>
 
     {% if categorias %}
-        <div class="bg-white shadow rounded-lg overflow-hidden">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+        <div class="bg-orange-400 shadow rounded-lg overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-300">
+                <thead class="bg-orange-500">
                     <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">ID</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Nombre</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Descripción</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Acciones</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class="bg-gray-300 divide-y divide-gray-200">
                     {% for categoria in categorias %}
-                    <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location.href='/categoria/{{ categoria.id }}'">                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ categoria.id }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ categoria.nombre }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-500">
+                    <tr class="hover:bg-orange-300 cursor-pointer text-black " onclick="window.location.href='/categoria/{{ categoria.id }}'">                        <td class="text-black px-6 py-4 whitespace-nowrap text-sm">{{ categoria.id }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-black">{{ categoria.nombre }}</td>
+                        <td class="px-6 py-4 text-sm text-black">
                             {% if categoria.descripcion %}
                                 {{ categoria.descripcion }}
                             {% else %}
-                                <span class="text-gray-400 italic">Sin descripción</span>
+                                <span class="text-black italic">Sin descripción</span>
                             {% endif %}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
