@@ -151,16 +151,16 @@ def eliminar_cliente(id):
 @app.route('/categorias/')
 def ver_categorias():
     categorias = Categoria.query.all()
-    productos = Inventario.query.all()
-    for producto in productos:
-        categoria = Categoria.query.get(producto.categoria_id)
-        categoria.productos += 1
-    db.session.commit()
     return render_template('categorias.html', categorias=categorias)
 
 @app.route('/inventario/eliminar/<int:id>', methods=['POST'])
 def eliminar_producto(id):
     inventario = Inventario.query.get_or_404(id)
+    categoria = Categoria.query.get(inventario.categoria_id)
+    categoria.productos -= 1
+    alquileres = Alquiler.query.filter_by(inventario_id=id).all()
+    for alquiler in alquileres:
+        db.session.delete(alquiler)
     db.session.delete(inventario)
     db.session.commit()
     return redirect(request.referrer)
@@ -194,13 +194,6 @@ def ver_inventario():
     categorias = Categoria.query.all()
     clientes = Cliente.query.all()
     return render_template('inventario.html',clientes=clientes,categorias=categorias, inventarios=inventarios, form=form)
-
-@app.route('/inventario/eliminar/<int:id>', methods=['POST'])
-def eliminar_inventario(id):
-    inventario = Inventario.query.get_or_404(id)
-    db.session.delete(inventario)
-    db.session.commit()
-    return redirect(url_for('ver_inventario'))
 
 # Ruta para ver una categoría específica
 @app.route('/categoria/<int:id>', methods=['GET', 'POST'])
@@ -263,6 +256,8 @@ def crear_producto():
             observacion=request.form.get('observaciones'),  # Puede ser None
             cliente= cliente if cliente else None
         )
+        categoria = Categoria.query.get(nuevo_producto.categoria_id)
+        categoria.productos += 1
         db.session.add(nuevo_producto)
         db.session.commit()
         print("Producto guardado correctamente")
