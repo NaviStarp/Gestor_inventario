@@ -220,6 +220,7 @@ def ver_categoria(id):
     inventarios = query.all()
     
     return render_template('inventario.html', categoria=categoria, inventarios=inventarios, form=form,es_categoria=True)
+
 # Ruta para ver clientes
 @app.route('/clientes', methods=['GET', 'POST'])
 def ver_clientes():

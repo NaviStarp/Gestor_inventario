@@ -1,70 +1,111 @@
         // Funciones para manejar los modales
         function openModal(modalId) {
-            document.getElementById('modal-overlay').classList.remove('hidden');
-            document.getElementById(modalId).classList.remove('hidden');
+            try {
+                document.getElementById('modal-overlay').classList.remove('hidden');
+                document.getElementById(modalId).classList.remove('hidden');
+            } catch (error) {
+                console.error('Error al abrir el modal:', error);
+            }
         }
 
         function closeAllModals() {
-            document.getElementById('modal-overlay').classList.add('hidden');
-            
-            // Ocultar todos los modales
-            const modals = document.querySelectorAll('#modal-overlay > div');
-            modals.forEach(modal => {
-                modal.classList.add('hidden');
-            });
+            try {
+                document.getElementById('modal-overlay').classList.add('hidden');
+                
+                // Ocultar todos los modales
+                const modals = document.querySelectorAll('#modal-overlay > div');
+                modals.forEach(modal => {
+                    modal.classList.add('hidden');
+                });
+            } catch (error) {
+                console.error('Error al cerrar los modales:', error);
+            }
         }
 
         // Configurar botones para abrir modales
-        const btnOpenCliente = document.getElementById('btn-open-cliente');
-        if (btnOpenCliente) {
-            btnOpenCliente.addEventListener('click', function() {
-                openModal('modal-cliente');
+        const buttons = {
+            btnOpenCliente: document.getElementById('btn-open-cliente'),
+            btnOpenInventario: document.getElementById('btn-open-inventario'),
+            btnOpenAlquiler: document.getElementById('btn-open-alquiler'),
+            btnOpenCategoria: document.getElementById('btn-open-categoria')
+        };
+
+        if (buttons.btnOpenCliente) {
+            buttons.btnOpenCliente.addEventListener('click', function() {
+                try {
+                    openModal('modal-cliente');
+                } catch (error) {
+                    console.error('Error al abrir el modal de cliente:', error);
+                }
             });
         }
 
-        const btnOpenInventario = document.getElementById('btn-open-inventario');
-        if (btnOpenInventario) {
-            btnOpenInventario.addEventListener('click', function() {
-                openModal('modal-inventario');
+        if (buttons.btnOpenInventario) {
+            buttons.btnOpenInventario.addEventListener('click', function() {
+                try {
+                    openModal('modal-inventario');
+                } catch (error) {
+                    console.error('Error al abrir el modal de inventario:', error);
+                }
             });
         }
 
-        const btnOpenAlquiler = document.getElementById('btn-open-alquiler');
-        if (btnOpenAlquiler) {
-            console.log(btnOpenAlquiler);
-            btnOpenAlquiler.addEventListener('click', function() {
-                console.log('hola');
-                openModal('modal-alquiler');
+        if (buttons.btnOpenAlquiler) {
+            console.log(buttons.btnOpenAlquiler);
+            buttons.btnOpenAlquiler.addEventListener('click', function() {
+                try {
+                    console.log('hola');
+                    openModal('modal-alquiler');
+                } catch (error) {
+                    console.error('Error al abrir el modal de alquiler:', error);
+                }
             });
         }
 
-        const btnOpenCategoria = document.getElementById('btn-open-categoria');
-        if (btnOpenCategoria) {
-            btnOpenCategoria.addEventListener('click', function() {
-                openModal('modal-categoria');
+        if (buttons.btnOpenCategoria) {
+            buttons.btnOpenCategoria.addEventListener('click', function() {
+                try {
+                    openModal('modal-categoria');
+                } catch (error) {
+                    console.error('Error al abrir el modal de categoría:', error);
+                }
             });
         }
 
         // Configurar botones para cerrar modales
         const closeButtons = document.querySelectorAll('.modal-close');
         closeButtons.forEach(button => {
-            button.addEventListener('click', closeAllModals);
+            button.addEventListener('click', function() {
+                try {
+                    closeAllModals();
+                } catch (error) {
+                    console.error('Error al cerrar el modal:', error);
+                }
+            });
         });
 
         // Cerrar modales al hacer clic fuera de ellos
         document.getElementById('modal-overlay').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeAllModals();
+            try {
+                if (e.target === this) {
+                    closeAllModals();
+                }
+            } catch (error) {
+                console.error('Error al cerrar los modales al hacer clic fuera:', error);
             }
         });
 
         // Función para editar categoría
         function editarCategoria(id, nombre, descripcion) {
-            document.getElementById('editar_categoria_id').value = id;
-            document.getElementById('editar_nombre_categoria').value = nombre;
-            document.getElementById('editar_descripcion').value = descripcion;
-            
-            openModal('modal-editar-categoria');
+            try {
+                document.getElementById('editar_categoria_id').value = id;
+                document.getElementById('editar_nombre_categoria').value = nombre;
+                document.getElementById('editar_descripcion').value = descripcion;
+                
+                openModal('modal-editar-categoria');
+            } catch (error) {
+                console.error('Error al editar la categoría:', error);
+            }
         }
 
         // Función para confirmar eliminación

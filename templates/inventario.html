@@ -80,7 +80,7 @@
                                 <button onclick="cambiarEstado('{{ producto.id }}', '{{ producto.numero }}', '{{ producto.marca }}', '{{ producto.modelo }}', 
                                     '{{ producto.estado }}', '{{ producto.ubicacion }}', '{{ producto.observacion }}', '{{ producto.numero_serie_f }}', 
                                     '{{ producto.numero_serie_i }}', '{{ producto.categoria.id }}', '{{ producto.cliente.id if producto.cliente else '' }}', 
-                                    '{{ producto.precio }}')" class="px-2 py-1 rounded-full {% if producto.estado == 'Disponible' %}bg-green-500 text-white{% elif producto.estado == 'En uso' %}bg-blue-500 text-white{% elif producto.estado == 'Reparación' %}bg-yellow-500 text-white{% elif producto.estado == 'Baja' %}bg-red-500 text-white{% endif %}">
+                                    '{{ producto.precio }}')" class="px-2 py-1 rounded-full min-w-24 {% if producto.estado == 'Disponible' %}bg-green-500 text-white{% elif producto.estado == 'En uso' %}bg-blue-500 text-white{% elif producto.estado == 'Reparación' %}bg-yellow-500 text-white{% elif producto.estado == 'Baja' %}bg-red-500 text-white{% endif %}">
                                     {{ producto.estado }}
                                 </button>
                             </td>
@@ -129,36 +129,9 @@
     </main>
     {% include 'modales.html' %}
     {% include 'footer.html' %}
+    <script src="{{ url_for('static', filename='js/modales.js') }}"></script>
     <script>
-        function openModal(id) {
-            document.getElementById('modal-overlay').classList.remove('hidden');
-            document.getElementById(id).classList.remove('hidden');
-        }
-
-        document.getElementById('btn-open-inventario').addEventListener('click', function() {
-            openModal('modal-inventario');
-        });
-        const closeButtons = document.querySelectorAll('.modal-close');
-        closeButtons.forEach(button => {
-            button.addEventListener('click', closeAllModals);
-        });
-
-        // Cerrar modales al hacer clic fuera de ellos
-        document.getElementById('modal-overlay').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeAllModals();
-            }
-        });
-        function closeAllModals() {
-            document.getElementById('modal-overlay').classList.add('hidden');
-            
-            // Ocultar todos los modales
-            const modals = document.querySelectorAll('#modal-overlay > div');
-            modals.forEach(modal => {
-                modal.classList.add('hidden');
-            });
-        }
-        function editar_inventario(id, numero, marca, modelo, estado, ubicacion, observacion, numero_serie_f, numero_serie_i, categoria_id, cliente, precio) {
+    function editar_inventario(id, numero, marca, modelo, estado, ubicacion, observacion, numero_serie_f, numero_serie_i, categoria_id, cliente, precio) {
             openModal('modal-inventario');
             document.getElementById('numero').value = numero;
             document.getElementById('marca').value = marca;
