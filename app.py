@@ -24,8 +24,9 @@ class Inventario(db.Model):
     observacion = db.Column(db.String(255), nullable=True)  # Observaciones opcionales
     numero_serie_f = db.Column(db.String(100), nullable=False)  # Número de serie del fabricante
     numero_serie_i = db.Column(db.String(100), nullable=False)  # Número de serie interno
+    categoria_id = db.Column(db.Integer, db.ForeignKey('categoria.id'), nullable=False)  # Categoría del producto
+    categoria = db.relationship('Categoria', backref=db.backref('inventarios', lazy=True)) # Relación con la tabla Categoría
     cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=True)  # Cliente asociado
-    cliente = db.relationship('Cliente', backref=db.backref('inventarios', lazy=True))
     precio = db.Column(db.Integer, nullable=False)  # Precio del producto
 
     def __repr__(self):
@@ -240,19 +241,27 @@ def ver_clientes():
 # Ruta para añadir producto al inventario
 @app.route('/inventario/nuevo', methods=['POST'])
 def crear_producto():
-    nuevo_producto = Inventario(
-        cliente_id=request.form['cliente_id'],
-        nombre=request.form['nombre'],
-        estado=request.form['estado'],
-        precio=request.form['precio'],
-        categoria_id=request.form['categoria_id'],
-        numero_serie_f=request.form['numero_serie_f'],
-        numero_serie_i=request.form['numero_serie_i'],
-        observaciones=request.form.get('observaciones')
-    )
-    db.session.add(nuevo_producto)
-    db.session.commit()
-    return redirect(request.referrer)
+    try:
+        print("Datos recibidos:", request.form)
+        nuevo_producto = Inventario(
+            numero=request.form['numero'],
+            marca=request.form['marca'],
+            modelo=request.form['modelo'],
+            estado=request.form['estado'],
+            precio=request.form['precio'],
+            ubicacion=request.form['ubicacion'],
+            numero_serie_f=request.form['numero_serie_f'],
+            numero_serie_i=request.form['numero_serie_i'],
+            observacion=request.form.get('observaciones'),  # Puede ser None
+            cliente_id=request.form.get('cliente_id')  # Puede ser None
+        )
+        db.session.add(nuevo_producto)
+        db.session.commit()
+        print("Producto guardado correctamente")
+        return redirect(url_for('ver_inventario'))
+    except Exception as e:
+        print(f"Error al guardar el producto: {e}")
+        return "Error al guardar el producto", 400
 
 # Ruta para añadir cliente
 @app.route('/clientes/nuevo', methods=['POST'])
