@@ -9,25 +9,24 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Necesario para usar sesiones
 
 # Base de datos 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///inventario.db'  # Cambia esto según tu base de datos
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///inventario.db'  
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # Se crea la tabla Inventario
-class Inventario(db.Model):
+class Inventario(db.Model): 
     id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(100), nullable=True)
-    cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=True)
+    numero = db.Column(db.String(100), nullable=False)  # Número del inventario
+    marca = db.Column(db.String(100), nullable=False)  # Marca del producto
+    modelo = db.Column(db.String(100), nullable=False)  # Modelo del producto
+    estado = db.Column(db.String(100), nullable=False)  # Estado del producto
+    ubicacion = db.Column(db.String(100), nullable=False)  # Ubicación del producto
+    observacion = db.Column(db.String(255), nullable=True)  # Observaciones opcionales
+    numero_serie_f = db.Column(db.String(100), nullable=False)  # Número de serie del fabricante
+    numero_serie_i = db.Column(db.String(100), nullable=False)  # Número de serie interno
+    cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=True)  # Cliente asociado
     cliente = db.relationship('Cliente', backref=db.backref('inventarios', lazy=True))
-    estado = db.Column(db.String(100), nullable=False)
-    
-    categoria_id = db.Column(db.Integer, db.ForeignKey('categoria.id', ondelete='CASCADE'), nullable=False)  # <- Asegurar la clave foránea
-    categoria = db.relationship('Categoria', backref=db.backref('inventarios', lazy=True))  # <- Definir la relación correctamente
-    
-    precio = db.Column(db.Integer, nullable=False) 
-    numero_serie_f = db.Column(db.String(100), nullable=False)  # Numero de serie del fabricante
-    numero_serie_i = db.Column(db.String(100), nullable=False)  # Numero de serie interno
-    observaciones = db.Column(db.String(255), nullable=True)  # Observaciones opcionales
+    precio = db.Column(db.Integer, nullable=False)  # Precio del producto
 
     def __repr__(self):
         return f'<Inventario {self.id}>'
@@ -381,6 +380,6 @@ def utility_processor():
 
 if __name__ == '__main__':
     with app.app_context():
-       # db.drop_all() # CUIDADO esto borra toda la base de datos
+        #db.drop_all() # CUIDADO esto borra toda la base de datos
         db.create_all()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
