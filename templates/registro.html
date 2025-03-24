@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 h-screen flex items-center justify-center">
+    <div class="bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-md">
+        <!-- Logo centrado -->
+        <div class="flex justify-center mb-8">
+            <img src="{{url_for('static',filename='img/logo.ico')}}" alt="Logo de la empresa" class="h-20">
+        </div>
+        
+        <h2 class="text-2xl text-white font-bold text-center text-gray-800 mb-6">Registro</h2>
+        
+        <!-- Formulario con Jinja -->
+        <form method="POST" action="{{ url_for('registro') }}">
+            
+            <div class="mb-4">
+                <label for="nombre" class="block text-white text-sm font-bold mb-2">Usuario</label>
+                <input type="text" id="nombre" name="nombre" 
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                       placeholder="Ingresa tu nombre de usuario" required>
+            </div>
+            
+            
+            <div class="mb-6">
+                <label for="contraseña" class="block text-white text-sm font-bold mb-2">Contraseña</label>
+                <input type="password" id="contraseña" name="contraseña" 
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                       placeholder="Ingresa tu contraseña" required>
+            </div>
+            
+            <!-- Mensaje de error (condicional con Jinja) -->
+            {% if error %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <span class="block sm:inline">{{ error }}</span>
+            </div>
+            {% endif %}
+            
+            <div class="flex items-center justify-between">
+                <button type="submit"
+                        class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
+                    Registrarse
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

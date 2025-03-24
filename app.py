@@ -2,12 +2,15 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from flask import jsonify
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf import FlaskForm
 from wtforms import StringField, DateField, SelectField, IntegerField, SubmitField
 from wtforms.validators import DataRequired, NumberRange
 import csv
 import os
 from flask import flash
+from functools import wraps
+from flask import session
 # Se crea la instancia de la aplicación Flask
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Necesario para usar sesiones
@@ -81,13 +84,7 @@ class Usuario(db.Model):
     admin = db.Column(db.Boolean, nullable=False, default=False)
     def repr(self):
         return super().repr()
-    # Crear un usuario administrador por defecto
-    @app.before_first_request
-    def crear_usuario_admin():
-        if not Usuario.query.filter_by(nombre="Dummy").first():
-            admin = Usuario(nombre="Dummy", contraseña="123456", tipo="true")
-            db.session.add(admin)
-            db.session.commit()
+    
 # Formularios
 class FilterForm(FlaskForm):
     estado = SelectField('Estado', choices=[
@@ -134,17 +131,55 @@ class filtroCliente(FlaskForm):
     DNI = StringField('Dni')
     submit = SubmitField('Filtrar')
 
-    
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            return redirect(url_for('inicio_sesion'))
+        return f(*args, **kwargs)
+    return decorated_function
 # Ruta de inicio
 @app.route('/')
+@login_required
 def inicio():
     categorias = Categoria.query.all()
     clientes = Cliente.query.all()
     inventarios = Inventario.query.all()
     alquileres = Alquiler.query.all()
-    return render_template('login.html', alquileres=alquileres, categorias=categorias, clientes=clientes, inventarios=inventarios)
+    return render_template('index.html', alquileres=alquileres, categorias=categorias, clientes=clientes, inventarios=inventarios)
+
+@app.route('/registro', methods=['GET','POST'])
+def registro():
+    if request.method == 'POST':
+        nuevo_usuario = Usuario(
+            nombre=request.form['nombre'],
+            contraseña=generate_password_hash(request.form['contraseña']),
+            admin=False
+        )
+        db.session.add(nuevo_usuario)
+        db.session.commit()
+        return redirect('/')
+    else:
+        return render_template('registro.html')
+
+@app.route('/inicio-sesion', methods=['GET','POST'])
+def inicio_sesion():
+    if request.method == 'POST':
+        usuario = Usuario.query.filter_by(nombre=request.form['nombre']).first()
+        if usuario and usuario.contraseña and check_password_hash(usuario.contraseña, request.form['contraseña']):
+            session['user_id'] = usuario.id
+            session['admin'] = usuario.admin
+            session['username'] = usuario.nombre
+            return redirect('/')
+        else:
+            return render_template('iniciar sesion.html')
+    else:
+        return render_template('iniciar sesion.html')
+    
+
 
 @app.route('/categoria/editar', methods=['POST'])
+@login_required
 def editar_categoria():
     categoria = Categoria.query.get_or_404(request.form['id'])
     categoria.nombre = request.form['nombre']
@@ -153,6 +188,7 @@ def editar_categoria():
     return redirect(request.referrer)
 
 @app.route('/categoria/eliminar/<int:id>', methods=['GET','POST'])
+@login_required
 def eliminar_categoria(id):
     Inventario.query.filter_by(categoria_id=id).delete()
     categoria = Categoria.query.get_or_404(id)
@@ -161,17 +197,20 @@ def eliminar_categoria(id):
     return redirect(request.referrer)
 
 @app.route('/cliente/eliminar/<int:id>', methods=['POST'])
+@login_required
 def eliminar_cliente(id):
     cliente = Cliente.query.get_or_404(id)
     db.session.delete(cliente)
     db.session.commit()
     return redirect(request.referrer)
 @app.route('/categorias/')
+@login_required
 def ver_categorias():
     categorias = Categoria.query.all()
     return render_template('categorias.html', categorias=categorias)
 
 @app.route('/inventario/eliminar/<int:id>', methods=['POST'])
+@login_required
 def eliminar_producto(id):
     inventario = Inventario.query.get_or_404(id)
     categoria = Categoria.query.get(inventario.categoria_id)
@@ -185,6 +224,7 @@ def eliminar_producto(id):
     return redirect(request.referrer)
 
 @app.route('/alquiler/eliminar/<int:id>', methods=['POST'])
+@login_required
 def eliminar_alquiler(id):
     alquiler = Alquiler.query.get_or_404(id)
     db.session.delete(alquiler)
@@ -193,6 +233,7 @@ def eliminar_alquiler(id):
 
 # Ruta para ver inventario
 @app.route('/inventario', methods=['GET', 'POST'])
+@login_required
 def ver_inventario():
     form = filtroInventario()
     
@@ -216,6 +257,7 @@ def ver_inventario():
 
 # Ruta para ver una categoría específica
 @app.route('/categoria/<int:id>', methods=['GET', 'POST'])
+@login_required
 def ver_categoria(id):
     categoria = Categoria.query.get_or_404(id)
     form = filtroInventario()
@@ -241,6 +283,7 @@ def ver_categoria(id):
 
 # Ruta para ver clientes
 @app.route('/clientes', methods=['GET', 'POST'])
+@login_required
 def ver_clientes():
     clientes = Cliente.query.all()
     form = filtroCliente()
@@ -258,6 +301,7 @@ def ver_clientes():
     return render_template('clientes.html', clientes=clientes,form=form)
 
 @app.route('/inventario/importar/csv', methods=['POST'])
+@login_required
 def importar_inventario():
     try:
         # Verificar si el archivo está en la solicitud
@@ -340,11 +384,13 @@ def importar_inventario():
     
     
 @app.route('/inventario/importar', methods=['GET'])
+@login_required
 def importar_vista():
     return render_template('importar.html')
 
 # Ruta para añadir producto al inventario
 @app.route('/inventario/nuevo', methods=['POST'])
+@login_required
 def crear_producto():
     try:
         print("Datos recibidos:", request.form)
@@ -374,6 +420,7 @@ def crear_producto():
 
 # Ruta para añadir cliente
 @app.route('/clientes/nuevo', methods=['POST'])
+@login_required
 def crear_cliente():
     if Cliente.query.filter_by(email=request.form['email']).first() or Cliente.query.filter_by(nombre=request.form['nombre']).first():
         return "El cliente ya existe.", 400
@@ -392,6 +439,7 @@ def crear_cliente():
 
 # Ruta para añadir categoria
 @app.route('/categoria/nuevo', methods=['POST'])
+@login_required
 def crear_categoria():
     nueva_categoria = Categoria(
         nombre=request.form['nombre'],
@@ -402,6 +450,7 @@ def crear_categoria():
     return redirect(request.referrer)
 # Ruta para editar inventario
 @app.route('/inventario/editar/<int:id>', methods=['GET', 'POST'])
+@login_required
 def editar_inventario(id):
     inventario = Inventario.query.get_or_404(id)
     if request.method == 'POST':
@@ -423,6 +472,7 @@ def editar_inventario(id):
 
 # Ruta para editar cliente
 @app.route('/clientes/editar/<int:id>', methods=['GET', 'POST'])
+@login_required
 def editar_cliente(id):
     cliente = Cliente.query.get_or_404(id)
     if request.method == 'POST':
@@ -437,6 +487,7 @@ def editar_cliente(id):
 
 # Ruta para crear alquiler
 @app.route('/alquiler/nuevo', methods=['POST'])
+@login_required
 def crear_alquiler():
     nuevo_alquiler = Alquiler(
         inventario_id=request.form['inventario_id'],
@@ -452,6 +503,7 @@ def crear_alquiler():
 
 # Ruta para ver alquileres
 @app.route('/alquileres', methods=['GET', 'POST'])
+@login_required
 def ver_alquileres():
     form = FilterForm()
     
@@ -471,10 +523,12 @@ def ver_alquileres():
     return render_template('alquileres.html', alquileres=alquileres, form=form,clientes=clientes, inventarios=inventarios)
 
 @app.route('/alquileres/<int:id>')
+@login_required
 def ver_alquiler(id):
     alquiler = Alquiler.query.get_or_404(id)
     return render_template('detalles_alquiler.html', alquiler=alquiler)
 @app.template_filter('date_format')
+@login_required
 def date_format(value):
     if value:
         return value.strftime('%d/%m/%Y')
@@ -482,6 +536,7 @@ def date_format(value):
 
 # Ruta para editar alquiler
 @app.route('/alquiler/editar/<int:id>', methods=['GET', 'POST'])
+@login_required
 def editar_alquiler(id):
     alquiler = Alquiler.query.get_or_404(id)
     if request.method == 'POST':
