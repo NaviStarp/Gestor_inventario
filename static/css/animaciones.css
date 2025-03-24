@@ -1,0 +1,14 @@
+.animate-modal {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+.modal-visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.modal-visible::backdrop {
+    background-color: rgba(0, 0, 0, 0.5); /* Ajusta el color y la opacidad del fondo según tus necesidades */
+}
