@@ -49,6 +49,17 @@ class Categoria(db.Model):
     def __repr__(self):
         return f'<Categoria {self.id}>'
 
+class Movimiento(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    usuario = db.relationship('Usuario', backref=db.backref('movimientos', lazy=True))
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
+    fecha = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    acción = db.Column(db.String(100), nullable=False)
+    departamento = db.Column(db.String(100), nullable=False)
+
+    def __repr__(self):
+        return f'<Movimiento {self.id}>'
+
 # Se crea la tabla Cliente
 class Cliente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -217,6 +228,8 @@ def editar_categoria():
     categoria = Categoria.query.get_or_404(request.form['id'])
     categoria.nombre = request.form['nombre']
     categoria.descripcion = request.form.get('descripcion')
+    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Editó la categoría {categoria.nombre}",departamento="Categorías")
+    db.session.add(movimiento)
     db.session.commit()
     return redirect(request.referrer)
 
@@ -225,6 +238,8 @@ def editar_categoria():
 def eliminar_categoria(id):
     Inventario.query.filter_by(categoria_id=id).delete()
     categoria = Categoria.query.get_or_404(id)
+    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Eliminó la categoría {categoria.nombre}",departamento="Categorías")
+    db.session.add(movimiento)
     db.session.delete(categoria)
     db.session.commit()
     return redirect(request.referrer)
@@ -234,6 +249,8 @@ def eliminar_categoria(id):
 def eliminar_cliente(id):
     cliente = Cliente.query.get_or_404(id)
     db.session.delete(cliente)
+    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Eliminó el cliente {cliente.nombre}",departamento="Clientes")
+    db.session.add(movimiento)
     db.session.commit()
     return redirect(request.referrer)
 @app.route('/categorias/')
@@ -256,6 +273,8 @@ def eliminar_producto(id):
     for alquiler in alquileres:
         db.session.delete(alquiler)
     db.session.delete(inventario)
+    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Eliminó el producto {inventario.numero}",departamento="Inventario")
+    db.session.add(movimiento)
     db.session.commit()
     return redirect(request.referrer)
 
@@ -264,6 +283,8 @@ def eliminar_producto(id):
 def eliminar_alquiler(id):
     alquiler = Alquiler.query.get_or_404(id)
     db.session.delete(alquiler)
+    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Eliminó el alquiler {alquiler.id}",departamento="Alquileres")
+    db.session.add(movimiento)
     db.session.commit()
     return redirect(request.referrer)
 
@@ -401,6 +422,8 @@ def importar_inventario():
                 
                 # Commit una sola vez después de procesar todas las filas
                 if filas_procesadas > 0:
+                    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Importó {filas_procesadas} productos",departamento="Inventario")
+                    db.session.add(movimiento)
                     db.session.commit()
                     flash(f'Se importaron {filas_procesadas} productos correctamente', 'success')
                 else:
@@ -446,6 +469,8 @@ def crear_producto():
         )
         categoria = Categoria.query.get(nuevo_producto.categoria_id)
         categoria.productos += 1
+        movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Añadió el producto {nuevo_producto.numero}",departamento="Inventario")
+        db.session.add(movimiento)
         db.session.add(nuevo_producto)
         db.session.commit()
         print("Producto guardado correctamente")
@@ -469,6 +494,8 @@ def crear_cliente():
         id_cliente=request.form.get('id_cliente'),  # Cambiado a get para manejar None
         prioridad=request.form['prioridad']
     )
+    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Añadió el cliente {nuevo_cliente.nombre}",departamento="Clientes")
+    db.session.add(movimiento)
     db.session.add(nuevo_cliente)
     db.session.commit()
     return redirect(request.referrer)
@@ -482,6 +509,8 @@ def crear_categoria():
         descripcion=request.form.get('descripcion')
     )
     db.session.add(nueva_categoria)
+    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Añadió la categoría {nueva_categoria.nombre}",departamento="Categorías")
+    db.session.add(movimiento)
     db.session.commit()
     return redirect(request.referrer)
 # Ruta para editar inventario
@@ -501,6 +530,8 @@ def editar_inventario(id):
         inventario.cliente_id = request.form.get('cliente_id')  # Ensure cliente_id is set
         inventario.observacion = request.form.get('observacion')
         inventario.categoria_id = request.form['categoria_id']  # Ensure categoria_id is set
+        movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Editó el producto {inventario.numero}",departamento="Inventario")
+        db.session.add(movimiento)
         db.session.commit()
         return redirect(url_for('ver_inventario'))
     categorias = Categoria.query.all()
@@ -517,6 +548,8 @@ def editar_cliente(id):
         cliente.dni = request.form['dni']
         cliente.telefono = request.form['telefono']
         cliente.prioridad = request.form['prioridad']
+        movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Editó el cliente {cliente.nombre}",departamento="Clientes")
+        db.session.add(movimiento)
         db.session.commit()
         return redirect(url_for('ver_clientes'))
     return render_template('crear_cliente.html', cliente=cliente)
@@ -534,6 +567,8 @@ def crear_alquiler():
         precio=request.form['precio']
     )
     db.session.add(nuevo_alquiler)
+    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Añadió el alquiler {nuevo_alquiler.id}",departamento="Alquileres")
+    db.session.add(movimiento)
     db.session.commit()
     return redirect(request.referrer)
 
@@ -580,6 +615,8 @@ def editar_alquiler(id):
         alquiler.fecha_recojida = datetime.strptime(request.form['fecha_recojida'], '%Y-%m-%d')
         alquiler.estado = request.form['Estado']  # Nota: Mantuve "Estado" para coincidir con el nombre del campo en el formulario
         alquiler.precio = request.form['precio']
+        movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Editó el alquiler {alquiler.id}",departamento="Alquileres")
+        db.session.add(movimiento)
         db.session.commit()
         return redirect(url_for('ver_alquileres'))
     inventarios = Inventario.query.all()
