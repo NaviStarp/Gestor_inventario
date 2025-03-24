@@ -74,6 +74,20 @@ class Alquiler(db.Model):
 
     def __repr__(self):
         return f'<Alquiler {self.id}>'
+class Usuario(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    contraseña = db.Column(db.String(100), nullable=False)
+    admin = db.Column(db.Boolean, nullable=False, default=False)
+    def repr(self):
+        return super().repr()
+    # Crear un usuario administrador por defecto
+    @app.before_first_request
+    def crear_usuario_admin():
+        if not Usuario.query.filter_by(nombre="Dummy").first():
+            admin = Usuario(nombre="Dummy", contraseña="123456", tipo="true")
+            db.session.add(admin)
+            db.session.commit()
 # Formularios
 class FilterForm(FlaskForm):
     estado = SelectField('Estado', choices=[
@@ -128,7 +142,7 @@ def inicio():
     clientes = Cliente.query.all()
     inventarios = Inventario.query.all()
     alquileres = Alquiler.query.all()
-    return render_template('index.html', alquileres=alquileres, categorias=categorias, clientes=clientes, inventarios=inventarios)
+    return render_template('login.html', alquileres=alquileres, categorias=categorias, clientes=clientes, inventarios=inventarios)
 
 @app.route('/categoria/editar', methods=['POST'])
 def editar_categoria():
@@ -155,8 +169,6 @@ def eliminar_cliente(id):
 @app.route('/categorias/')
 def ver_categorias():
     categorias = Categoria.query.all()
-    for categoria in categorias:
-        categoria.productos = Inventario.query.filter_by(categoria_id=categoria.id).count()
     return render_template('categorias.html', categorias=categorias)
 
 @app.route('/inventario/eliminar/<int:id>', methods=['POST'])
@@ -198,7 +210,6 @@ def ver_inventario():
     
     # Ejecutar la consulta final
     inventarios = query.all()
-    inventarios.sort(key=lambda x: (x.marca, x.numero))
     categorias = Categoria.query.all()
     clientes = Cliente.query.all()
     return render_template('inventario.html',clientes=clientes,categorias=categorias, inventarios=inventarios, form=form)
@@ -225,7 +236,6 @@ def ver_categoria(id):
     
     # Ejecutar la consulta final
     inventarios = query.all()
-    inventarios.sort(key=lambda x: (x.marca, x.numero))
     
     return render_template('inventario.html', categoria=categoria, inventarios=inventarios, form=form,es_categoria=True)
 
