@@ -5,6 +5,9 @@ from flask import jsonify
 from flask_wtf import FlaskForm
 from wtforms import StringField, DateField, SelectField, IntegerField, SubmitField
 from wtforms.validators import DataRequired, NumberRange
+import csv
+import os
+from flask import flash
 # Se crea la instancia de la aplicación Flask
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Necesario para usar sesiones
@@ -158,7 +161,8 @@ def ver_categorias():
 def eliminar_producto(id):
     inventario = Inventario.query.get_or_404(id)
     categoria = Categoria.query.get(inventario.categoria_id)
-    categoria.productos -= 1
+    if inventario.categoria:
+        categoria.productos -= 1
     alquileres = Alquiler.query.filter_by(inventario_id=id).all()
     for alquiler in alquileres:
         db.session.delete(alquiler)
@@ -238,6 +242,92 @@ def ver_clientes():
             query = query.filter(Cliente.dni == form.DNI.data)
     clientes = query.all()
     return render_template('clientes.html', clientes=clientes,form=form)
+
+@app.route('/inventario/importar/csv', methods=['POST'])
+def importar_inventario():
+    try:
+        # Verificar si el archivo está en la solicitud
+        if 'file' not in request.files:
+            flash('No se seleccionó ningún archivo', 'error')
+            return redirect(request.referrer)
+            
+        archivo = request.files['file']
+        
+        # Verificar si el archivo tiene nombre y extensión válida
+        if archivo.filename == '':
+            flash('Nombre de archivo vacío', 'error')
+            return redirect(request.referrer)
+            
+        if not archivo.filename.endswith('.csv'):
+            flash('El archivo debe tener extensión .csv', 'error')
+            return redirect(request.referrer)
+            
+        # Guardar archivo temporalmente
+        if not os.path.exists('temp'):
+            os.makedirs('temp')
+            
+        archivoBytes = f"temp/{archivo.filename}"
+        archivo.save(archivoBytes)
+        
+        filas_procesadas = 0
+        
+        try:
+            with open(archivoBytes, newline='', encoding='utf-8') as csvfile:
+                reader = csv.reader(csvfile)
+                next(reader)  # Omitir la primera fila (encabezados)                
+                for i, row in enumerate(reader, start=1):
+                    # Evitar procesar filas vacías
+                    if not any(row):
+                        continue
+                
+                    try:
+                        nuevo_producto = Inventario(
+                            categoria_id=row[0] if row[0] else 1,
+                            numero=row[1] if row[1] else None,
+                            marca=row[2] if row[2] else None,
+                            modelo=row[3] if row[3] else None,
+                            estado=row[4] if row[4] else None,
+                            precio=row[5] if row[5] else None,
+                            ubicacion=row[6] if row[6] else None,
+                            numero_serie_f=row[7] if row[7] else None,
+                            numero_serie_i=row[8] if row[8] else None,
+                            observacion=row[9] if row[9] else None,
+                            cliente=None
+                        )
+                        if nuevo_producto.categoria_id is not None:
+                            categoria = Categoria.query.get(nuevo_producto.categoria_id)
+                            if categoria:
+                                categoria.productos += 1
+                        db.session.add(nuevo_producto)
+                        filas_procesadas += 1
+                    except Exception as e:
+                        # Manejar errores específicos de fila
+                        print(f"Error en la fila {i}: {e}")
+                        continue
+                
+                # Commit una sola vez después de procesar todas las filas
+                if filas_procesadas > 0:
+                    db.session.commit()
+                    flash(f'Se importaron {filas_procesadas} productos correctamente', 'success')
+                else:
+                    flash('No se importaron productos. Verifique el formato del archivo.', 'warning')
+        finally:
+            # Limpiar el archivo temporal
+            if os.path.exists(archivoBytes):
+                os.remove(archivoBytes)
+                
+        return redirect('/inventario')
+        
+    except Exception as e:
+        db.session.rollback()  # Revertir cambios en caso de error
+        print(f"Error al importar el archivo: {e}")
+        flash(f'Error al importar: {str(e)}', 'error')
+        return redirect(request.referrer)
+    
+    
+@app.route('/inventario/importar', methods=['GET'])
+def importar_vista():
+    return render_template('importar.html')
 
 # Ruta para añadir producto al inventario
 @app.route('/inventario/nuevo', methods=['POST'])
@@ -398,6 +488,6 @@ def utility_processor():
 
 if __name__ == '__main__':
     with app.app_context():
-       # db.drop_all() # CUIDADO esto borra toda la base de datos
+        db.drop_all() # CUIDADO esto borra toda la base de datos
         db.create_all()
     app.run(host='0.0.0.0', port=5000, debug=True)

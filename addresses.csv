@@ -1,0 +1,6 @@
+categoria_id,numero,marca,modelo,estado,precio,ubicacion,numero_serie_f,numero_serie_i,observacion,cliente_id
+1,1001,Fender,Stratocaster,Disponible,1200.00,Almacen A,1234567890,0987654321,Sin observaciones,0
+1,1002,Gibson,Les Paul,Baja,1500.00,Almacen B,2345678901,1987654321,Leve rayón en cuerpo,0
+1,1003,Yamaha,Stage Custom,En uso,800.00,Almacen C,3456789012,2987654321,Sin observaciones,0
+1,1004,Shure,SM58,Reparación,100.00,Almacen D,4567890123,3987654321,Desgaste en rejilla,0
+1,1005,Roland,TD-17,Disponible,900.00,Almacen E,5678901234,4987654321,Sin observaciones,0
