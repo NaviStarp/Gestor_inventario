@@ -64,13 +64,14 @@
                         <tr class="bg-green-600 text-green-200 uppercase text-sm leading-normal">
                             <th class="py-3 px-6 text-left">Número</th>
                             <th class="py-3 px-6 text-left">Marca</th>
+                            <th class="py-3 px-6 text-left">Categoría</th>
                             <th class="py-3 px-6 text-left">Modelo</th>
                             <th class="py-3 px-6 text-left">Estado</th>
                             <th class="py-3 px-6 text-left">Ubicación</th>
                             <th class="py-3 px-6 text-left">Observación</th>
                             <th class="py-3 px-6 text-left">N° Serie Fabricante</th>
                             <th class="py-3 px-6 text-left">N° Serie Interno</th>
-                            <th class="py-3 px-6 text-left">Cliente</th>
+                            <!-- <th class="py-3 px-6 text-left">Cliente</th> -->
                             <th class="py-3 px-6 text-left">Precio</th>
                             <th class="py-3 px-6 text-center">Acciones</th>
                         </tr>
@@ -80,6 +81,7 @@
                         <tr class="border-b bg-gray-400 border-green-200 hover:bg-green-500">
                             <td class="py-3 px-6 text-left">{{ producto.numero }}</td>
                             <td class="py-3 px-6 text-left">{{ producto.marca }}</td>
+                            <td class="py-3 px-6 text-left">{{ producto.categoria.nombre }}</td>
                             <td class="py-3 px-6 text-left">{{ producto.modelo }}</td>
                             <td class="py-3 px-6 text-left">
                                 <button onclick="cambiarEstado('{{ producto.id }}', '{{ producto.numero }}', '{{ producto.marca }}', '{{ producto.modelo }}', 
@@ -93,13 +95,13 @@
                             <td class="py-3 px-6 text-left">{{ producto.observacion }}</td>
                             <td class="py-3 px-6 text-left">{{ producto.numero_serie_f }}</td>
                             <td class="py-3 px-6 text-left">{{ producto.numero_serie_i }}</td>
-                            <td class="py-3 px-6 text-left">
+                            <!-- <td class="py-3 px-6 text-left">
                                 {% if producto.cliente %}
                                     {{ producto.cliente.nombre }}
                                 {% else %}
                                     Sin Cliente
                                 {% endif %}
-                            </td>
+                            </td> -->
                             <td class="py-3 px-6 text-left">{{ producto.precio }}</td>
                             <td class="py-3 px-6 text-center">
                                 <div class="flex item-center justify-center">
