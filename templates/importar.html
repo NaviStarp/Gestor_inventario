@@ -19,7 +19,7 @@
     </div>
     
     <form action="{{ url_for('importar_inventario') }}" method="post" enctype="multipart/form-data" class="space-y-6">
-      <div class="flex items-center justify-center w-full">
+      <div id="fileContainer" class="flex items-center justify-center w-full">
         <label for="archivo" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-600 border-dashed rounded-lg cursor-pointer bg-gray-700 hover:bg-gray-600 transition-all duration-300 group">
           <div class="flex flex-col items-center justify-center pt-5 pb-6 px-4 text-center">
             <div class="mb-4 text-green-400 group-hover:text-green-300">
@@ -93,6 +93,20 @@
       filename.textContent = '';
       fileInfo.classList.add('hidden');
       fileInfo.classList.add('hidden');
+    });
+    document.getElementById('fileContainer').addEventListener('dragover', (e) => {
+      e.preventDefault();
+      document.getElementById('fileContainer').classList.add('border-blue-500');
+    });
+    document.getElementById('fileContainer').addEventListener('dragleave', () => {
+      document.getElementById('fileContainer').classList.remove('border-blue-500');
+    });
+    document.getElementById('fileContainer').addEventListener('drop', (e) => {
+      e.preventDefault();
+      document.getElementById('fileContainer').classList.remove('border-blue-500');
+      fileInput.files = e.dataTransfer.files;
+      filename.textContent = e.dataTransfer.files[0].name;
+      fileInfo.classList.remove('hidden');
     });
     function abrirModal() {
         const modal = document.getElementById('modalInformacion');
