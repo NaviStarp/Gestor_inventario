@@ -10,6 +10,8 @@
                 <a href="{{ url_for('ver_inventario') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-green-500 transition" id="nav-inventario">Inventario</a>
                 <a href="{{ url_for('ver_alquileres') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-purple-500 transition" id="nav-alquileres">Alquileres</a>
                 <a href="{{ url_for('ver_categorias') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-orange-500 transition" id="nav-categorias">Categorías</a>
+                <a href="{{ url_for('cerrar_sesion') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-red-500 transition" id="nav-logout">Cerrar sesión</a>
+            
             </div>
             <div class="md:hidden">
                 <button id="mobile-menu-button" class="flex items-center p-2 rounded hover:bg-blue-700 transition">
@@ -26,6 +28,7 @@
         <a href="{{ url_for('ver_inventario') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-green-500 transition" id="nav-inventario">Inventario</a>
         <a href="{{ url_for('ver_alquileres') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-purple-500 transition" id="nav-alquileres">Alquileres</a>
         <a href="{{ url_for('ver_categorias') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-orange-500 transition" id="nav-categorias">Categorías</a>
+        <a href="{{ url_for('cerrar_sesion') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-red-500 transition" id="nav-logout">Cerrar sesión</a>
     </div>
 </nav>
 <script src="{{ url_for('static', filename='js/header.js') }}"></script>
