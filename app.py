@@ -198,6 +198,7 @@ def ver_inventario():
     
     # Ejecutar la consulta final
     inventarios = query.all()
+    inventarios.sort(key=lambda x: (x.marca, x.numero))
     categorias = Categoria.query.all()
     clientes = Cliente.query.all()
     return render_template('inventario.html',clientes=clientes,categorias=categorias, inventarios=inventarios, form=form)
@@ -224,6 +225,7 @@ def ver_categoria(id):
     
     # Ejecutar la consulta final
     inventarios = query.all()
+    inventarios.sort(key=lambda x: (x.marca, x.numero))
     
     return render_template('inventario.html', categoria=categoria, inventarios=inventarios, form=form,es_categoria=True)
 
