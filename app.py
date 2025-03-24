@@ -165,14 +165,18 @@ def registro():
 @app.route('/inicio-sesion', methods=['GET','POST'])
 def inicio_sesion():
     if request.method == 'POST':
-        usuario = Usuario.query.filter_by(nombre=request.form['nombre']).first()
-        if usuario and usuario.contraseña and check_password_hash(usuario.contraseña, request.form['contraseña']):
-            session['user_id'] = usuario.id
-            session['admin'] = usuario.admin
-            session['username'] = usuario.nombre
-            return redirect('/')
-        else:
-            return render_template('iniciar sesion.html')
+        try:
+            usuario = Usuario.query.filter_by(nombre=request.form['nombre']).first()
+            if usuario and usuario.contraseña and check_password_hash(usuario.contraseña, request.form['contraseña']):
+                session['user_id'] = usuario.id
+                session['admin'] = usuario.admin
+                session['username'] = usuario.nombre
+                return redirect('/')
+            else:
+                return render_template('iniciar sesion.html',error="Usuario o contraseña incorrectos")
+        except Exception as e:
+            error = str(e)
+            return render_template('iniciar sesion.html', error=error)
     else:
         return render_template('iniciar sesion.html')
     
