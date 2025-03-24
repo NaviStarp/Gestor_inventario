@@ -240,6 +240,9 @@ def eliminar_cliente(id):
 @login_required
 def ver_categorias():
     categorias = Categoria.query.all()
+    inventario = Inventario.query.all()
+    for categoria in categorias:
+        categoria.productos = Inventario.query.filter_by(categoria_id=categoria.id).count()
     return render_template('categorias.html', categorias=categorias)
 
 @app.route('/inventario/eliminar/<int:id>', methods=['POST'])
