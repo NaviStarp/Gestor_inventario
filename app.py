@@ -62,7 +62,17 @@ class Cliente(db.Model):
 
     def __repr__(self):
         return f'<Cliente {self.id}>'
-
+class Contraseña(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    contraseña = db.Column(db.String(100), nullable=False, default=generate_password_hash('Admin123'))
+    @classmethod
+    def create_default_password(cls):
+        if not cls.query.first():
+            default_password = cls(contraseña=generate_password_hash('Admin123'))
+            db.session.add(default_password)
+            print("Contraseña de administrador por defecto creada")
+            db.session.commit()
+        
 # Se crea la tabla Alquiler
 class Alquiler(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -151,14 +161,25 @@ def inicio():
 @app.route('/registro', methods=['GET','POST'])
 def registro():
     if request.method == 'POST':
-        nuevo_usuario = Usuario(
-            nombre=request.form['nombre'],
-            contraseña=generate_password_hash(request.form['contraseña']),
-            admin=False
-        )
-        db.session.add(nuevo_usuario)
-        db.session.commit()
-        return redirect('/')
+        contraseña_record = Contraseña.query.first()
+        if contraseña_record:
+            # Use the correct order of arguments
+            if check_password_hash(contraseña_record.contraseña, request.form['contraseña_admin']):
+                nuevo_usuario = Usuario(
+                    nombre=request.form['nombre'],
+                    contraseña=generate_password_hash(request.form['contraseña']),
+                    admin=True
+                )
+                db.session.add(nuevo_usuario)
+                db.session.commit()
+                return redirect(url_for('inicio_sesion'))
+            else:
+                return render_template('registro.html', error="Contraseña de administrador incorrecta")
+        else:
+            default_password = Contraseña(contraseña=generate_password_hash('Admin123'))
+            db.session.add(default_password)
+            db.session.commit()
+            return render_template('registro.html', error="Se ha creado una contraseña de administrador por defecto. Inténtelo de nuevo.")
     else:
         return render_template('registro.html')
 
@@ -563,4 +584,5 @@ if __name__ == '__main__':
     with app.app_context():
         #db.drop_all() # CUIDADO esto borra toda la base de datos
         db.create_all()
+        Contraseña.create_default_password()
     app.run(host='0.0.0.0', port=5000, debug=True)

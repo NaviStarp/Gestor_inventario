@@ -32,6 +32,12 @@
                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                        placeholder="Ingresa tu contraseña" required>
             </div>
+            <div class="mb-6">
+                <label for="contraseña_admin" class="block text-white text-sm font-bold mb-2">Contraseña admin</label>
+                <input type="password" id="contraseña_admin" name="contraseña_admin" 
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                       placeholder="Ingresa tu contraseña" required>
+            </div>
             
             <!-- Mensaje de error (condicional con Jinja) -->
             {% if error %}
