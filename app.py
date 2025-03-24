@@ -200,7 +200,12 @@ def inicio_sesion():
             return render_template('iniciar sesion.html', error=error)
     else:
         return render_template('iniciar sesion.html')
-    
+@app.route('/cerrar-sesion')
+def cerrar_sesion():
+    session.pop('user_id', None)
+    session.pop('admin', None)
+    session.pop('username', None)
+    return redirect('/')
 
 
 @app.route('/categoria/editar', methods=['POST'])
