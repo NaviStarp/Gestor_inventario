@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fuente.css') }}">
+</head>
+<body class="bg-gray-900 min-h-screen flex flex-col">
+    {% include 'header.html' %}
+
+    <main class="container mx-auto px-4 py-6 flex-grow">
+        <div class="rounded-lg shadow-md p-6 bg-gray-800">
+            <div class="flex justify-between items-center mb-6 text-pink-500">
+                <h1 class="text-2xl font-bold">Registro de Movimientos</h1>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white rounded-lg">
+                    <thead>
+                        <tr class="bg-pink-600 text-pink-200 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Usuario</th>
+                            <th class="py-3 px-6 text-left">Fecha</th>
+                            <th class="py-3 px-6 text-left">Acción</th>
+                            <th class="py-3 px-6 text-left">Departamento</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-white text-sm font-light">
+                        {% for movimiento in movimientos %}
+                        <tr class="border-b bg-gray-400 border-pink-200 hover:bg-pink-500">
+                            <td class="py-3 px-6 text-left">{{ movimiento.usuario.nombre }}</td>
+                            <td class="py-3 px-6 text-left">{{ movimiento.fecha.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+                            <td class="py-3 px-6 text-left">{{ movimiento.acción }}</td>
+                            <td class="py-3 px-6 text-left">
+                                {% if movimiento.departamento == 'Clientes' %}
+                                <span class="px-2 py-1 rounded-full min-w-24 bg-blue-500 text-white">
+                                    {{ movimiento.departamento }}
+                                </span>
+                                {% elif movimiento.departamento == 'Inventario' %}
+                                <span class="px-2 py-1 rounded-full min-w-24 bg-green-500 text-white">
+                                    {{ movimiento.departamento }}
+                                </span>
+                                {% elif movimiento.departamento == 'Alquileres' %}
+                                <span class="px-2 py-1 rounded-full min-w-24 bg-purple-500 text-white">
+                                    {{ movimiento.departamento }}
+                                </span>
+                                {% elif movimiento.departamento == 'Categorías' %}
+                                <span class="px-2 py-1 rounded-full min-w-24 bg-orange-500 text-white">
+                                    {{ movimiento.departamento }}
+                                </span>
+                                {% else %}
+                                <span class="px-2 py-1 rounded-full min-w-24 bg-gray-500 text-white">
+                                    {{ movimiento.departamento }}
+                                </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    
+    {% include 'footer.html' %}
+    <script src="{{ url_for('static', filename='js/modales.js') }}"></script>
+</body>

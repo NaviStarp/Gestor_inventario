@@ -168,6 +168,12 @@ def inicio():
     inventarios = Inventario.query.all()
     alquileres = Alquiler.query.all()
     return render_template('index.html', alquileres=alquileres, categorias=categorias, clientes=clientes, inventarios=inventarios)
+@app.route('/movimientos')
+@login_required
+def movimientos():
+    movimientos = Movimiento.query.all()
+    movimientos.sort(key=lambda x: x.fecha, reverse=True)
+    return render_template('movimientos.html', movimientos=movimientos)
 
 @app.route('/registro', methods=['GET','POST'])
 def registro():
@@ -190,7 +196,7 @@ def registro():
             else:
                 return render_template('registro.html', error="Contraseña de administrador incorrecta")
         else:
-            default_password = Contraseña(contraseña=generate_password_hash('Admin123'))
+            default_password = Contraseña(contraseña=generate_password_hash('Admin123')) # Cambiar contraseña para registrar
             db.session.add(default_password)
             db.session.commit()
             return render_template('registro.html', error="Se ha creado una contraseña de administrador por defecto. Inténtelo de nuevo.")
