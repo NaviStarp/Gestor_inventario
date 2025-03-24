@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header with Icons</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
 <nav class="bg-gray-800 text-white shadow-md">
     <div class="container mx-auto px-4 py-3">
         <div class="flex justify-between items-center">
@@ -5,14 +14,27 @@
                 <img class="h-8" src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo">
             </div>
             <div class="hidden md:flex items-center space-x-4">
-                <a href="{{ url_for('inicio') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-yellow-500 transition" id="nav-dashboard">Inicio</a>
-                <a href="{{ url_for('ver_clientes') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-blue-500 transition" id="nav-clientes">Clientes</a>
-                <a href="{{ url_for('ver_inventario') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-green-500 transition" id="nav-inventario">Inventario</a>
-                <a href="{{ url_for('ver_alquileres') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-purple-500 transition" id="nav-alquileres">Alquileres</a>
-                <a href="{{ url_for('ver_categorias') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-orange-500 transition" id="nav-categorias">Categorías</a>
-                <a href="{{ url_for('movimientos') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-pink-500 transition" id="nav-categorias">Movimientos</a>
-                <a href="{{ url_for('cerrar_sesion') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-red-500 transition" id="nav-logout">Cerrar sesión</a>
-            
+                <a href="{{ url_for('inicio') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-yellow-500 transition" id="nav-dashboard">
+                    <i class="fas fa-home"></i> Inicio
+                </a>
+                <a href="{{ url_for('ver_clientes') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-blue-500 transition" id="nav-clientes">
+                    <i class="fas fa-users"></i> Clientes
+                </a>
+                <a href="{{ url_for('ver_inventario') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-green-500 transition" id="nav-inventario">
+                    <i class="fas fa-boxes"></i> Inventario
+                </a>
+                <a href="{{ url_for('ver_alquileres') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-purple-500 transition" id="nav-alquileres">
+                    <i class="fas fa-receipt"></i> Alquileres
+                </a>
+                <a href="{{ url_for('ver_categorias') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-orange-500 transition" id="nav-categorias">
+                    <i class="fas fa-tags"></i> Categorías
+                </a>
+                <a href="{{ url_for('movimientos') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-pink-500 transition" id="nav-movimientos">
+                    <i class="fas fa-exchange-alt"></i> Movimientos
+                </a>
+                <a href="{{ url_for('cerrar_sesion') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-red-500 transition" id="nav-logout">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                </a>
             </div>
             <div class="md:hidden">
                 <button id="mobile-menu-button" class="flex items-center p-2 rounded hover:bg-blue-700 transition">
@@ -24,13 +46,29 @@
         </div>
     </div>
     <div id="mobile-menu" class="hidden md:hidden bg-gray-800 pb-4 px-4 transition duration-300">
-        <a href="{{ url_for('inicio') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-yellow-500 transition" id="nav-dashboard">Inicio</a>
-        <a href="{{ url_for('ver_clientes') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-blue-500 transition" id="nav-clientes">Clientes</a>
-        <a href="{{ url_for('ver_inventario') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-green-500 transition" id="nav-inventario">Inventario</a>
-        <a href="{{ url_for('ver_alquileres') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-purple-500 transition" id="nav-alquileres">Alquileres</a>
-        <a href="{{ url_for('ver_categorias') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-orange-500 transition" id="nav-categorias">Categorías</a>
-        <a href="{{ url_for('movimientos') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-pink-500 transition" id="nav-categorias">Movimientos</a>
-        <a href="{{ url_for('cerrar_sesion') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-red-500 transition" id="nav-logout">Cerrar sesión</a>
+        <a href="{{ url_for('inicio') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-yellow-500 transition" id="nav-dashboard">
+            <i class="fas fa-home"></i> Inicio
+        </a>
+        <a href="{{ url_for('ver_clientes') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-blue-500 transition" id="nav-clientes">
+            <i class="fas fa-users"></i> Clientes
+        </a>
+        <a href="{{ url_for('ver_inventario') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-green-500 transition" id="nav-inventario">
+            <i class="fas fa-boxes"></i> Inventario
+        </a>
+        <a href="{{ url_for('ver_alquileres') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-purple-500 transition" id="nav-alquileres">
+            <i class="fas fa-receipt"></i> Alquileres
+        </a>
+        <a href="{{ url_for('ver_categorias') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-orange-500 transition" id="nav-categorias">
+            <i class="fas fa-tags"></i> Categorías
+        </a>
+        <a href="{{ url_for('movimientos') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-pink-500 transition" id="nav-movimientos">
+            <i class="fas fa-exchange-alt"></i> Movimientos
+        </a>
+        <a href="{{ url_for('cerrar_sesion') }}" class="py-2 px-3 rounded bg-gray-700 hover:bg-red-500 transition" id="nav-logout">
+            <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+        </a>
     </div>
 </nav>
 <script src="{{ url_for('static', filename='js/header.js') }}"></script>
+</body>
+</html>
