@@ -161,6 +161,9 @@ def inicio():
 @app.route('/registro', methods=['GET','POST'])
 def registro():
     if request.method == 'POST':
+        usuario = Usuario.query.filter_by(nombre=request.form['nombre']).first()
+        if usuario:
+            return render_template('registro.html', error="El usuario ya existe")
         contraseña_record = Contraseña.query.first()
         if contraseña_record:
             # Use the correct order of arguments
