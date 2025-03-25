@@ -475,7 +475,7 @@ def crear_producto():
         )
         categoria = Categoria.query.get(nuevo_producto.categoria_id)
         categoria.productos += 1
-        movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Añadió el producto {nuevo_producto.numero}",departamento="Inventario")
+        movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Añadió el producto {nuevo_producto.numero} de la marca {nuevo_producto.marca}",departamento="Inventario")
         db.session.add(movimiento)
         db.session.add(nuevo_producto)
         db.session.commit()
@@ -536,7 +536,7 @@ def editar_inventario(id):
         inventario.cliente_id = request.form.get('cliente_id')  # Ensure cliente_id is set
         inventario.observacion = request.form.get('observacion')
         inventario.categoria_id = request.form['categoria_id']  # Ensure categoria_id is set
-        movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Editó el producto {inventario.numero}",departamento="Inventario")
+        movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Editó el producto {inventario.numero} de la marca {inventario.marca}",departamento="Inventario")
         db.session.add(movimiento)
         db.session.commit()
         return redirect(url_for('ver_inventario'))
@@ -619,7 +619,7 @@ def editar_alquiler(id):
     if request.method == 'POST':
         alquiler.fecha_entrega = datetime.strptime(request.form['fecha_entrega'], '%Y-%m-%d')
         alquiler.fecha_recojida = datetime.strptime(request.form['fecha_recojida'], '%Y-%m-%d')
-        alquiler.estado = request.form['Estado']  # Nota: Mantuve "Estado" para coincidir con el nombre del campo en el formulario
+        alquiler.estado = request.form['Estado'] 
         alquiler.precio = request.form['precio']
         movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Editó el alquiler {alquiler.id}",departamento="Alquileres")
         db.session.add(movimiento)
