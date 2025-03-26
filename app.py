@@ -308,7 +308,7 @@ def ver_inventario():
         if form.estado.data:
             query = query.filter(Inventario.estado == form.estado.data)
         if form.cliente.data and form.cliente.data != 0:  # Evitar filtrar cuando se selecciona "Todos"
-            query = query.filter(Inventario.cliente_id == form.cliente.data)
+            query = query.filter(Inventario.cliente == form.cliente.data)
         if form.categoria.data and form.categoria.data != 0:  # Evitar filtrar cuando se selecciona "Todas"
             query = query.filter(Inventario.categoria_id == form.categoria.data)
     
@@ -336,13 +336,14 @@ def ver_categoria(id):
         if form.estado.data:
             query = query.filter(Inventario.estado == form.estado.data)
         if form.cliente.data and form.cliente.data != 0:
-            query = query.filter(Inventario.cliente_id == form.cliente.data)
+            query = query.filter(Inventario.cliente == form.cliente.data)
         # No necesitamos filtrar por categoría de nuevo ya que ya está filtrado
     
     # Ejecutar la consulta final
     inventarios = query.all()
+    categorias = Categoria.query.filter(Categoria.id == id).all()
     
-    return render_template('inventario.html', categoria=categoria, inventarios=inventarios, form=form,es_categoria=True)
+    return render_template('inventario.html', categoria=categoria, categorias=categorias,inventarios=inventarios, form=form,es_categoria=True)
 
 # Ruta para ver clientes
 @app.route('/clientes', methods=['GET', 'POST'])
@@ -533,7 +534,7 @@ def editar_inventario(id):
         inventario.numero_serie_f = request.form['numero_serie_f']
         inventario.numero_serie_i = request.form['numero_serie_i']
         inventario.ubicacion = request.form['ubicacion']
-        inventario.cliente_id = request.form.get('cliente_id')  # Ensure cliente_id is set
+        inventario.cliente = request.form.get('cliente_id')  # Ensure cliente_id is set
         inventario.observacion = request.form.get('observacion')
         inventario.categoria_id = request.form['categoria_id']  # Ensure categoria_id is set
         movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Editó el producto {inventario.numero} de la marca {inventario.marca}",departamento="Inventario")
@@ -619,7 +620,7 @@ def editar_alquiler(id):
     if request.method == 'POST':
         alquiler.fecha_entrega = datetime.strptime(request.form['fecha_entrega'], '%Y-%m-%d')
         alquiler.fecha_recojida = datetime.strptime(request.form['fecha_recojida'], '%Y-%m-%d')
-        alquiler.estado = request.form['Estado'] 
+        alquiler.estado = request.form['Estado']
         alquiler.precio = request.form['precio']
         movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Editó el alquiler {alquiler.id}",departamento="Alquileres")
         db.session.add(movimiento)
