@@ -404,16 +404,16 @@ def importar_inventario():
                 
                     try:
                         nuevo_producto = Inventario(
-                            categoria_id=row[0] if row[0] else 1,
-                            numero=row[1] if row[1] else None,
-                            marca=row[2] if row[2] else None,
-                            modelo=row[3] if row[3] else None,
-                            estado=row[4] if row[4] else None,
-                            precio=row[5] if row[5] else None,
-                            ubicacion=row[6] if row[6] else None,
-                            numero_serie_f=row[7] if row[7] else None,
-                            numero_serie_i=row[8] if row[8] else None,
-                            observacion=row[9] if row[9] else None,
+                            numero=row[0] if row[0] else 0,
+                            categoria_id=1,  # Default
+                            marca=row[2] if row[2] else 'Vacio',
+                            modelo=row[3] if row[3] else 'Vacio',
+                            estado=row[4] if row[4] else 'Vacio',
+                            ubicacion=row[5] if row[5] else 'Vacio',
+                            observacion=row[6] if row[6] else 'Vacio',
+                            numero_serie_f=row[7] if row[7] else 'Vacio',
+                            numero_serie_i=row[8] if row[8] else 'Vacio',
+                            precio=row[10] if row[10] else '?',
                             cliente=None
                         )
                         if nuevo_producto.categoria_id is not None:
@@ -526,17 +526,20 @@ def crear_categoria():
 def editar_inventario(id):
     inventario = Inventario.query.get_or_404(id)
     if request.method == 'POST':
-        inventario.numero = request.form['numero']
-        inventario.modelo = request.form['modelo']
-        inventario.marca = request.form['marca']
-        inventario.estado = request.form['estado']
-        inventario.precio = request.form['precio']
-        inventario.numero_serie_f = request.form['numero_serie_f']
-        inventario.numero_serie_i = request.form['numero_serie_i']
-        inventario.ubicacion = request.form['ubicacion']
-        inventario.cliente = request.form.get('cliente_id')  # Ensure cliente_id is set
-        inventario.observacion = request.form.get('observacion')
-        inventario.categoria_id = request.form['categoria_id']  # Ensure categoria_id is set
+        print("Datos recibidos:", request.data)
+        print("Datos del formulario:", request.form)
+        data = request.get_json()
+        inventario.numero = data.get('numero', '')
+        inventario.modelo = data.get('modelo', '')
+        inventario.marca = data.get('marca', '')
+        inventario.estado = data.get('estado', '')
+        inventario.precio = data.get('precio', 0)
+        inventario.numero_serie_f = data.get('numero_serie_f', '')
+        inventario.numero_serie_i = data.get('numero_serie_i', '')
+        inventario.ubicacion = data.get('ubicacion', '')
+        inventario.cliente = data.get('cliente_id', None)
+        inventario.observacion = data.get('observacion', '')
+        inventario.categoria_id = data.get('categoria_id', 1)
         movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Editó el producto {inventario.numero} de la marca {inventario.marca}",departamento="Inventario")
         db.session.add(movimiento)
         db.session.commit()

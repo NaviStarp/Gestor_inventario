@@ -78,13 +78,13 @@
                     </thead>
                     <tbody class="text-white text-sm font-light">
                         {% for producto in inventarios %}
-                        <tr class="border-b bg-gray-400 border-green-200 hover:bg-green-500">
+                        <tr class="border-b bg-gray-700 border-green-200 hover:bg-green-500">
                             <td class="py-3 px-6 text-left">{{ producto.numero }}</td>
                             <td class="py-3 px-6 text-left">{{ producto.marca }}</td>
                             <td class="py-3 px-6 text-left">{{ producto.categoria.nombre }}</td>
                             <td class="py-3 px-6 text-left">{{ producto.modelo }}</td>
                             <td class="py-3 px-6 text-left">
-                                <button onclick="cambiarEstado('{{ producto.id }}', '{{ producto.numero }}', '{{ producto.marca }}', '{{ producto.modelo }}', 
+                                <button data-id="{{ producto.id }}" onclick="cambiarEstado('{{ producto.id }}', '{{ producto.numero }}', '{{ producto.marca }}', '{{ producto.modelo }}', 
                                     '{{ producto.estado }}', '{{ producto.ubicacion }}', '{{ producto.observacion }}', '{{ producto.numero_serie_f }}', 
                                     '{{ producto.numero_serie_i }}', '{{ producto.categoria.id }}', '{{ producto.cliente.id if producto.cliente else '' }}', 
                                     '{{ producto.precio }}')" class="px-2 py-1 rounded-full min-w-24 {% if producto.estado == 'Disponible' %}bg-green-500 text-white{% elif producto.estado == 'En uso' %}bg-blue-500 text-white{% elif producto.estado == 'Reparación' %}bg-yellow-500 text-white{% elif producto.estado == 'Baja' %}bg-red-500 text-white{% endif %}">
@@ -154,51 +154,50 @@
             document.querySelector('#modal-inventario form').action = `/inventario/editar/${id}`;
         }
         function cambiarEstado(id, numero, marca, modelo, estado, ubicacion, observacion, numero_serie_f, numero_serie_i, categoria_id, cliente, precio) {
-            // Set form values
-            console.log(estado);
-            document.getElementById('numero').value = numero;
-            document.getElementById('marca').value = marca;
-            document.getElementById('modelo').value = modelo;
-            
-            // Update state based on current state
+            // Update state locally
+            const button = document.querySelector(`button[data-id="${id}"]`);
+            estado = button.textContent.trim();
             if (estado == 'Disponible') {
-                document.getElementById('estado_m').value = 'En uso';
+            estado = 'En uso';
+            button.className = 'px-2 py-1 rounded-full min-w-24 bg-blue-500 text-white';
             } else if (estado == 'En uso') {
-                document.getElementById('estado_m').value = 'Reparación';
+            estado = 'Reparación';
+            button.className = 'px-2 py-1 rounded-full min-w-24 bg-yellow-500 text-white';
             } else if (estado == 'Reparación') {
-                document.getElementById('estado_m').value = 'Baja';
+            estado = 'Baja';
+            button.className = 'px-2 py-1 rounded-full min-w-24 bg-red-500 text-white';
             } else if (estado == 'Baja') {
-                document.getElementById('estado_m').value = 'Disponible';
+            estado = 'Disponible';
+            button.className = 'px-2 py-1 rounded-full min-w-24 bg-green-500 text-white';
             }
-            console.log(document.getElementById('estado_m'));
-            document.getElementById('ubicacion').value = ubicacion;
-            document.getElementById('observacion').value = observacion;
-            document.getElementById('numero_serie_f').value = numero_serie_f;
-            document.getElementById('numero_serie_i').value = numero_serie_i;
-            document.getElementById('categoria_id').value = categoria_id;
-            document.getElementById('cliente').value = cliente || '';
-            document.getElementById('precio').value = precio;
-            
-            // Set form action
-            const form = document.querySelector('#modal-inventario form');
-            form.action = `/inventario/editar/${id}`;
-            
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                fetch(this.action, {
-                    method: 'POST',
-                    body: new FormData(this)
-                }).then(response => {
-                    if (response.ok) {
-                        closeAllModals();
-                        location.reload();
-                    }
-                });
-            }, { once: true });
-            
-            // Trigger the submit event
-            form.requestSubmit();
+            button.textContent = estado;
+
+            // Send the update to the server
+            fetch(`/inventario/editar/${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                numero,
+                marca,
+                modelo,
+                estado,
+                ubicacion,
+                observacion,
+                numero_serie_f,
+                numero_serie_i,
+                categoria_id,
+                cliente,
+                precio
+            })
+            }).then(response => {
+            if (!response.ok) {
+                console.error('Error al actualizar el estado en el servidor');
+            }
+            }).catch(error => {
+            console.error('Error de red:', error);
+            });
         }
 
         </script>

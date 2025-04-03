@@ -1,2 +1,4 @@
 .venv
+*.csv
+inventario.csv
 instance
