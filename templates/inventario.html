@@ -96,10 +96,10 @@
                                     {{ producto.estado }}
                                 </button>
                             </td>
-                            <td class="py-3 px-6 text-center">{{ producto.ubicacion }}</td>
-                            <td class="py-3 px-6 text-center">{{ producto.observacion }}</td>
-                            <td class="py-3 px-6 text-center">{{ producto.numero_serie_f }}</td>
-                            <td class="py-3 px-6 text-center">{{ producto.numero_serie_i }}</td>
+                            <td class="py-3 px-6 text-center overflow-x-scroll">{{ producto.ubicacion }}</td>
+                            <td class="py-3 px-6 text-center overflow-x-scroll">{{ producto.observacion }}</td>
+                            <td class="py-3 px-6 text-center overflow-x-scroll">{{ producto.numero_serie_f }}</td>
+                            <td class="py-3 px-6 text-center overflow-x-scroll">{{ producto.numero_serie_i }}</td>
                             <!-- <td class="py-3 px-6 text-center">
                                 {% if producto.cliente %}
                                     {{ producto.cliente.nombre }}
@@ -144,8 +144,10 @@
     <script>
     function editar_inventario(id, numero, marca, modelo, estado, ubicacion, observacion, numero_serie_f, numero_serie_i, categoria_id, cliente, tipo) {
             openModal('modal-inventario');
+
+            console.log(id, numero, marca, modelo, estado, ubicacion, observacion, numero_serie_f, numero_serie_i, categoria_id, cliente, tipo);
             document.getElementById('numero').value = numero;
-            document.getElementById('marca').value = marca;
+            document.getElementById('marcaM').value = marca;
             document.getElementById('modelo').value = modelo;
             document.getElementById('estado').value = estado;
             document.getElementById('ubicacion').value = ubicacion;
@@ -154,7 +156,7 @@
             document.getElementById('numero_serie_i').value = numero_serie_i;
             document.getElementById('categoria_id').value = categoria_id;
             document.getElementById('cliente').value = cliente || '';
-            document.getElementById('tipo').value = tipo;
+            document.getElementById('tipoM').value = tipo;
             document.querySelector('#modal-inventario form').action = `/inventario/editar/${id}`;
         }
         function cambiarEstado(id, numero, marca, modelo, estado, ubicacion, observacion, numero_serie_f, numero_serie_i, categoria_id, cliente, tipo) {

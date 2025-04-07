@@ -423,13 +423,13 @@ def importar_inventario():
                         nuevo_producto = Inventario(
                             numero=row[0] if row[0] else 0,
                             categoria_id=1,  # Default
-                            marca=row[2] if row[2] else 'Vacio',
-                            modelo=row[3] if row[3] else 'Vacio',
-                            estado=row[4] if row[4] else 'Vacio',
-                            ubicacion=row[5] if row[5] else 'Vacio',
-                            observacion=row[6] if row[6] else 'Vacio',
-                            numero_serie_f=row[7] if row[7] else 'Vacio',
-                            numero_serie_i=row[8] if row[8] else 'Vacio',
+                            marca=row[2] if row[2] else '',
+                            modelo=row[3] if row[3] else '',
+                            estado=row[4] if row[4] else '',
+                            ubicacion=row[5] if row[5] else '',
+                            obsern=row[6] if row[6] else '',
+                            numero_serie_f=row[7] if row[7] else '',
+                            numero_serie_i=row[8] if row[8] else '',
                             tipo=row[10] if row[10] else '?',
                             cliente=None
                         )
