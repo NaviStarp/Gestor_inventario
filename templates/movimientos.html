@@ -22,19 +22,19 @@
                 <table class="min-w-full bg-white rounded-lg">
                     <thead>
                         <tr class="bg-pink-600 text-pink-200 uppercase text-sm leading-normal">
-                            <th class="py-3 px-6 text-left">Usuario</th>
-                            <th class="py-3 px-6 text-left">Fecha</th>
-                            <th class="py-3 px-6 text-left">Acción</th>
-                            <th class="py-3 px-6 text-left">Departamento</th>
+                            <th class="py-3 px-6 text-center">Usuario</th>
+                            <th class="py-3 px-6 text-center">Fecha</th>
+                            <th class="py-3 px-6 text-center">Acción</th>
+                            <th class="py-3 px-6 text-center">Departamento</th>
                         </tr>
                     </thead>
                     <tbody class="text-white text-sm font-light">
                         {% for movimiento in movimientos %}
-                        <tr class="border-b bg-gray-400 border-pink-200 hover:bg-pink-500">
-                            <td class="py-3 px-6 text-left">{{ movimiento.usuario.nombre }}</td>
-                            <td class="py-3 px-6 text-left">{{ movimiento.fecha.strftime('%d/%m/%Y %H:%M:%S') }}</td>
-                            <td class="py-3 px-6 text-left">{{ movimiento.acción }}</td>
-                            <td class="py-3 px-6 text-left">
+                        <tr class="border-b bg-gray-800 border-pink-200 hover:bg-pink-500">
+                            <td class="py-3 px-6 text-center">{{ movimiento.usuario.nombre }}</td>
+                            <td class="py-3 px-6 text-center">{{ movimiento.fecha.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+                            <td class="py-3 px-6 text-center">{{ movimiento.acción }}</td>
+                            <td class="py-3 px-6 text-center">
                                 {% if movimiento.departamento == 'Clientes' %}
                                 <span class="px-2 py-1 rounded-full min-w-24 bg-blue-500 text-white">
                                     {{ movimiento.departamento }}

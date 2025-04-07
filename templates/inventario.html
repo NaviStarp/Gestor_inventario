@@ -62,29 +62,29 @@
                 <table class="min-w-full bg-white rounded-lg">
                     <thead>
                         <tr class="bg-green-600 text-green-200 uppercase text-sm leading-normal">
-                            <th class="py-3 px-6 text-left">Número</th>
-                            <th class="py-3 px-6 text-left">Categoría</th>
-                            <th class="py-3 px-6 text-left">Tipo</th>
-                            <th class="py-3 px-6 text-left">Marca</th>
-                            <th class="py-3 px-6 text-left">Modelo</th>
-                            <th class="py-3 px-6 text-left">Estado</th>
-                            <th class="py-3 px-6 text-left">Ubicación</th>
-                            <th class="py-3 px-6 text-left">Observación</th>
-                            <th class="py-3 px-6 text-left">N° Serie Fabricante</th>
-                            <th class="py-3 px-6 text-left">N° Serie Interno</th>
-                            <!-- <th class="py-3 px-6 text-left">Cliente</th> -->
+                            <th class="py-3 px-6 text-center">Número</th>
+                            <th class="py-3 px-6 text-center">Categoría</th>
+                            <th class="py-3 px-6 text-center">Tipo</th>
+                            <th class="py-3 px-6 text-center">Marca</th>
+                            <th class="py-3 px-6 text-center">Modelo</th>
+                            <th class="py-3 px-6 text-center">Estado</th>
+                            <th class="py-3 px-6 text-center">Ubicación</th>
+                            <th class="py-3 px-6 text-center">Observación</th>
+                            <th class="py-3 px-6 text-center">N° Serie Fabricante</th>
+                            <th class="py-3 px-6 text-center">N° Serie Interno</th>
+                            <!-- <th class="py-3 px-6 text-center">Cliente</th> -->
                             <th class="py-3 px-6 text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody class="text-white text-sm font-light">
                         {% for producto in inventarios %}
-                        <tr class="border-b bg-gray-700 border-green-200 hover:bg-green-500">
-                            <td class="py-3 px-6 text-left">{{ producto.numero }}</td>
-                            <td class="py-3 px-6 text-left">{{ producto.categoria.nombre }}</td>
-                            <td class="py-3 px-6 text-left">{{ producto.tipo }}</td>
-                            <td class="py-3 px-6 text-left">{{ producto.marca }}</td>
-                            <td class="py-3 px-6 text-left">{{ producto.modelo }}</td>
-                            <td class="py-3 px-6 text-left">
+                        <tr class="border-b bg-gray-800 border-green-100 hover:bg-green-500">
+                            <td class="py-3 px-6 text-center">{{ producto.numero }}</td>
+                            <td class="py-3 px-6 text-center">{{ producto.categoria.nombre }}</td>
+                            <td class="py-3 px-6 text-center">{{ producto.tipo }}</td>
+                            <td class="py-3 px-6 text-center">{{ producto.marca }}</td>
+                            <td class="py-3 px-6 text-center">{{ producto.modelo }}</td>
+                            <td class="py-3 px-6 text-center">
                                 <button data-id="{{ producto.id }}" onclick="cambiarEstado('{{ producto.id }}', '{{ producto.numero }}', '{{ producto.marca }}', '{{ producto.modelo }}', 
                                     '{{ producto.estado }}', '{{ producto.ubicacion }}', '{{ producto.observacion }}', '{{ producto.numero_serie_f }}', 
                                     '{{ producto.numero_serie_i }}', '{{ producto.categoria.id }}', '{{ producto.cliente.id if producto.cliente else '' }}', 
@@ -92,11 +92,11 @@
                                     {{ producto.estado }}
                                 </button>
                             </td>
-                            <td class="py-3 px-6 text-left">{{ producto.ubicacion }}</td>
-                            <td class="py-3 px-6 text-left">{{ producto.observacion }}</td>
-                            <td class="py-3 px-6 text-left">{{ producto.numero_serie_f }}</td>
-                            <td class="py-3 px-6 text-left">{{ producto.numero_serie_i }}</td>
-                            <!-- <td class="py-3 px-6 text-left">
+                            <td class="py-3 px-6 text-center">{{ producto.ubicacion }}</td>
+                            <td class="py-3 px-6 text-center">{{ producto.observacion }}</td>
+                            <td class="py-3 px-6 text-center">{{ producto.numero_serie_f }}</td>
+                            <td class="py-3 px-6 text-center">{{ producto.numero_serie_i }}</td>
+                            <!-- <td class="py-3 px-6 text-center">
                                 {% if producto.cliente %}
                                     {{ producto.cliente.nombre }}
                                 {% else %}
