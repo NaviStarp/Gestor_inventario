@@ -34,7 +34,7 @@ class Inventario(db.Model):
     categoria_id = db.Column(db.Integer, db.ForeignKey('categoria.id'), nullable=False)  # Categoría del producto
     categoria = db.relationship('Categoria', backref=db.backref('inventarios', lazy=True)) # Relación con la tabla Categoría
     cliente = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=True)  # Cliente asociado
-    precio = db.Column(db.Integer, nullable=False)  # Precio del producto
+    tipo = db.Column(db.String(100), nullable=False)  # tipo del producto
 
     def __repr__(self):
         return f'<Inventario {self.id}>'
@@ -94,7 +94,7 @@ class Alquiler(db.Model):
     fecha_entrega = db.Column(db.Date, nullable=False)
     fecha_recojida = db.Column(db.Date, nullable=False)
     estado = db.Column(db.String(100), nullable=False)  # Corregido: Era "Estado" (inconsistente)
-    precio = db.Column(db.Integer, nullable=False)
+    tipo = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
         return f'<Alquiler {self.id}>'
@@ -127,17 +127,17 @@ class filtroInventario(FlaskForm):
         ('Reparación', 'Reparación'),
         ('Baja', 'Baja')
     ])
-    cliente = SelectField('Cliente', choices=[], coerce=int)
+    tipo = SelectField('Tipo', choices=[], coerce=str)
     categoria = SelectField('Categoria', choices=[], coerce=int)
     submit = SubmitField('Filtrar')
     
     def __init__(self, *args, **kwargs):
         super(filtroInventario, self).__init__(*args, **kwargs)
         # Reiniciar las opciones para evitar duplicados en recargas
-        self.cliente.choices = [(0, 'Todos')]
+        self.tipo.choices = [(0, 'Todos')]
         self.categoria.choices = [(0, 'Todas')]
         # Agregar opciones desde la base de datos
-        self.cliente.choices += [(c.id, c.nombre) for c in Cliente.query.all()]
+        self.tipo.choices += [(c.tipo, c.tipo) for c in Inventario.query.distinct(Inventario.tipo).all()]
         self.categoria.choices += [(c.id, c.nombre) for c in Categoria.query.all()]
 
 class filtroCliente(FlaskForm):
@@ -302,13 +302,12 @@ def ver_inventario():
     
     # Iniciar con la consulta base
     query = Inventario.query
-    
     # Procesar el formulario solo si se envía como POST
     if request.method == 'POST' and form.validate():
         if form.estado.data:
             query = query.filter(Inventario.estado == form.estado.data)
-        if form.cliente.data and form.cliente.data != 0:  # Evitar filtrar cuando se selecciona "Todos"
-            query = query.filter(Inventario.cliente == form.cliente.data)
+        if form.tipo.data and form.tipo.data != '0':  # Evitar filtrar cuando se selecciona "Todos"
+            query = query.filter(Inventario.tipo == form.tipo.data)
         if form.categoria.data and form.categoria.data != 0:  # Evitar filtrar cuando se selecciona "Todas"
             query = query.filter(Inventario.categoria_id == form.categoria.data)
     
@@ -413,7 +412,7 @@ def importar_inventario():
                             observacion=row[6] if row[6] else 'Vacio',
                             numero_serie_f=row[7] if row[7] else 'Vacio',
                             numero_serie_i=row[8] if row[8] else 'Vacio',
-                            precio=row[10] if row[10] else '?',
+                            tipo=row[10] if row[10] else '?',
                             cliente=None
                         )
                         if nuevo_producto.categoria_id is not None:
@@ -467,7 +466,7 @@ def crear_producto():
             marca=request.form.get('marca', ''),
             modelo=request.form.get('modelo', ''),
             estado=request.form['estado'],
-            precio=request.form['precio'],
+            tipo=request.form['tipo'],
             ubicacion=request.form['ubicacion'], # Temporal
             numero_serie_f=request.form['numero_serie_f'],
             numero_serie_i=request.form['numero_serie_i'],
@@ -533,7 +532,7 @@ def editar_inventario(id):
         inventario.modelo = data.get('modelo', '')
         inventario.marca = data.get('marca', '')
         inventario.estado = data.get('estado', '')
-        inventario.precio = data.get('precio', 0)
+        inventario.tipo = data.get('tipo', '')
         inventario.numero_serie_f = data.get('numero_serie_f', '')
         inventario.numero_serie_i = data.get('numero_serie_i', '')
         inventario.ubicacion = data.get('ubicacion', '')
@@ -574,7 +573,7 @@ def crear_alquiler():
         fecha_entrega=datetime.strptime(request.form['fecha_entrega'], '%Y-%m-%d'),
         fecha_recojida=datetime.strptime(request.form['fecha_recojida'], '%Y-%m-%d'),
         estado=request.form['Estado'],  # Nota: Mantuve "Estado" para coincidir con el nombre del campo en el formulario
-        precio=request.form['precio']
+        tipo=request.form['tipo']
     )
     db.session.add(nuevo_alquiler)
     movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Añadió el alquiler {nuevo_alquiler.id}",departamento="Alquileres")
@@ -624,7 +623,7 @@ def editar_alquiler(id):
         alquiler.fecha_entrega = datetime.strptime(request.form['fecha_entrega'], '%Y-%m-%d')
         alquiler.fecha_recojida = datetime.strptime(request.form['fecha_recojida'], '%Y-%m-%d')
         alquiler.estado = request.form['Estado']
-        alquiler.precio = request.form['precio']
+        alquiler.tipo = request.form['tipo']
         movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Editó el alquiler {alquiler.id}",departamento="Alquileres")
         db.session.add(movimiento)
         db.session.commit()

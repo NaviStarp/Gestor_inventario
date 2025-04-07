@@ -49,8 +49,8 @@
                             {{ form.estado(class="w-full rounded-md bg-gray-600 border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50") }}
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-white mb-1">{{ form.cliente.label }}</label>
-                            {{ form.cliente(class="w-full rounded-md bg-gray-600 border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50") }}
+                            <label class="block text-sm font-medium text-white mb-1">{{ form.tipo.label }}</label>
+                            {{ form.tipo(class="w-full rounded-md bg-gray-600 border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50") }}
                         </div>
                         <div class="flex items-end">
                             {{ form.submit(class="bg-green-600 hover:bg-green-700  text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline") }}
@@ -63,8 +63,9 @@
                     <thead>
                         <tr class="bg-green-600 text-green-200 uppercase text-sm leading-normal">
                             <th class="py-3 px-6 text-left">Número</th>
-                            <th class="py-3 px-6 text-left">Marca</th>
                             <th class="py-3 px-6 text-left">Categoría</th>
+                            <th class="py-3 px-6 text-left">Tipo</th>
+                            <th class="py-3 px-6 text-left">Marca</th>
                             <th class="py-3 px-6 text-left">Modelo</th>
                             <th class="py-3 px-6 text-left">Estado</th>
                             <th class="py-3 px-6 text-left">Ubicación</th>
@@ -72,7 +73,6 @@
                             <th class="py-3 px-6 text-left">N° Serie Fabricante</th>
                             <th class="py-3 px-6 text-left">N° Serie Interno</th>
                             <!-- <th class="py-3 px-6 text-left">Cliente</th> -->
-                            <th class="py-3 px-6 text-left">Precio</th>
                             <th class="py-3 px-6 text-center">Acciones</th>
                         </tr>
                     </thead>
@@ -80,14 +80,15 @@
                         {% for producto in inventarios %}
                         <tr class="border-b bg-gray-700 border-green-200 hover:bg-green-500">
                             <td class="py-3 px-6 text-left">{{ producto.numero }}</td>
-                            <td class="py-3 px-6 text-left">{{ producto.marca }}</td>
                             <td class="py-3 px-6 text-left">{{ producto.categoria.nombre }}</td>
+                            <td class="py-3 px-6 text-left">{{ producto.tipo }}</td>
+                            <td class="py-3 px-6 text-left">{{ producto.marca }}</td>
                             <td class="py-3 px-6 text-left">{{ producto.modelo }}</td>
                             <td class="py-3 px-6 text-left">
                                 <button data-id="{{ producto.id }}" onclick="cambiarEstado('{{ producto.id }}', '{{ producto.numero }}', '{{ producto.marca }}', '{{ producto.modelo }}', 
                                     '{{ producto.estado }}', '{{ producto.ubicacion }}', '{{ producto.observacion }}', '{{ producto.numero_serie_f }}', 
                                     '{{ producto.numero_serie_i }}', '{{ producto.categoria.id }}', '{{ producto.cliente.id if producto.cliente else '' }}', 
-                                    '{{ producto.precio }}')" class="px-2 py-1 rounded-full min-w-24 {% if producto.estado == 'Disponible' %}bg-green-500 text-white{% elif producto.estado == 'En uso' %}bg-blue-500 text-white{% elif producto.estado == 'Reparación' %}bg-yellow-500 text-white{% elif producto.estado == 'Baja' %}bg-red-500 text-white{% endif %}">
+                                    '{{ producto.tipo }}')" class="px-2 py-1 rounded-full min-w-24 {% if producto.estado == 'Disponible' %}bg-green-500 text-white{% elif producto.estado == 'En uso' %}bg-blue-500 text-white{% elif producto.estado == 'Reparación' %}bg-yellow-500 text-white{% elif producto.estado == 'Baja' %}bg-red-500 text-white{% endif %}">
                                     {{ producto.estado }}
                                 </button>
                             </td>
@@ -102,13 +103,12 @@
                                     Sin Cliente
                                 {% endif %}
                             </td> -->
-                            <td class="py-3 px-6 text-left">{{ producto.precio }}</td>
                             <td class="py-3 px-6 text-center">
                                 <div class="flex item-center justify-center">
                                     <a onclick="event.stopPropagation();editar_inventario('{{ producto.id }}', '{{ producto.numero }}', '{{ producto.marca }}', '{{ producto.modelo }}', 
                                     '{{ producto.estado }}', '{{ producto.ubicacion }}', '{{ producto.observacion }}', '{{ producto.numero_serie_f }}', 
                                     '{{ producto.numero_serie_i }}', '{{ producto.categoria.id }}', '{{ producto.cliente.id if producto.cliente else '' }}', 
-                                    '{{ producto.precio }}')" class="text-yellow-600 hover:text-yellow-800 mr-3">
+                                    '{{ producto.tipo }}')" class="text-yellow-600 hover:text-yellow-800 mr-3">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <form action="{{ url_for('eliminar_producto', id=producto.id) }}" onclick="event.stopPropagation();return confirm('¿Está seguro que desea eliminar este producto?')" method="POST" style="display:inline;">
@@ -138,7 +138,7 @@
     {% include 'footer.html' %}
     <script src="{{ url_for('static', filename='js/modales.js') }}"></script>
     <script>
-    function editar_inventario(id, numero, marca, modelo, estado, ubicacion, observacion, numero_serie_f, numero_serie_i, categoria_id, cliente, precio) {
+    function editar_inventario(id, numero, marca, modelo, estado, ubicacion, observacion, numero_serie_f, numero_serie_i, categoria_id, cliente, tipo) {
             openModal('modal-inventario');
             document.getElementById('numero').value = numero;
             document.getElementById('marca').value = marca;
@@ -150,10 +150,10 @@
             document.getElementById('numero_serie_i').value = numero_serie_i;
             document.getElementById('categoria_id').value = categoria_id;
             document.getElementById('cliente').value = cliente || '';
-            document.getElementById('precio').value = precio;
+            document.getElementById('tipo').value = tipo;
             document.querySelector('#modal-inventario form').action = `/inventario/editar/${id}`;
         }
-        function cambiarEstado(id, numero, marca, modelo, estado, ubicacion, observacion, numero_serie_f, numero_serie_i, categoria_id, cliente, precio) {
+        function cambiarEstado(id, numero, marca, modelo, estado, ubicacion, observacion, numero_serie_f, numero_serie_i, categoria_id, cliente, tipo) {
             // Update state locally
             const button = document.querySelector(`button[data-id="${id}"]`);
             estado = button.textContent.trim();
@@ -189,7 +189,7 @@
                 numero_serie_i,
                 categoria_id,
                 cliente,
-                precio
+                tipo
             })
             }).then(response => {
             if (!response.ok) {
