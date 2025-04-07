@@ -129,16 +129,33 @@ class filtroInventario(FlaskForm):
     ])
     tipo = SelectField('Tipo', choices=[], coerce=str)
     categoria = SelectField('Categoria', choices=[], coerce=int)
+    marca = SelectField('Marca', choices=[], coerce=str)
     submit = SubmitField('Filtrar')
     
     def __init__(self, *args, **kwargs):
         super(filtroInventario, self).__init__(*args, **kwargs)
-        # Reiniciar las opciones para evitar duplicados en recargas
+        
+        # Limpiar las opciones de los campos SelectField para evitar duplicaciones
         self.tipo.choices = [(0, 'Todos')]
         self.categoria.choices = [(0, 'Todas')]
-        # Agregar opciones desde la base de datos
-        self.tipo.choices += [(c.tipo, c.tipo) for c in Inventario.query.distinct(Inventario.tipo).all()]
-        self.categoria.choices += [(c.id, c.nombre) for c in Categoria.query.all()]
+        self.marca.choices = [(0, 'Todas')]
+
+        # Consultar las marcas de Inventario
+        marcasQ = Inventario.query.order_by(Inventario.marca).distinct(Inventario.marca).all()
+        marcas = [(marca.marca, marca.marca) for marca in marcasQ]
+
+        # Consultar los tipos de Inventario
+        tiposQ = Inventario.query.order_by(Inventario.tipo).distinct(Inventario.tipo).all()
+        tipos = [(tipo.tipo, tipo.tipo) for tipo in tiposQ]
+
+        # Asignar las opciones a los campos SelectField
+        self.marca.choices = list(set(marcas))  # Sobrescribir las opciones para evitar duplicados
+        self.tipo.choices = list(set(tipos))  # Sobrescribir las opciones para evitar duplicados
+        self.tipo.choices.insert(0, ('0', 'Todos'))  # Agregar la opción "Todos" al principio
+        self.marca.choices.insert(0, (0, 'Todas'))  # Agregar la opción "Todas" al principio
+        # Agregar las categorías desde la base de datos
+        self.categoria.choices += [(categoria.id, categoria.nombre) for categoria in Categoria.query.all()]
+
 
 class filtroCliente(FlaskForm):
     prioridad = SelectField('Prioridad', choices=[
@@ -310,7 +327,8 @@ def ver_inventario():
             query = query.filter(Inventario.tipo == form.tipo.data)
         if form.categoria.data and form.categoria.data != 0:  # Evitar filtrar cuando se selecciona "Todas"
             query = query.filter(Inventario.categoria_id == form.categoria.data)
-    
+        if form.marca.data and form.marca.data != '0':
+            query = query.filter(Inventario.marca == form.marca.data)            
     # Ejecutar la consulta final
     inventarios = query.all()
     categorias = Categoria.query.all()
@@ -527,7 +545,11 @@ def editar_inventario(id):
     if request.method == 'POST':
         print("Datos recibidos:", request.data)
         print("Datos del formulario:", request.form)
-        data = request.get_json()
+        try:
+            data = request.get_json()
+        except Exception as e:
+            print(f"Error al obtener datos JSON: {e}")
+            data = request.form
         inventario.numero = data.get('numero', '')
         inventario.modelo = data.get('modelo', '')
         inventario.marca = data.get('marca', '')
