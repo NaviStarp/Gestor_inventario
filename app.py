@@ -315,6 +315,56 @@ def ver_carrefour():
     productos = Producto_Carrefour.query.all()
     return render_template('carrefour.html', productos=productos)
 
+@app.route('/carrefour/nuevo', methods=['POST'])
+@login_required
+def crear_producto_carrefour():
+    nuevo_producto = Producto_Carrefour(
+        numero_serie=request.form['numero_serie'],
+        numero_serie_i=request.form['numero_serie_i'],
+        nombre=request.form['nombre'],
+        tipo=request.form['tipo'],
+        fecha_entrega=datetime.strptime(request.form['fecha_entrega'], '%Y-%m-%d'),
+        fecha_recojida=datetime.strptime(request.form['fecha_recojida'], '%Y-%m-%d'),
+        estado=request.form['estado'],
+        ubicacion=request.form['ubicacion'],
+        observacion=request.form.get('observacion')
+    )
+    db.session.add(nuevo_producto)
+    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Añadió el producto Carrefour {nuevo_producto.nombre}",departamento="Carrefour")
+    db.session.add(movimiento)
+    db.session.commit()
+    return redirect(request.referrer)
+
+@app.route('/carrefour/editar/<int:id>', methods=['GET', 'POST'])
+@login_required
+def editar_producto_carrefour(id):
+    producto = Producto_Carrefour.query.get_or_404(id)
+    if request.method == 'POST':
+        producto.numero_serie = request.form['numero_serie']
+        producto.numero_serie_i = request.form['numero_serie_i']
+        producto.nombre = request.form['nombre']
+        producto.tipo = request.form['tipo']
+        producto.fecha_entrega = datetime.strptime(request.form['fecha_entrega'], '%Y-%m-%d')
+        producto.fecha_recojida = datetime.strptime(request.form['fecha_recojida'], '%Y-%m-%d')
+        producto.estado = request.form['estado']
+        producto.ubicacion = request.form['ubicacion']
+        producto.observacion = request.form.get('observacion')
+        movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Editó el producto Carrefour {producto.nombre}",departamento="Carrefour")
+        db.session.add(movimiento)
+        db.session.commit()
+        return redirect(url_for('ver_carrefour'))
+    return render_template(request.referrer, producto=producto)
+
+@app.route('/carrefour/eliminar/<int:id>', methods=['POST'])
+@login_required
+def eliminar_producto_carrefour(id):
+    producto = Producto_Carrefour.query.get_or_404(id)
+    db.session.delete(producto)
+    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Eliminó el producto Carrefour {producto.nombre}",departamento="Carrefour")
+    db.session.add(movimiento)
+    db.session.commit()
+    return redirect(request.referrer)
+
 @app.route('/inventario/eliminar/<int:id>', methods=['POST'])
 @login_required
 def eliminar_producto(id):
