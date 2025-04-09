@@ -80,6 +80,30 @@
                     <i class="fas fa-plus mr-2"></i> Nueva Categoría
                 </button>
             </div>
+            <!--Seccion carrefour-->
+            <div class="mt-10 mb-4" onclick="window.location.href='{{ url_for('ver_carrefour') }}'">
+                <h2 class="text-2xl font-bold text-yellow-300 text-center mb-6">Sección Carrefour</h2>
+                <div class="max-w-3xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer">
+                    <div class="bg-gradient-to-r from-blue-700  to-red-600 h-8"></div>
+                    <div class="p-6 ">
+                        <div class="flex flex-col md:flex-row items-center  justify-between">
+                            <div class="flex items-center mb-4 md:mb-0">
+                                <div class="bg-blue-700 p-4 rounded-full mr-4">
+                                    <i class="fas fa-shopping-cart text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-blue-800 font-bold text-xl">Carrefour</h3>
+                                    <p class="text-gray-700">Oui, je m'appelle Carrefour</p>
+                                </div>
+                            </div>
+                            <div class="text-center md:text-right">
+                                <p class="font-bold text-gray-800">Productos</p>
+                                <p class="text-3xl font-bold text-blue-700">{{ productos_carrefour|length }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         </div>
         {% include 'modales.html' %}

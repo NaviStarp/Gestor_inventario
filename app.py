@@ -1,16 +1,17 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from flask import jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf import FlaskForm
 from wtforms import StringField, DateField, SelectField, IntegerField, SubmitField
 from wtforms.validators import DataRequired, NumberRange
 import csv
 import os
+from enum import Enum
 from flask import flash
 from functools import wraps
 from flask import session
+
 # Se crea la instancia de la aplicación Flask
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Necesario para usar sesiones
@@ -48,6 +49,23 @@ class Categoria(db.Model):
     
     def __repr__(self):
         return f'<Categoria {self.id}>'
+    
+class Carrefour_Estado(Enum):
+    Disponible = 'Disponible'
+    OnTour = 'On Tour'
+    NoDisponible = 'No Disponible'    
+
+class Producto_Carrefour(db.Model):
+    id = db.Column(db.Integer, primary_key=True,auto_increment=True)
+    numero_serie = db.Column(db.String(100), nullable=True)
+    numero_serie_i = db.Column(db.String(100), nullable=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    tipo = db.Column(db.String(100), nullable=False)
+    fecha_entrega = db.Column(db.Date, nullable=True)
+    fecha_recojida = db.Column(db.Date, nullable=True)
+    estado = db.Column(db.Enum(Carrefour_Estado), nullable=False)
+    ubicacion = db.Column(db.String(100), nullable=False)
+    observacion = db.Column(db.String(255), nullable=True)
 
 class Movimiento(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -93,7 +111,7 @@ class Alquiler(db.Model):
     cliente = db.relationship('Cliente', backref=db.backref('alquileres', lazy=True))
     fecha_entrega = db.Column(db.Date, nullable=False)
     fecha_recojida = db.Column(db.Date, nullable=False)
-    estado = db.Column(db.String(100), nullable=False)  # Corregido: Era "Estado" (inconsistente)
+    estado = db.Column(db.String(100), nullable=False) 
     tipo = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
@@ -184,7 +202,8 @@ def inicio():
     clientes = Cliente.query.all()
     inventarios = Inventario.query.all()
     alquileres = Alquiler.query.all()
-    return render_template('index.html', alquileres=alquileres, categorias=categorias, clientes=clientes, inventarios=inventarios)
+    productos_carrefour = Producto_Carrefour.query.all()
+    return render_template('index.html', alquileres=alquileres, categorias=categorias, clientes=clientes, inventarios=inventarios,productos_carrefour=productos_carrefour)
 @app.route('/movimientos')
 @login_required
 def movimientos():
@@ -200,7 +219,12 @@ def registro():
             return render_template('registro.html', error="El usuario ya existe")
         contraseña_record = Contraseña.query.first()
         if contraseña_record:
-            # Use the correct order of arguments
+            # Verificar la contraseña de administrador
+            # Si la contraseña de administrador no está vacía
+            # y se proporciona una contraseña en el formulario
+            # y coincide con la contraseña de administrador
+            # entonces se permite el registro
+            # de un nuevo usuario
             if check_password_hash(contraseña_record.contraseña, request.form['contraseña_admin']):
                 nuevo_usuario = Usuario(
                     nombre=request.form['nombre'],
@@ -284,6 +308,12 @@ def ver_categorias():
     for categoria in categorias:
         categoria.productos = Inventario.query.filter_by(categoria_id=categoria.id).count()
     return render_template('categorias.html', categorias=categorias)
+
+@app.route('/carrefour', methods=['GET'])
+@login_required
+def ver_carrefour():
+    productos = Producto_Carrefour.query.all()
+    return render_template('carrefour.html', productos=productos)
 
 @app.route('/inventario/eliminar/<int:id>', methods=['POST'])
 @login_required

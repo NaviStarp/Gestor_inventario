@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Inventario Carrefour</title>
+    <link rel="icon" href="{{ url_for('static', filename='img/logo.ico') }}" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fuente.css') }}">
+</head>
+<body class="bg-gray-900 min-h-screen flex flex-col">
+    {% include 'header.html' %}
+    <script src="{{url_for('static', filename='js/carrefour.js')}}"></script>
+    <main class="container mx-auto px-4 py-6 flex-grow">
+        <div class="rounded-lg shadow-md p-6 bg-gray-800">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-700 to-red-600 bg-clip-text text-transparent">Inventario de Productos Carrefour</h1>
+                <div class="flex items-center space-x-4">
+                    <span class="bg-gradient-to-r from-blue-700 to-red-600 text-white font-bold py-2 px-4 rounded">
+                        <i class="fas fa-plus mr-2"></i>Crear Producto
+                    </span>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white rounded-lg">
+                    <thead>
+                        <tr class="bg-gradient-to-r from-blue-700  to-red-600 text-white uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-center">ID</th>
+                            <th class="py-3 px-6 text-center">Nombre</th>
+                            <th class="py-3 px-6 text-center">Tipo</th>
+                            <th class="py-3 px-6 text-center">N° Serie</th>
+                            <th class="py-3 px-6 text-center">N° Serie Interno</th>
+                            <th class="py-3 px-6 text-center">Estado</th>
+                            <th class="py-3 px-6 text-center">Ubicación</th>
+                            <th class="py-3 px-6 text-center">Fecha Entrega</th>
+                            <th class="py-3 px-6 text-center">Fecha Recogida</th>
+                            <th class="py-3 px-6 text-center">Observación</th>
+                            <th class="py-3 px-6 text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-white text-sm font-light">
+                        {% for producto in productos %}
+                        <tr class="border-b bg-gray-800 border-green-100 hover:bg-green-500">
+                            <td class="py-3 px-6 text-center">{{ producto.id }}</td>
+                            <td class="py-3 px-6 text-center">{{ producto.nombre }}</td>
+                            <td class="py-3 px-6 text-center">{{ producto.tipo }}</td>
+                            <td class="py-3 px-6 text-center">{{ producto.numero_serie }}</td>
+                            <td class="py-3 px-6 text-center">{{ producto.numero_serie_i }}</td>
+                            <td class="py-3 px-6 text-center">
+                                <button data-id="{{ producto.id }}" onclick="cambiarEstado('{{ producto.id }}')" class="px-2 py-1 rounded-full min-w-24 
+                                    {% if producto.estado.value == 'Disponible' %}bg-green-500 text-white
+                                    {% elif producto.estado.value == 'On Tour' %}bg-blue-500 text-white
+                                    {% elif producto.estado.value == 'No Disponible' %}bg-red-500 text-white
+                                    {% endif %}">
+                                    {{ producto.estado.value }}
+                                </button>
+                            </td>
+                            <td class="py-3 px-6 text-center overflow-x-scroll">{{ producto.ubicacion }}</td>
+                            <td class="py-3 px-6 text-center">{{ producto.fecha_entrega.strftime('%d/%m/%Y') if producto.fecha_entrega else 'N/A' }}</td>
+                            <td class="py-3 px-6 text-center">{{ producto.fecha_recojida.strftime('%d/%m/%Y') if producto.fecha_recojida else 'N/A' }}</td>
+                            <td class="py-3 px-6 text-center overflow-x-scroll">{{ producto.observacion }}</td>
+                            <td class="py-3 px-6 text-center">
+                                <div class="flex item-center justify-center">
+                                    <a onclick="event.stopPropagation();editar_producto('{{ producto.id }}', '{{ producto.nombre }}', '{{ producto.tipo }}', 
+                                    '{{ producto.numero_serie }}', '{{ producto.numero_serie_i }}', '{{ producto.estado.value }}', 
+                                    '{{ producto.ubicacion }}', '{{ producto.fecha_entrega.strftime('%Y-%m-%d') if producto.fecha_entrega else '' }}', 
+                                    '{{ producto.fecha_recojida.strftime('%Y-%m-%d') if producto.fecha_recojida else '' }}', 
+                                    '{{ producto.observacion }}')" class="text-yellow-600 hover:text-yellow-800 mr-3">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ url_for('eliminar_producto', id=producto.id) }}" onclick="event.stopPropagation();return confirm('¿Está seguro que desea eliminar este producto?')" method="POST" style="display:inline;">
+                                        <button type="submit" class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    {% include 'modales.html' %}
+    {% include 'footer.html' %}
+    <script src="{{ url_for('static', filename='js/modales.js') }}"></script>
+    <script>
+    function editar_producto(id, nombre, tipo, numero_serie, numero_serie_i, estado, ubicacion, fecha_entrega, fecha_recojida, observacion) {
+            openModal('modal-inventario');
+
+            document.getElementById('nombre').value = nombre;
+            document.getElementById('tipo').value = tipo;
+            document.getElementById('numero_serie').value = numero_serie;
+            document.getElementById('numero_serie_i').value = numero_serie_i;
+            document.getElementById('estado').value = estado;
+            document.getElementById('ubicacion').value = ubicacion;
+            document.getElementById('fecha_entrega').value = fecha_entrega;
+            document.getElementById('fecha_recojida').value = fecha_recojida;
+            document.getElementById('observacion').value = observacion;
+            document.querySelector('#modal-inventario form').action = `/carrefour/editar/${id}`;
+        }
+        
+        function cambiarEstado(id) {
+            // Update state locally
+            const button = document.querySelector(`button[data-id="${id}"]`);
+            let estado = button.textContent.trim();
+            
+            if (estado == 'Disponible') {
+                estado = 'On Tour';
+                button.className = 'px-2 py-1 rounded-full min-w-24 bg-blue-500 text-white';
+            } else if (estado == 'On Tour') {
+                estado = 'No Disponible';
+                button.className = 'px-2 py-1 rounded-full min-w-24 bg-red-500 text-white';
+            } else if (estado == 'No Disponible') {
+                estado = 'Disponible';
+                button.className = 'px-2 py-1 rounded-full min-w-24 bg-green-500 text-white';
+            }
+            button.textContent = estado;
+
+            // Send the update to the server
+            fetch(`/carrefour/cambiar-estado/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    estado: estado
+                })
+            }).then(response => {
+                if (!response.ok) {
+                    console.error('Error al actualizar el estado en el servidor');
+                }
+            }).catch(error => {
+                console.error('Error de red:', error);
+            });
+        }
+    </script>
+</body>
+</html>
