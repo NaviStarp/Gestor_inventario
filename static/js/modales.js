@@ -1,4 +1,4 @@
-        // Funciones para manejar los modales
+      // Funciones para manejar los modales
         function openModal(modalId) {
             try {
                 document.getElementById('modal-overlay').classList.remove('hidden');
@@ -27,9 +27,10 @@
             btnOpenCliente: document.getElementById('btn-open-cliente'),
             btnOpenInventario: document.getElementById('btn-open-inventario'),
             btnOpenAlquiler: document.getElementById('btn-open-alquiler'),
-            btnOpenCategoria: document.getElementById('btn-open-categoria')
+            btnOpenCategoria: document.getElementById('btn-open-categoria'),
+            btnOpenCarrefour: document.getElementById('btn-open-carrefour')
         };
-
+        console.log(buttons);
         if (buttons.btnOpenCliente) {
             buttons.btnOpenCliente.addEventListener('click', function() {
                 try {
@@ -68,6 +69,16 @@
                     openModal('modal-categoria');
                 } catch (error) {
                     console.error('Error al abrir el modal de categoría:', error);
+                }
+            });
+        }
+        if(buttons.btnOpenCarrefour){
+            buttons.btnOpenCarrefour.addEventListener('click', function() {
+                console.log('hola');
+                try {
+                    openModal('modal-carrefour');
+                } catch (error) {
+                    console.error('Error al abrir el modal de Carrefour:', error);
                 }
             });
         }

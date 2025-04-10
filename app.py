@@ -319,7 +319,7 @@ def ver_carrefour():
 @login_required
 def crear_producto_carrefour():
     nuevo_producto = Producto_Carrefour(
-        numero_serie=request.form['numero_serie'],
+        numero_serie=request.form['numero_serie_f'],
         numero_serie_i=request.form['numero_serie_i'],
         nombre=request.form['nombre'],
         tipo=request.form['tipo'],
@@ -354,6 +354,39 @@ def editar_producto_carrefour(id):
         db.session.commit()
         return redirect(url_for('ver_carrefour'))
     return render_template(request.referrer, producto=producto)
+
+@app.route('/carrefour/editar_campo/<int:id>', methods=['POST'])
+@login_required
+def editar_campo_producto_carrefour(id):
+    producto = Producto_Carrefour.query.get_or_404(id)
+    peticion = request.get_json()
+    if not peticion:
+        return "No se recibieron datos JSON", 400
+    # Obtener el campo y el valor del JSON
+    try:
+        peticion = request.get_json()
+    except Exception as e:
+        print(f"Error al obtener datos JSON: {e}")
+        return "Error al obtener datos JSON", 400
+    print(peticion)
+    campo = peticion.get('campo')
+    valor = peticion.get('valor')    
+    print(campo, valor)
+    # Actualizar el campo específico
+    if hasattr(producto, campo):
+        try:
+            setattr(producto, campo, valor)
+            db.session.commit()
+            movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Editó el campo {campo} del producto Carrefour {producto.nombre}",departamento="Carrefour")
+            db.session.add(movimiento)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error al actualizar el campo {campo}: {e}")
+            return "Error al actualizar el campo", 500
+        return redirect(request.referrer)
+    else:
+        return "Campo no válido", 400
 
 @app.route('/carrefour/eliminar/<int:id>', methods=['POST'])
 @login_required
