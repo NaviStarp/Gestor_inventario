@@ -30,6 +30,13 @@
                 <a href="{{ url_for('importar_vista') }}" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                     <i class="fas fa-file-import mr-2"></i>Importar
                 </a>
+                <div class="flex justify-between items-center" id="borrar_seleccionados">
+                    <button 
+                    type="button" id="toggleBorrar" onclick="seleccionarBorrar()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        <i class="fas fa-trash mr-2"></i>Seleccionar para Borrar
+                        </button>
+                </div>
+               
             </div>
                 {% endif %}
             </div>
@@ -62,6 +69,7 @@
                     </div>
                 </form>
             </div>
+          
             <div class="overflow-x-auto">
                 <table class="min-w-full bg-white rounded-lg">
                     <thead>
@@ -205,6 +213,89 @@
             }).catch(error => {
             console.error('Error de red:', error);
             });
+        }
+        function seleccionarBorrar() {
+            const rows = document.querySelectorAll('tbody tr');
+            const contenedorPrincipol = document.getElementById('borrar_seleccionados');
+            rows.forEach(row => {
+            row.classList.toggle('bg-red-500');
+            row.onclick = function () {
+                row.classList.toggle('bg-red-700');
+                row.dataset.selected = row.dataset.selected === 'true' ? 'false' : 'true';
+            };
+            });
+            if(document.getElementById('eliminar-seleccionados')){
+                document.getElementById('eliminar-seleccionados').remove();
+                const toggleButton = document.createElement('button');
+                toggleButton.id = 'toggleBorrar';
+                toggleButton.textContent = 'Seleccionar para Borrar';
+                toggleButton.textContent = 'Eliminar Seleccionados';
+                toggleButton.className = 'bg-red-600 hover:bg-red-700 text-white font-bold py-2  px-4 rounded focus:outline-none focus:shadow-outline mt-4';
+                toggleButton.onclick = seleccionarBorrar();
+                contenedorPrincipol.appendChild(toggleButton);
+                return;
+            }else{
+                document.getElementById('toggleBorrar').remove();
+            }
+
+            const deleteButton = document.createElement('button');
+            deleteButton.id = 'eliminar-seleccionados';
+            deleteButton.textContent = 'Eliminar Seleccionados';
+            deleteButton.className = 'bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline';
+            deleteButton.onclick = async function () {
+            const selectedRows = Array.from(document.querySelectorAll('tbody tr[data-selected="true"]'));
+            const idsToDelete = selectedRows.map(row => {
+                return row.querySelector('button[data-id]').getAttribute('data-id');
+            });
+
+            if (idsToDelete.length > 0 && confirm('¿Está seguro que desea eliminar los productos seleccionados?')) {
+                for (const id of idsToDelete) {
+                try {
+                    const response = await fetch(`/inventario/eliminar/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ _method: 'DELETE' })
+                    });
+
+                    if (!response.ok) {
+                    console.error(`Error al eliminar el producto con ID ${id}`);
+                    }
+                } catch (error) {
+                    console.error('Error de red:', error);
+                }
+                }
+
+                selectedRows.forEach(row => {
+                row.remove();
+                });
+            }
+            }; 
+            const cancelarButton = document.createElement('button');
+            cancelarButton.textContent = 'Cancelar';
+            cancelarButton.className = 'bg-gray-600 hover:bg-gray-700 text-white mr-2 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline';
+            cancelarButton.onclick = function () {
+                const rows = document.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    row.classList.remove('bg-red-500');
+                    row.dataset.selected = 'false';
+                });
+                deleteButton.remove();
+                cancelarButton.remove();
+                const toggleButton = document.createElement('button');
+                toggleButton.id = 'toggleBorrar';
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-trash mr-2';
+                toggleButton.appendChild(icon);
+                toggleButton.textContent = '🗑️ Seleccionar para Borrar';
+                toggleButton.className = 'bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline';
+                toggleButton.onclick = seleccionarBorrar;
+                contenedorPrincipol.appendChild(toggleButton);
+            };
+            contenedorPrincipol.appendChild(cancelarButton);
+
+            contenedorPrincipol.appendChild(deleteButton);
         }
 
         </script>
