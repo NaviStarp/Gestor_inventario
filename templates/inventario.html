@@ -279,6 +279,7 @@
                 const rows = document.querySelectorAll('tbody tr');
                 rows.forEach(row => {
                     row.classList.remove('bg-red-500');
+                    row.classList.remove('bg-red-700');
                     row.dataset.selected = 'false';
                 });
                 deleteButton.remove();
