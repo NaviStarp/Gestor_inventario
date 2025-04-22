@@ -662,7 +662,7 @@ def editar_inventario(id):
             data = request.get_json()
         except Exception as e:
             print(f"Error al obtener datos JSON: {e}")
-            data = request.form
+        data = request.form
         inventario.numero = data.get('numero', '')
         inventario.modelo = data.get('modelo', '')
         inventario.marca = data.get('marca', '')
