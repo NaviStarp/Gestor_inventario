@@ -1,9 +1,10 @@
 clicado = false
 document.body.addEventListener('click', (event) => {
     if (!clicado) {
+        console.log('clicado');
         const audio = document.createElement('audio');
         console.log('audio');
-        audio.src = "/static/mp3/carrefour.mp3";
+        audio.src = "/static/mp3/cancion_carrefour.mp3";
         audio.loop = true;
         audio.volume = 1;
         audio.play();
@@ -11,7 +12,7 @@ document.body.addEventListener('click', (event) => {
 
         const audio2 = document.createElement('audio');
         console.log('audio2');
-        audio2.src = "/static/mp3/mercadona.mp3";
+        audio2.src = "/static/mp3/mercaona.mp3";
         audio2.loop = true;
         audio2.volume = 1;
         audio2.play();

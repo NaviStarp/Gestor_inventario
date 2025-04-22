@@ -237,9 +237,11 @@
             });
         }
         function seleccionarBorrar() {
+            seleccionando = true;
             const rows = document.querySelectorAll('tbody tr');
             const contenedorPrincipol = document.getElementById('borrar_seleccionados');
             rows.forEach(row => {
+            row.classList.add('cursor-pointer');
             row.classList.toggle('bg-red-500');
             row.onclick = function () {
                 row.classList.toggle('bg-red-700');
@@ -300,6 +302,8 @@
             cancelarButton.onclick = function () {
                 const rows = document.querySelectorAll('tbody tr');
                 rows.forEach(row => {
+                    row.onclick = null;
+                    row.classList.remove('cursor-pointer');
                     row.classList.remove('bg-red-500');
                     row.classList.remove('bg-red-700');
                     row.dataset.selected = 'false';
