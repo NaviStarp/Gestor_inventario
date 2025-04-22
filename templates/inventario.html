@@ -87,7 +87,7 @@
                             <td class="py-3 px-6 text-center">{{ producto.categoria.nombre }}</td>
                             <td class="py-3 px-6 text-center">{{ producto.tipo }}</td>
                             <td class="py-3 px-6 text-center">{{ producto.marca }}</td>
-                            <td class="py-3 px-6 text-center">{{ producto.modelo }}</td>
+                            <td class="py-3 px-6 text-center overflow-x-scroll">{{ producto.modelo }}</td>
                             <td class="py-3 px-6 text-center">
                                 <button data-id="{{ producto.id }}" onclick="cambiarEstado('{{ producto.id }}', '{{ producto.numero }}', '{{ producto.marca }}', '{{ producto.modelo }}', 
                                     '{{ producto.estado }}', '{{ producto.ubicacion }}', '{{ producto.observacion }}', '{{ producto.numero_serie_f }}', 
