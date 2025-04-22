@@ -90,7 +90,7 @@
                     </thead>
                     <tbody class="text-white text-sm font-light">
                         {% for producto in inventarios %}
-                        <tr class="border-b bg-gray-800 border-green-100 hover:bg-green-500">
+                        <tr class="border-b bg-gray-800 border-green-100 hover:bmin-w-24g-green-500">
                             <td class="py-3 px-6 text-center">{{ producto.numero }}</td>
                             <td class="py-3 px-6 text-center">
                                 {% if producto.categoria.nombre == 'SONIDO' %}
@@ -102,13 +102,13 @@
                                 {% elif producto.categoria.nombre == 'ESTRUCTURAS' %}
                                     <span class="bg-slate-300 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'BACKLINE' %}
-                                    <span class="bg-red-700 text-white px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
+                                    <span class="bg-red-950 text-white px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'VARIOS' %}
                                     <span class="bg-stone-50 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'ELECTRICIDAD' %}
-                                    <span class="bg-lime-400 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
+                                    <span class="bg-green-400 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'FX' %}
-                                    <span class="bg-red-400 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap">{{ producto.categoria.nombre }}</span>
+                                    <span class="bg-red-700 text-white px-2 py-1 rounded-full min-w-24 whitespace-nowrap">{{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'EFECTOS DE LUCES' %}
                                     <span class="bg-orange-400 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap">{{ producto.categoria.nombre }}</span>
                                 {% else %}
