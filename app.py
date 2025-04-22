@@ -340,7 +340,7 @@ def crear_producto_carrefour():
 def editar_producto_carrefour(id):
     producto = Producto_Carrefour.query.get_or_404(id)
     if request.method == 'POST':
-        producto.numero_serie = request.form['numero_serie']
+        producto.numero_serie = request.form['numero_serie_f']
         producto.numero_serie_i = request.form['numero_serie_i']
         producto.nombre = request.form['nombre']
         producto.tipo = request.form['tipo']
@@ -540,7 +540,7 @@ def importar_inventario():
                             modelo=row[3] if row[3] else '',
                             estado=row[4] if row[4] else '',
                             ubicacion=row[5] if row[5] else '',
-                            obsern=row[6] if row[6] else '',
+                            observacion=row[6] if row[6] else '',
                             numero_serie_f=row[7] if row[7] else '',
                             numero_serie_i=row[8] if row[8] else '',
                             tipo=row[10] if row[10] else '?',
