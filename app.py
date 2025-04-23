@@ -677,7 +677,6 @@ def editar_inventario(id):
             data = request.get_json()
         except Exception as e:
             print(f"Error al obtener datos JSON: {e}")
-        data = request.form
         inventario.numero = data.get('numero', '')
         inventario.modelo = data.get('modelo', '')
         inventario.marca = data.get('marca', '')
@@ -689,6 +688,7 @@ def editar_inventario(id):
         inventario.cliente = data.get('cliente_id', None)
         inventario.observacion = data.get('observacion', '')
         inventario.categoria_id = data.get('categoria_id', 1)
+        print(inventario.categoria_id, inventario.numero, inventario.marca, inventario.modelo, inventario.estado, inventario.tipo, inventario.numero_serie_f, inventario.numero_serie_i, inventario.ubicacion, inventario.cliente, inventario.observacion)
         movimiento = Movimiento(usuario_id=session['user_id'],tipo=tipo_movimiento.Editar,acción=f"Editó el producto {inventario.numero} de la marca {inventario.marca}",departamento="Inventario")
         db.session.add(movimiento)
         db.session.commit()
