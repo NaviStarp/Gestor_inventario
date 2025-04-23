@@ -476,7 +476,7 @@ def ver_categoria(id):
     form = filtroInventario()
     
     # Iniciar con la consulta base filtrada por la categoría
-    query = Inventario.query.filter_by(categoria_id=id)
+    query = Inventario.query.filter_by(categoria_id=id).order_by(Inventario.tipo, Inventario.marca, Inventario.numero)
     
     # Pre-seleccionar la categoría en el formulario
     form.categoria.data = id
