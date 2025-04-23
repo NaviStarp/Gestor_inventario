@@ -451,7 +451,7 @@ def ver_inventario():
     form = filtroInventario()
     
     # Iniciar con la consulta base
-    query = Inventario.query
+    query = Inventario.query.order_by(Inventario.marca, Inventario.numero)
     # Procesar el formulario solo si se envía como POST
     if request.method == 'POST' and form.validate():
         if form.estado.data:
