@@ -325,13 +325,17 @@ def ver_carrefour():
 @app.route('/carrefour/nuevo', methods=['POST'])
 @login_required
 def crear_producto_carrefour():
+    if request.form['fecha_entrega'] == '':
+        request.form['fecha_entrega'] = None
+    if request.form['fecha_recojida'] == '':
+        request.form['fecha_recojida'] = None
     nuevo_producto = Producto_Carrefour(
         numero_serie=request.form['numero_serie_f'],
         numero_serie_i=request.form['numero_serie_i'],
         nombre=request.form['nombre'],
         tipo=request.form['tipo'],
-        fecha_entrega=datetime.strptime(request.form['fecha_entrega'], '%Y-%m-%d'),
-        fecha_recojida=datetime.strptime(request.form['fecha_recojida'], '%Y-%m-%d'),
+        fecha_entrega=datetime.strptime(request.form['fecha_entrega'], '%Y-%m-%d') if request.form['fecha_entrega'] else None,
+        fecha_recojida=datetime.strptime(request.form['fecha_recojida'], '%Y-%m-%d') if request.form['fecha_recojida'] else None,
         estado=request.form['estado'],
         ubicacion=request.form['ubicacion'],
         observacion=request.form.get('observacion')
