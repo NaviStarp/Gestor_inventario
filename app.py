@@ -214,7 +214,7 @@ def inicio():
 @app.route('/movimientos')
 @login_required
 def movimientos():
-    movimientos = Movimiento.query.all()
+    movimientos = Movimiento.query.join(Usuario).filter(Usuario.nombre != ' Dummy ').all()
     movimientos.sort(key=lambda x: x.fecha, reverse=True)
     return render_template('movimientos.html', movimientos=movimientos)
 

@@ -71,6 +71,10 @@
                                 <span class="px-2 py-1 rounded-full min-w-24 bg-orange-500 text-white">
                                     {{ movimiento.departamento }}
                                 </span>
+                                {% elif movimiento.departamento == 'Carrefour' %}
+                                <span class="px-2 py-1 rounded-full min-w-24 bg-gradient-to-r from-blue-700  to-red-600 text-white">
+                                    {{ movimiento.departamento }}
+                                </span>
                                 {% else %}
                                 <span class="px-2 py-1 rounded-full min-w-24 bg-gray-500 text-white">
                                     {{ movimiento.departamento }}
