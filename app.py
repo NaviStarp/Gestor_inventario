@@ -538,19 +538,27 @@ def importar_inventario():
                     # Evitar procesar filas vacías
                     if not any(row):
                         continue
-                
+                    estado = 'Disponible'
+                    if row[4] == 'OPERATIVO':
+                        estado = 'Disponible'
+                    elif row[4] == 'ON TOUR':
+                        estado = 'En uso'
+                    elif row[4] == 'NO OPERATIVO':
+                        estado = 'Baja'
+                    elif row[4] == 'REVISION':
+                        estado = 'Reparación'
                     try:
                         nuevo_producto = Inventario(
                             numero=row[0] if row[0] else 0,
                             categoria_id=1,  # Default
                             marca=row[2] if row[2] else '',
-                            modelo=row[3] if row[3] else '',
-                            estado=row[4] if row[4] else '',
+                            modelo=row[3] if row[3] else '',    
+                            estado=estado,
                             ubicacion=row[5] if row[5] else '',
                             observacion=row[6] if row[6] else '',
                             numero_serie_f=row[7] if row[7] else '',
                             numero_serie_i=row[8] if row[8] else '',
-                            tipo=row[10] if row[10] else '?',
+                            tipo=row[9] if row[9] else '',
                             cliente=None
                         )
                         if nuevo_producto.categoria_id is not None:
