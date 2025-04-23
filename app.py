@@ -11,7 +11,7 @@ from enum import Enum
 from flask import flash
 from functools import wraps
 from flask import session
-
+from flask_migrate import Migrate
 # Se crea la instancia de la aplicación Flask
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Necesario para usar sesiones
@@ -20,6 +20,7 @@ app.secret_key = 'your_secret_key'  # Necesario para usar sesiones
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///inventario.db'  
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+migrate = Migrate(app,db)
 
 # Se crea la tabla Inventario
 class Inventario(db.Model): 
@@ -67,11 +68,17 @@ class Producto_Carrefour(db.Model):
     ubicacion = db.Column(db.String(100), nullable=False)
     observacion = db.Column(db.String(255), nullable=True)
 
+class tipo_movimiento(Enum):
+    Añadir = 'Añadir'
+    Editar = 'Editar'
+    Eliminar = 'Eliminar'
+
 class Movimiento(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     usuario = db.relationship('Usuario', backref=db.backref('movimientos', lazy=True))
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
     fecha = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    tipo = db.Column(db.Enum(tipo_movimiento), nullable=True)
     acción = db.Column(db.String(100), nullable=False)
     departamento = db.Column(db.String(100), nullable=False)
 
@@ -275,7 +282,7 @@ def editar_categoria():
     categoria = Categoria.query.get_or_404(request.form['id'])
     categoria.nombre = request.form['nombre']
     categoria.descripcion = request.form.get('descripcion')
-    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Editó la categoría {categoria.nombre}",departamento="Categorías")
+    movimiento = Movimiento(usuario_id=session['user_id'],tipo=tipo_movimiento.Editar,acción=f"Editó la categoría {categoria.nombre}",departamento="Categorías")
     db.session.add(movimiento)
     db.session.commit()
     return redirect(request.referrer)
@@ -285,7 +292,7 @@ def editar_categoria():
 def eliminar_categoria(id):
     Inventario.query.filter_by(categoria_id=id).delete()
     categoria = Categoria.query.get_or_404(id)
-    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Eliminó la categoría {categoria.nombre}",departamento="Categorías")
+    movimiento = Movimiento(usuario_id=session['user_id'],tipo=tipo_movimiento.Eliminar,acción=f"Eliminó la categoría {categoria.nombre}",departamento="Categorías")
     db.session.add(movimiento)
     db.session.delete(categoria)
     db.session.commit()
@@ -296,7 +303,7 @@ def eliminar_categoria(id):
 def eliminar_cliente(id):
     cliente = Cliente.query.get_or_404(id)
     db.session.delete(cliente)
-    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Eliminó el cliente {cliente.nombre}",departamento="Clientes")
+    movimiento = Movimiento(usuario_id=session['user_id'],tipo=tipo_movimiento.Eliminar,acción=f"Eliminó el cliente {cliente.nombre}",departamento="Clientes")
     db.session.add(movimiento)
     db.session.commit()
     return redirect(request.referrer)
@@ -330,7 +337,7 @@ def crear_producto_carrefour():
         observacion=request.form.get('observacion')
     )
     db.session.add(nuevo_producto)
-    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Añadió el producto Carrefour {nuevo_producto.nombre}",departamento="Carrefour")
+    movimiento = Movimiento(usuario_id=session['user_id'],tipo=tipo_movimiento.Añadir,acción=f"Añadió el producto Carrefour {nuevo_producto.nombre}",departamento="Carrefour")
     db.session.add(movimiento)
     db.session.commit()
     return redirect(request.referrer)
@@ -349,7 +356,7 @@ def editar_producto_carrefour(id):
         producto.estado = request.form['estado']
         producto.ubicacion = request.form['ubicacion']
         producto.observacion = request.form.get('observacion')
-        movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Editó el producto Carrefour {producto.nombre}",departamento="Carrefour")
+        movimiento = Movimiento(usuario_id=session['user_id'],tipo=tipo_movimiento.Editar,acción=f"Editó el producto Carrefour {producto.nombre}",departamento="Carrefour")
         db.session.add(movimiento)
         db.session.commit()
         return redirect(url_for('ver_carrefour'))
@@ -377,7 +384,7 @@ def editar_campo_producto_carrefour(id):
         try:
             setattr(producto, campo, valor)
             db.session.commit()
-            movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Editó el campo {campo} del producto Carrefour {producto.nombre}",departamento="Carrefour")
+            movimiento = Movimiento(usuario_id=session['user_id'],tipo=tipo_movimiento.Editar,acción=f"Editó el campo {campo} del producto Carrefour {producto.nombre}",departamento="Carrefour")
             db.session.add(movimiento)
             db.session.commit()
         except Exception as e:
@@ -393,7 +400,7 @@ def editar_campo_producto_carrefour(id):
 def eliminar_producto_carrefour(id):
     producto = Producto_Carrefour.query.get_or_404(id)
     db.session.delete(producto)
-    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Eliminó el producto Carrefour {producto.nombre}",departamento="Carrefour")
+    movimiento = Movimiento(usuario_id=session['user_id'],tipo=tipo_movimiento.Eliminar,acción=f"Eliminó el producto Carrefour {producto.nombre}",departamento="Carrefour")
     db.session.add(movimiento)
     db.session.commit()
     return redirect(request.referrer)
@@ -409,7 +416,7 @@ def eliminar_producto(id):
     for alquiler in alquileres:
         db.session.delete(alquiler)
     db.session.delete(inventario)
-    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Eliminó el producto {inventario.numero}",departamento="Inventario")
+    movimiento = Movimiento(usuario_id=session['user_id'],tipo=tipo_movimiento.Eliminar,acción=f"Eliminó el producto {inventario.numero}",departamento="Inventario")
     db.session.add(movimiento)
     db.session.commit()
     return redirect(request.referrer)
@@ -419,7 +426,7 @@ def eliminar_producto(id):
 def eliminar_alquiler(id):
     alquiler = Alquiler.query.get_or_404(id)
     db.session.delete(alquiler)
-    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Eliminó el alquiler {alquiler.id}",departamento="Alquileres")
+    movimiento = Movimiento(usuario_id=session['user_id'],tipo=tipo_movimiento.Eliminar,acción=f"Eliminó el alquiler {alquiler.id}",departamento="Alquileres")
     db.session.add(movimiento)
     db.session.commit()
     return redirect(request.referrer)
@@ -559,7 +566,7 @@ def importar_inventario():
                 
                 # Commit una sola vez después de procesar todas las filas
                 if filas_procesadas > 0:
-                    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Importó {filas_procesadas} productos",departamento="Inventario")
+                    movimiento = Movimiento(usuario_id=session['user_id'],tipo=tipo_movimiento.Añadir,acción=f"Importó {filas_procesadas} productos",departamento="Inventario")
                     db.session.add(movimiento)
                     db.session.commit()
                     flash(f'Se importaron {filas_procesadas} productos correctamente', 'success')
@@ -606,7 +613,7 @@ def crear_producto():
         )
         categoria = Categoria.query.get(nuevo_producto.categoria_id)
         categoria.productos += 1
-        movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Añadió el producto {nuevo_producto.numero} de la marca {nuevo_producto.marca}",departamento="Inventario")
+        movimiento = Movimiento(usuario_id=session['user_id'],tipo=tipo_movimiento.Añadir,acción=f"Añadió el producto {nuevo_producto.numero} de la marca {nuevo_producto.marca}",departamento="Inventario")
         db.session.add(movimiento)
         db.session.add(nuevo_producto)
         db.session.commit()
@@ -631,7 +638,7 @@ def crear_cliente():
         id_cliente=request.form.get('id_cliente'),  # Cambiado a get para manejar None
         prioridad=request.form['prioridad']
     )
-    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Añadió el cliente {nuevo_cliente.nombre}",departamento="Clientes")
+    movimiento = Movimiento(usuario_id=session['user_id'],tipo=tipo_movimiento.Añadir,acción=f"Añadió el cliente {nuevo_cliente.nombre}",departamento="Clientes")
     db.session.add(movimiento)
     db.session.add(nuevo_cliente)
     db.session.commit()
@@ -646,7 +653,7 @@ def crear_categoria():
         descripcion=request.form.get('descripcion')
     )
     db.session.add(nueva_categoria)
-    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Añadió la categoría {nueva_categoria.nombre}",departamento="Categorías")
+    movimiento = Movimiento(usuario_id=session['user_id'],tipo=tipo_movimiento.Añadir,acción=f"Añadió la categoría {nueva_categoria.nombre}",departamento="Categorías")
     db.session.add(movimiento)
     db.session.commit()
     return redirect(request.referrer)
@@ -674,7 +681,7 @@ def editar_inventario(id):
         inventario.cliente = data.get('cliente_id', None)
         inventario.observacion = data.get('observacion', '')
         inventario.categoria_id = data.get('categoria_id', 1)
-        movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Editó el producto {inventario.numero} de la marca {inventario.marca}",departamento="Inventario")
+        movimiento = Movimiento(usuario_id=session['user_id'],tipo=tipo_movimiento.Editar,acción=f"Editó el producto {inventario.numero} de la marca {inventario.marca}",departamento="Inventario")
         db.session.add(movimiento)
         db.session.commit()
         return redirect(url_for('ver_inventario'))
@@ -692,7 +699,7 @@ def editar_cliente(id):
         cliente.dni = request.form['dni']
         cliente.telefono = request.form['telefono']
         cliente.prioridad = request.form['prioridad']
-        movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Editó el cliente {cliente.nombre}",departamento="Clientes")
+        movimiento = Movimiento(usuario_id=session['user_id'],tipo=tipo_movimiento.Editar,acción=f"Editó el cliente {cliente.nombre}",departamento="Clientes")
         db.session.add(movimiento)
         db.session.commit()
         return redirect(url_for('ver_clientes'))
@@ -711,7 +718,7 @@ def crear_alquiler():
         tipo=request.form['tipo']
     )
     db.session.add(nuevo_alquiler)
-    movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Añadió el alquiler {nuevo_alquiler.id}",departamento="Alquileres")
+    movimiento = Movimiento(usuario_id=session['user_id'],tipo=tipo_movimiento.Añadir,acción=f"Añadió el alquiler {nuevo_alquiler.id}",departamento="Alquileres")
     db.session.add(movimiento)
     db.session.commit()
     return redirect(request.referrer)
@@ -759,7 +766,7 @@ def editar_alquiler(id):
         alquiler.fecha_recojida = datetime.strptime(request.form['fecha_recojida'], '%Y-%m-%d')
         alquiler.estado = request.form['Estado']
         alquiler.tipo = request.form['tipo']
-        movimiento = Movimiento(usuario_id=session['user_id'],acción=f"Editó el alquiler {alquiler.id}",departamento="Alquileres")
+        movimiento = Movimiento(usuario_id=session['user_id'],tipo=tipo_movimiento.Editar,acción=f"Editó el alquiler {alquiler.id}",departamento="Alquileres")
         db.session.add(movimiento)
         db.session.commit()
         return redirect(url_for('ver_alquileres'))

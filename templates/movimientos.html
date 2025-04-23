@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro</title>
+    <title>Movimientos</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -24,6 +24,7 @@
                         <tr class="bg-pink-600 text-pink-200 uppercase text-sm leading-normal">
                             <th class="py-3 px-6 text-center">Usuario</th>
                             <th class="py-3 px-6 text-center">Fecha</th>
+                            <th class="py-3 px-6 text-center">Tipo</th>
                             <th class="py-3 px-6 text-center">Acción</th>
                             <th class="py-3 px-6 text-center">Departamento</th>
                         </tr>
@@ -33,6 +34,25 @@
                         <tr class="border-b bg-gray-800 border-pink-200 hover:bg-pink-500">
                             <td class="py-3 px-6 text-center">{{ movimiento.usuario.nombre }}</td>
                             <td class="py-3 px-6 text-center">{{ movimiento.fecha.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+                            <td class="py-3 px-6 text-center">
+                                {% if movimiento.tipo.value == 'Añadir' %}
+                                <span class="px-2 py-1 rounded-full min-w-24 bg-green-500 text-white">
+                                    {{ movimiento.tipo.value }}
+                                </span>
+                                {% elif movimiento.tipo.value == 'Editar' %}
+                                <span class="px-2 py-1 rounded-full min-w-24 bg-yellow-500 text-white">
+                                    {{ movimiento.tipo.value }}
+                                </span>
+                                {% elif movimiento.tipo.value == 'Eliminar' %}
+                                <span class="px-2 py-1 rounded-full min-w-24 bg-red-500 text-white">
+                                    {{ movimiento.tipo.value }}
+                                </span>
+                                {% else %}
+                                <span class="px-2 py-1 rounded-full min-w-24 bg-rose-500 text-white">
+                                    👍🏻
+                                </span>
+                                {% endif %}
+                            </td>
                             <td class="py-3 px-6 text-center">{{ movimiento.acción }}</td>
                             <td class="py-3 px-6 text-center">
                                 {% if movimiento.departamento == 'Clientes' %}
