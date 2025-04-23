@@ -791,5 +791,10 @@ if __name__ == '__main__':
     with app.app_context():
         #db.drop_all() # CUIDADO esto borra toda la base de datos
         db.create_all()
+        produtos = Inventario.query.filter_by(estado='Reparación').all() # TEMPORAL
+        for produto in produtos: # TEMPORAL
+            produto.estado = 'Revisión' # TEMPORAL
+            db.session.commit() # TEMPORAL
         Contraseña.create_default_password()
+
     app.run(host='0.0.0.0', port=80, debug=True)

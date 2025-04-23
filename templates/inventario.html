@@ -122,7 +122,7 @@
                                 <button data-id="{{ producto.id }}" onclick="cambiarEstado('{{ producto.id }}', '{{ producto.numero }}', '{{ producto.marca }}', '{{ producto.modelo }}', 
                                     '{{ producto.estado }}', '{{ producto.ubicacion }}', '{{ producto.observacion }}', '{{ producto.numero_serie_f }}', 
                                     '{{ producto.numero_serie_i }}', '{{ producto.categoria.id }}', '{{ producto.cliente.id if producto.cliente else '' }}', 
-                                    '{{ producto.tipo }}')" class="px-2 py-1 rounded-full min-w-24 {% if producto.estado == 'Disponible' %}bg-green-500 text-white{% elif producto.estado == 'En uso' %}bg-blue-500 text-white{% elif producto.estado == 'Reparación' %}bg-yellow-500 text-white{% elif producto.estado == 'Baja' %}bg-red-500 text-white{% endif %}">
+                                    '{{ producto.tipo }}')" class="px-2 py-1 rounded-full min-w-24 {% if producto.estado == 'Disponible' %}bg-green-500 text-white{% elif producto.estado == 'En uso' %}bg-blue-500 text-white{% elif producto.estado == 'Revisión' %}bg-yellow-500 text-white{% elif producto.estado == 'Baja' %}bg-red-500 text-white{% endif %}">
                                     {{ producto.estado }}
                                 </button>
                             </td>
@@ -198,9 +198,9 @@
             estado = 'En uso';
             button.className = 'px-2 py-1 rounded-full min-w-24 bg-blue-500 text-white';
             } else if (estado == 'En uso') {
-            estado = 'Reparación';
+            estado = 'Revisión';
             button.className = 'px-2 py-1 rounded-full min-w-24 bg-yellow-500 text-white';
-            } else if (estado == 'Reparación') {
+            } else if (estado == 'Revisión') {
             estado = 'Baja';
             button.className = 'px-2 py-1 rounded-full min-w-24 bg-red-500 text-white';
             } else if (estado == 'Baja') {
