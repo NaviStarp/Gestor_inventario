@@ -117,7 +117,7 @@
                             </td>
                             <td class="py-3 px-6 text-center">{{ producto.tipo }}</td>
                             <td class="py-3 px-6 text-center">{{ producto.marca }}</td>
-                            <td class="py-3 px-6 text-center overflow-x-scroll">{{ producto.modelo }}</td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden">{{ producto.modelo }}</td>
                             <td class="py-3 px-6 text-center">
                                 <button data-id="{{ producto.id }}" onclick="cambiarEstado('{{ producto.id }}', '{{ producto.numero }}', '{{ producto.marca }}', '{{ producto.modelo }}', 
                                     '{{ producto.estado }}', '{{ producto.ubicacion }}', '{{ producto.observacion }}', '{{ producto.numero_serie_f }}', 
@@ -126,10 +126,10 @@
                                     {{ producto.estado }}
                                 </button>
                             </td>
-                            <td class="py-3 px-6 text-center overflow-x-scroll">{{ producto.ubicacion }}</td>
-                            <td class="py-3 px-6 text-center overflow-x-scroll">{{ producto.observacion }}</td>
-                            <td class="py-3 px-6 text-center overflow-x-scroll">{{ producto.numero_serie_f }}</td>
-                            <td class="py-3 px-6 text-center overflow-x-scroll whitespace-nowrap">{{ producto.numero_serie_i }}</td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden">{{ producto.ubicacion }}</td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden">{{ producto.observacion }}</td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden">{{ producto.numero_serie_f }}</td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden whitespace-nowrap">{{ producto.numero_serie_i }}</td>
                             <!-- <td class="py-3 px-6 text-center">
                                 {% if producto.cliente %}
                                     {{ producto.cliente.nombre }}

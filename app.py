@@ -687,22 +687,30 @@ def editar_inventario(id):
         print("Datos recibidos:", request.data)
         print("Datos del formulario:", request.form)
         try:
+            # Intentar obtener datos JSON
             data = request.get_json()
         except Exception as e:
             print(f"Error al obtener datos JSON: {e}")
-        inventario.numero = data.get('numero', '')
-        inventario.modelo = data.get('modelo', '')
-        inventario.marca = data.get('marca', '')
-        inventario.estado = data.get('estado', '')
-        inventario.tipo = data.get('tipo', '')
-        inventario.numero_serie_f = data.get('numero_serie_f', '')
-        inventario.numero_serie_i = data.get('numero_serie_i', '')
-        inventario.ubicacion = data.get('ubicacion', '')
-        inventario.cliente = data.get('cliente_id', None)
-        inventario.observacion = data.get('observacion', '')
-        inventario.categoria_id = data.get('categoria_id', 1)
+            data = None
+
+        # Si no se reciben datos JSON, usar datos del formulario
+        if not data:
+            data = request.form
+
+        inventario.numero = data.get('numero', inventario.numero)
+        inventario.modelo = data.get('modelo', inventario.modelo)
+        inventario.marca = data.get('marca', inventario.marca)
+        inventario.estado = data.get('estado', inventario.estado)
+        inventario.tipo = data.get('tipo', inventario.tipo)
+        inventario.numero_serie_f = data.get('numero_serie_f', inventario.numero_serie_f)
+        inventario.numero_serie_i = data.get('numero_serie_i', inventario.numero_serie_i)
+        inventario.ubicacion = data.get('ubicacion', inventario.ubicacion)
+        inventario.cliente = data.get('cliente_id', inventario.cliente)
+        inventario.observacion = data.get('observacion', inventario.observacion)
+        inventario.categoria_id = data.get('categoria_id', inventario.categoria_id)
+
         print(inventario.categoria_id, inventario.numero, inventario.marca, inventario.modelo, inventario.estado, inventario.tipo, inventario.numero_serie_f, inventario.numero_serie_i, inventario.ubicacion, inventario.cliente, inventario.observacion)
-        movimiento = Movimiento(usuario_id=session['user_id'],tipo=tipo_movimiento.Editar,acción=f"Editó el producto {inventario.numero} de la marca {inventario.marca}",departamento="Inventario")
+        movimiento = Movimiento(usuario_id=session['user_id'], tipo=tipo_movimiento.Editar, acción=f"Editó el producto {inventario.numero} de la marca {inventario.marca}", departamento="Inventario")
         db.session.add(movimiento)
         db.session.commit()
         return redirect(url_for('ver_inventario'))
