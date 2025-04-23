@@ -354,12 +354,18 @@ def crear_producto_carrefour():
 def editar_producto_carrefour(id):
     producto = Producto_Carrefour.query.get_or_404(id)
     if request.method == 'POST':
+        fecha_entrega = request.form['fecha_entrega']
+        fecha_recojida = request.form['fecha_recojida']
+        if request.form['fecha_entrega'] == '':
+           fecha_entrega = None
+        if request.form['fecha_recojida'] == '':
+            fecha_recojida = None
         producto.numero_serie = request.form['numero_serie_f']
         producto.numero_serie_i = request.form['numero_serie_i']
         producto.nombre = request.form['nombre']
         producto.tipo = request.form['tipo']
-        producto.fecha_entrega = datetime.strptime(request.form['fecha_entrega'], '%Y-%m-%d')
-        producto.fecha_recojida = datetime.strptime(request.form['fecha_recojida'], '%Y-%m-%d')
+        producto.fecha_entrega = datetime.strptime(fecha_entrega, '%Y-%m-%d') if request.form['fecha_entrega'] else None
+        producto.fecha_recojida = datetime.strptime(fecha_recojida, '%Y-%m-%d') if request.form['fecha_recojida'] else None,
         producto.estado = request.form['estado']
         producto.ubicacion = request.form['ubicacion']
         producto.observacion = request.form.get('observacion')
