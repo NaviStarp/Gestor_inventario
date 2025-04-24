@@ -699,13 +699,13 @@ def exportar_inventario_pdf():
 
     # Definir columnas
     col_widths = {
-        'id': 15, 'numero': 20, 'marca': 25, 'modelo': 30, 
+        'numero': 20, 'marca': 25, 'modelo': 30, 
         'estado': 20, 'ubicacion': 25, 'serie_f': 30, 'serie_i': 30, 
         'categoria': 25, 'cliente': 20, 'tipo': 20, 'observacion': 40
     }
 
     tabla_width = sum([
-        col_widths['id'], col_widths['numero'], col_widths['marca'],
+        col_widths['numero'], col_widths['marca'],
         col_widths['modelo'], col_widths['tipo'], col_widths['estado'],
         col_widths['ubicacion'], col_widths['serie_f'], col_widths['serie_i']
     ])
@@ -716,10 +716,10 @@ def exportar_inventario_pdf():
     pdf.set_text_color(255, 255, 255)
     pdf.set_font("Arial", 'B', 9)
 
-    headers = ['id', 'numero', 'marca', 'modelo', 'tipo', 'estado', 'ubicacion', 'serie_f', 'serie_i']
+    headers = ['numero', 'marca', 'modelo', 'tipo', 'estado', 'ubicacion', 'serie_f', 'serie_i']
     for key in headers:
         label = {
-            'id': 'ID', 'numero': 'Número', 'marca': 'Marca', 'modelo': 'Modelo',
+            'numero': 'Número', 'marca': 'Marca', 'modelo': 'Modelo',
             'tipo': 'Tipo', 'estado': 'Estado', 'ubicacion': 'Ubicación',
             'serie_f': 'Serie Fabricante', 'serie_i': 'Serie Interna'
         }[key]
@@ -728,7 +728,13 @@ def exportar_inventario_pdf():
 
     pdf.set_text_color(0, 0, 0)
 
-    inventarios = Inventario.query.order_by(Inventario.categoria,Inventario.marca,Inventario.modelo,Inventario.numero).all()
+    inventarios = Inventario.query.order_by(
+        Inventario.categoria_id, 
+        Inventario.tipo, 
+        Inventario.marca, 
+        Inventario.modelo,
+        Inventario.numero
+    ).all()
 
     for item in inventarios:
         pdf.set_x(start_x)
@@ -738,7 +744,6 @@ def exportar_inventario_pdf():
         categoria_nombre = item.categoria.nombre if item.categoria else "N/A"
         cliente_nombre = Cliente.query.get(item.cliente).nombre if item.cliente else "N/A"
 
-        pdf.cell(col_widths['id'], 10, str(item.id), 1, 0, 'C', fill=True)
         pdf.cell(col_widths['numero'], 10, str(item.numero), 1, 0, 'C', fill=True)
         pdf.cell(col_widths['marca'], 10, item.marca, 1, 0, 'C', fill=True)
         pdf.cell(col_widths['modelo'], 10, item.modelo, 1, 0, 'C', fill=True)
@@ -756,7 +761,6 @@ def exportar_inventario_pdf():
         pdf.set_fill_color(250, 250, 250)
 
         pdf.set_font("Arial", 'B', 8)
-        pdf.cell(col_widths['id'], 10, 'Categoría:', 1, 0, 'R', fill=True)
         pdf.cell(col_widths['numero'] + col_widths['marca'], 10, categoria_nombre, 1, 0, 'L', fill=True)
 
         pdf.set_font("Arial", 'B', 8)
