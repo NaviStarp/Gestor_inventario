@@ -91,33 +91,33 @@
                     <tbody class="text-white text-sm font-light">
                         {% for producto in inventarios %}
                         <tr class="border-b bg-gray-800 border-green-100 hover:bmin-w-24g-green-500">
-                            <td class="py-3 px-6 text-center">{{ producto.numero }}</td>
+                            <td class="py-3 px-6 text-center"><span onclick="editarCampo('{{ producto.id }}','numero', '{{ producto.numero }}')">{{ producto.numero }}</span></td>
                             <td class="py-3 px-6 text-center">
                                 {% if producto.categoria.nombre == 'SONIDO' %}
-                                    <span class="bg-sky-500 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
+                                    <span  class="bg-sky-500 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'ILUMINACION' %}
-                                    <span class="bg-yellow-300 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
+                                    <span  class="bg-yellow-300 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'VIDEO' %}
-                                    <span class="bg-fuchsia-500 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
+                                    <span  class="bg-fuchsia-500 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'ESTRUCTURAS' %}
-                                    <span class="bg-slate-300 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
+                                    <span  class="bg-slate-300 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'BACKLINE' %}
-                                    <span class="bg-amber-800 text-white px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
+                                    <span  class="bg-amber-800 text-white px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'VARIOS' %}
-                                    <span class="bg-slate-400 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
+                                    <span  class="bg-slate-400 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'ELECTRICIDAD' %}
-                                    <span class="bg-green-600 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
+                                    <span  class="bg-green-600 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'FX' %}
-                                    <span class="bg-red-700 text-white px-2 py-1 rounded-full min-w-24 whitespace-nowrap">{{ producto.categoria.nombre }}</span>
+                                    <span  class="bg-red-700 text-white px-2 py-1 rounded-full min-w-24 whitespace-nowrap">{{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'EFECTOS DE LUCES' %}
-                                    <span class="bg-orange-400 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap">{{ producto.categoria.nombre }}</span>
+                                    <span  class="bg-orange-400 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap">{{ producto.categoria.nombre }}</span>
                                 {% else %}
-                                    <span class="bg-gray-700 text-white px-2 py-1 rounded-full min-w-24 whitespace-nowrap">{{ producto.categoria.nombre }}</span>
+                                    <span  class="bg-gray-700 text-white px-2 py-1 rounded-full min-w-24 whitespace-nowrap">{{ producto.categoria.nombre }}</span>
                                 {% endif %}
                             </td>
-                            <td class="py-3 px-6 text-center">{{ producto.tipo }}</td>
-                            <td class="py-3 px-6 text-center">{{ producto.marca }}</td>
-                            <td class="py-3 px-6 text-center overflow-x-hidden">{{ producto.modelo }}</td>
+                            <td class="py-3 px-6 text-center"><span onclick="editarCampo('{{ producto.id }}','tipo', '{{ producto.tipo }}')">{{ producto.tipo }}</span></td>
+                            <td class="py-3 px-6 text-center"><span onclick="editarCampo('{{ producto.id }}','marca', '{{ producto.marca }}')">{{ producto.marca }}</span></td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden"><span onclick="editarCampo('{{ producto.id }}','modelo', '{{ producto.modelo }}')">{{ producto.modelo }}</span></td>
                             <td class="py-3 px-6 text-center">
                                 <button data-id="{{ producto.id }}" onclick="cambiarEstado('{{ producto.id }}', '{{ producto.numero }}', '{{ producto.marca }}', '{{ producto.modelo }}', 
                                     '{{ producto.estado }}', '{{ producto.ubicacion }}', '{{ producto.observacion }}', '{{ producto.numero_serie_f }}', 
@@ -126,17 +126,10 @@
                                     {{ producto.estado }}
                                 </button>
                             </td>
-                            <td class="py-3 px-6 text-center overflow-x-hidden">{{ producto.ubicacion }}</td>
-                            <td class="py-3 px-6 text-center overflow-x-hidden">{{ producto.observacion }}</td>
-                            <td class="py-3 px-6 text-center overflow-x-hidden">{{ producto.numero_serie_f }}</td>
-                            <td class="py-3 px-6 text-center overflow-x-hidden whitespace-nowrap">{{ producto.numero_serie_i }}</td>
-                            <!-- <td class="py-3 px-6 text-center">
-                                {% if producto.cliente %}
-                                    {{ producto.cliente.nombre }}
-                                {% else %}
-                                    Sin Cliente
-                                {% endif %}
-                            </td> -->
+                            <td class="py-3 px-6 text-center overflow-x-hidden"><span onclick="editarCampo('{{ producto.id }}','ubicacion', '{{ producto.ubicacion }}')">{{ producto.ubicacion }}</span></td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden"><span onclick="editarCampo('{{ producto.id }}','observacion', '{{ producto.observacion }}')">{{ producto.observacion }}</span></td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden"><span onclick="editarCampo('{{ producto.id }}','numero_serie_f', '{{ producto.numero_serie_f }}')">{{ producto.numero_serie_f }}</span></td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden whitespace-nowrap"><span onclick="editarCampo('{{ producto.id }}','numero_serie_i', '{{ producto.numero_serie_i }}')">{{ producto.numero_serie_i }}</span></td>
                             <td class="py-3 px-6 text-center">
                                 <div class="flex item-center justify-center">
                                     <a onclick="event.stopPropagation();editar_inventario('{{ producto.id }}', '{{ producto.numero }}', '{{ producto.marca }}', '{{ producto.modelo }}', 
@@ -146,18 +139,9 @@
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <form action="{{ url_for('eliminar_producto', id=producto.id) }}" onclick="event.stopPropagation();return confirm('¿Está seguro que desea eliminar este producto?')" method="POST" style="display:inline;">
- 
-
                                         <button type="submit" class="text-red-600 hover:text-red-800">
- 
-
                                             <i class="fas fa-trash"></i>
- 
-
                                         </button>
-
- 
-
                                     </form>
                                 </div>
                             </td>
@@ -189,6 +173,57 @@
             document.getElementById('cliente').value = cliente || '';
             document.getElementById('tipoM').value = tipo;
             document.querySelector('#modal-inventario form').action = `/inventario/editar/${id}`;
+        }
+
+        function editarCampo(id, campo, valorActual) {
+            console.log('Campo a editar:', campo);
+            console.log('Valor actual:', valorActual);
+            const span = document.querySelector(`span[onclick="editarCampo('${id}','${campo}', '${valorActual}')"]`);
+            console.log(span)
+            if (!span) return;
+
+            span.contentEditable = true;
+            span.classList.add('bg-gray-700', 'text-white', 'rounded', 'px-2', 'py-1', 'focus:outline-none', 'focus:ring', 'focus:ring-blue-500');
+            span.focus();
+
+            span.onblur = function () {
+            const nuevoValor = span.textContent.trim();
+            if (nuevoValor !== valorActual) {
+                // Send the updated value to the server
+                fetch(`/producto/actualizar/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    valor: nuevoValor,
+                    campo: campo
+                })
+                }).then(response => {
+                if (!response.ok) {
+                    console.error('Error al actualizar el campo en el servidor');
+                    span.textContent = valorActual; // Revert to original value on error
+                }
+                }).catch(error => {
+                console.error('Error de red:', error);
+                span.textContent = valorActual; // Revert to original value on error
+                });
+            } else {
+                span.textContent = valorActual;
+            }
+            span.contentEditable = false;
+            span.classList.remove('bg-gray-700', 'text-white', 'rounded', 'px-2', 'py-1', 'focus:outline-none', 'focus:ring', 'focus:ring-blue-500');
+            };
+
+            span.onkeydown = function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                span.blur();
+            } else if (event.key === 'Escape') {
+                span.textContent = valorActual;
+                span.blur();
+            }
+            };
         }
         function cambiarEstado(id, numero, marca, modelo, estado, ubicacion, observacion, numero_serie_f, numero_serie_i, categoria_id, cliente, tipo) {
             // Update state locally

@@ -149,7 +149,7 @@ class filtroInventario(FlaskForm):
         ('', 'Todos'), 
         ('Disponible', 'Disponible'),
         ('En uso', 'En uso'),
-        ('Reparación', 'Reparación'),
+        ('Revisión', 'Revisión'),
         ('Baja', 'Baja')
     ])
     tipo = SelectField('Tipo', choices=[], coerce=str)
@@ -405,6 +405,32 @@ def editar_campo_producto_carrefour(id):
             print(f"Error al actualizar el campo {campo}: {e}")
             return "Error al actualizar el campo", 500
         return redirect(request.referrer)
+    else:
+        return "Campo no válido", 400
+
+@app.route('/producto/actualizar/<int:id>', methods=['POST'])
+@login_required
+def actualizar_producto(id):
+    producto = Inventario.query.get_or_404(id)
+    data = request.get_json()
+    if not data:
+        return "No se recibieron datos JSON", 400
+
+    campo = data.get('campo')
+    valor = data.get('valor')
+
+    if hasattr(producto, campo):
+        try:
+            setattr(producto, campo, valor)
+            db.session.commit()
+            movimiento = Movimiento(usuario_id=session['user_id'], tipo=tipo_movimiento.Editar, acción=f"Actualizó el campo {campo} del producto {producto.numero}", departamento="Inventario")
+            db.session.add(movimiento)
+            db.session.commit()
+            return "Producto actualizado correctamente", 200
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error al actualizar el campo {campo}: {e}")
+            return "Error al actualizar el producto", 500
     else:
         return "Campo no válido", 400
 
