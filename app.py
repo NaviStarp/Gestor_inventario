@@ -378,35 +378,53 @@ def editar_producto_carrefour(id):
 @app.route('/carrefour/editar_campo/<int:id>', methods=['POST'])
 @login_required
 def editar_campo_producto_carrefour(id):
-    producto = Producto_Carrefour.query.get_or_404(id)
-    peticion = request.get_json()
-    if not peticion:
-        return "No se recibieron datos JSON", 400
-    # Obtener el campo y el valor del JSON
     try:
-        peticion = request.get_json()
-    except Exception as e:
-        print(f"Error al obtener datos JSON: {e}")
-        return "Error al obtener datos JSON", 400
-    print(peticion)
-    campo = peticion.get('campo')
-    valor = peticion.get('valor')    
-    print(campo, valor)
-    # Actualizar el campo específico
-    if hasattr(producto, campo):
-        try:
-            setattr(producto, campo, valor)
-            db.session.commit()
-            movimiento = Movimiento(usuario_id=session['user_id'],tipo=tipo_movimiento.Editar,acción=f"Editó el campo {campo} del producto Carrefour {producto.nombre}",departamento="Carrefour")
+        producto = Producto_Carrefour.query.get_or_404(id)
+        data = request.get_json()
+        
+        if not data:
+            return "No se recibieron datos JSON", 400
+
+        campo = data.get('campo')
+        valor = data.get('valor')
+
+        if not campo:
+            return "Campo no proporcionado", 400
+        
+        if valor is None:
+            return "Valor no proporcionado", 400
+
+        # Verificar que el campo existe en el modelo
+        if hasattr(producto, campo):
+            # Manejo especial para campos enum
+            if campo == 'estado':
+                if valor == 'Disponible':
+                    producto.estado = Carrefour_Estado.Disponible
+                elif valor == 'OnTour':
+                    producto.estado = Carrefour_Estado.OnTour
+                elif valor == 'NoDisponible':
+                    producto.estado = Carrefour_Estado.NoDisponible
+                else:
+                    return f"Valor no válido para el campo estado: {valor}", 400
+            else:
+                setattr(producto, campo, valor)
+            
+            # Guardar el movimiento
+            movimiento = Movimiento(
+                usuario_id=session['user_id'],
+                tipo=tipo_movimiento.Editar,
+                acción=f"Editó el campo {campo} del producto Carrefour {producto.nombre}",
+                departamento="Carrefour"
+            )
             db.session.add(movimiento)
             db.session.commit()
-        except Exception as e:
-            db.session.rollback()
-            print(f"Error al actualizar el campo {campo}: {e}")
-            return "Error al actualizar el campo", 500
-        return redirect(request.referrer)
-    else:
-        return "Campo no válido", 400
+            return "Campo actualizado correctamente", 200
+        else:
+            return f"Campo no válido: {campo}", 400
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error al actualizar el campo: {e}")
+        return f"Error al actualizar: {str(e)}", 500
 
 @app.route('/producto/actualizar/<int:id>', methods=['POST'])
 @login_required
