@@ -25,7 +25,7 @@ migrate = Migrate(app,db)
 # Se crea la tabla Inventario
 class Inventario(db.Model): 
     id = db.Column(db.Integer, primary_key=True)
-    numero = db.Column(db.String(100), nullable=False)  # Número del inventario
+    numero = db.Column(db.Integer, nullable=False)  # Número del inventario
     marca = db.Column(db.String(100), nullable=False)  # Marca del producto
     modelo = db.Column(db.String(100), nullable=False)  # Modelo del producto
     estado = db.Column(db.String(100), nullable=False)  # Estado del producto
@@ -507,7 +507,7 @@ def ver_categoria(id):
         Inventario.tipo, 
         Inventario.marca, 
         Inventario.modelo,
-         db.cast(Inventario.numero, db.Integer)
+        Inventario.numero
     )
     # Procesar el formulario solo si se envía como POST
     if form.estado.data:
@@ -849,6 +849,11 @@ if __name__ == '__main__':
         for produto in produtos: # TEMPORAL
             produto.estado = 'Revisión' # TEMPORAL
             db.session.commit() # TEMPORAL
+        inventarios = Inventario.query.all()
+        for inventario in inventarios:
+            print(isinstance(inventario.numero, str))
+            if isinstance(inventario.numero, str):  # Si es una cadena
+                inventario.numero = int(inventario.numero)  # Convertir a entero
         Contraseña.create_default_password()
 
     app.run(host='0.0.0.0', port=80, debug=True)
