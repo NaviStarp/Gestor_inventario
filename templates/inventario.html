@@ -191,7 +191,6 @@
             span.onblur = function () {
             const nuevoValor = span.textContent.trim();
             if (nuevoValor !== valorActual) {
-                // Send the updated value to the server
                 fetch(`/producto/actualizar/${id}`, {
                 method: 'POST',
                 headers: {
@@ -204,11 +203,11 @@
                 }).then(response => {
                 if (!response.ok) {
                     console.error('Error al actualizar el campo en el servidor');
-                    span.textContent = valorActual; // Revert to original value on error
+                    span.textContent = valorActual; // Revertir al valor original en caso de error
                 }
                 }).catch(error => {
                 console.error('Error de red:', error);
-                span.textContent = valorActual; // Revert to original value on error
+                span.textContent = valorActual; // Revertir al valor original en caso de error
                 });
             } else {
                 span.textContent = valorActual;
@@ -224,7 +223,17 @@
             } else if (event.key === 'Escape') {
                 span.textContent = valorActual;
                 span.blur();
-            }
+            } else if (event.key == 'Tab'){ // Roto, Temporal
+                event.preventDefault();
+                const siguienteCampo = document.querySelector(`span[onclick^="editarCampo('${id}',"]`).nextElementSibling;
+                if (siguienteCampo) {
+                    console.log(siguienteCampo);
+                    siguienteCampo.focus();
+                } else {
+                    console.log('No hay siguiente campo');
+                    span.blur();
+                }
+             }
             };
         }
         function cambiarEstado(id, numero, marca, modelo, estado, ubicacion, observacion, numero_serie_f, numero_serie_i, categoria_id, cliente, tipo) {
