@@ -9,9 +9,11 @@ import csv
 import os
 from enum import Enum
 from flask import flash
+from fpdf import FPDF  # Import the FPDF library
 from functools import wraps
 from flask import session
 from flask_migrate import Migrate
+from flask import send_file
 # Se crea la instancia de la aplicación Flask
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Necesario para usar sesiones
@@ -657,6 +659,126 @@ def importar_inventario():
         flash(f'Error al importar: {str(e)}', 'error')
         return redirect(request.referrer)
     
+@app.route('/inventario/exportar/pdf', methods=['GET'])
+@login_required
+def exportar_inventario_pdf():
+    pdf = FPDF()
+    pdf.add_page('L')  # Landscape orientation
+
+    colores_estados = {
+        'Disponible': (144, 238, 144),
+        'En uso': (135, 206, 250),
+        'Baja': (255, 160, 122),
+        'Revisión': (255, 255, 153)
+    }
+
+    pdf.set_font("Arial", 'B', 16)
+    pdf.set_fill_color(70, 130, 180)
+    pdf.set_text_color(255, 255, 255)
+    pdf.cell(0, 15, "SONIMITAR INVENTARIO", ln=True, align='C', fill=True)
+    pdf.set_text_color(0, 0, 0)
+    pdf.ln(10)
+
+    pdf.set_font("Arial", 'B', 10)
+    pdf.cell(0, 8, "Leyenda de Estados:", 0, 1, 'C')
+
+    # Centrar leyenda
+    leyenda_width = len(colores_estados) * 60
+    page_width = 297
+    start_x = (page_width - leyenda_width) / 2
+    y_leyenda = pdf.get_y()
+    pdf.set_xy(start_x, y_leyenda)
+    pdf.set_x(pdf.get_x() + 20)
+    for estado, color in colores_estados.items():
+        pdf.set_fill_color(*color)
+        pdf.rect(pdf.get_x(), pdf.get_y(), 5, 5, 'F')
+        pdf.set_xy(pdf.get_x() + 8, pdf.get_y())
+        pdf.cell(40, 5, estado, 0, 0, 'L')
+        pdf.set_xy(pdf.get_x() + 10, y_leyenda)
+    pdf.ln(16)
+
+    # Definir columnas
+    col_widths = {
+        'id': 15, 'numero': 20, 'marca': 25, 'modelo': 30, 
+        'estado': 20, 'ubicacion': 25, 'serie_f': 30, 'serie_i': 30, 
+        'categoria': 25, 'cliente': 20, 'tipo': 20, 'observacion': 40
+    }
+
+    tabla_width = sum([
+        col_widths['id'], col_widths['numero'], col_widths['marca'],
+        col_widths['modelo'], col_widths['tipo'], col_widths['estado'],
+        col_widths['ubicacion'], col_widths['serie_f'], col_widths['serie_i']
+    ])
+    start_x = (page_width - tabla_width) / 2
+    pdf.set_x(start_x)
+
+    pdf.set_fill_color(40, 80, 120)
+    pdf.set_text_color(255, 255, 255)
+    pdf.set_font("Arial", 'B', 9)
+
+    headers = ['id', 'numero', 'marca', 'modelo', 'tipo', 'estado', 'ubicacion', 'serie_f', 'serie_i']
+    for key in headers:
+        label = {
+            'id': 'ID', 'numero': 'Número', 'marca': 'Marca', 'modelo': 'Modelo',
+            'tipo': 'Tipo', 'estado': 'Estado', 'ubicacion': 'Ubicación',
+            'serie_f': 'Serie Fabricante', 'serie_i': 'Serie Interna'
+        }[key]
+        pdf.cell(col_widths[key], 10, label, 1, 0, 'C', fill=True)
+    pdf.ln()
+
+    pdf.set_text_color(0, 0, 0)
+
+    inventarios = Inventario.query.all()
+
+    for item in inventarios:
+        pdf.set_x(start_x)
+        pdf.set_fill_color(245, 245, 245)
+
+        estado_color = colores_estados.get(item.estado, (200, 200, 200))
+        categoria_nombre = item.categoria.nombre if item.categoria else "N/A"
+        cliente_nombre = Cliente.query.get(item.cliente).nombre if item.cliente else "N/A"
+
+        pdf.cell(col_widths['id'], 10, str(item.id), 1, 0, 'C', fill=True)
+        pdf.cell(col_widths['numero'], 10, str(item.numero), 1, 0, 'C', fill=True)
+        pdf.cell(col_widths['marca'], 10, item.marca, 1, 0, 'C', fill=True)
+        pdf.cell(col_widths['modelo'], 10, item.modelo, 1, 0, 'C', fill=True)
+        pdf.cell(col_widths['tipo'], 10, item.tipo, 1, 0, 'C', fill=True)
+
+        pdf.set_fill_color(*estado_color)
+        pdf.cell(col_widths['estado'], 10, item.estado, 1, 0, 'C', fill=True)
+        pdf.set_fill_color(245, 245, 245)
+
+        pdf.cell(col_widths['ubicacion'], 10, item.ubicacion, 1, 0, 'C', fill=True)
+        pdf.cell(col_widths['serie_f'], 10, item.numero_serie_f, 1, 0, 'C', fill=True)
+        pdf.cell(col_widths['serie_i'], 10, item.numero_serie_i, 1, 1, 'C', fill=True)
+
+        pdf.set_x(start_x)
+        pdf.set_fill_color(250, 250, 250)
+
+        pdf.set_font("Arial", 'B', 8)
+        pdf.cell(col_widths['id'], 10, 'Categoría:', 1, 0, 'R', fill=True)
+        pdf.cell(col_widths['numero'] + col_widths['marca'], 10, categoria_nombre, 1, 0, 'L', fill=True)
+
+        pdf.set_font("Arial", 'B', 8)
+        pdf.cell(col_widths['modelo'], 10, 'Cliente:', 1, 0, 'R', fill=True)
+        pdf.cell(col_widths['tipo'] + col_widths['estado'], 10, cliente_nombre, 1, 0, 'L', fill=True)
+
+        pdf.set_font("Arial", 'B', 8)
+        pdf.cell(col_widths['ubicacion'], 10, 'Observación:', 1, 0, 'R', fill=True)
+        observacion_text = item.observacion if item.observacion else "Sin observaciones"
+        pdf.cell(col_widths['serie_f'] + col_widths['serie_i'], 10, observacion_text, 1, 1, 'L', fill=True)
+
+        pdf.ln(3)
+
+    pdf.ln(15)
+    pdf.set_font("Arial", 'I', 8)
+    from datetime import datetime
+    pdf.cell(0, 10, f"Reporte generado el {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}", 0, 1, 'R')
+
+    pdf_path = "inventario.pdf"
+    pdf.output(pdf_path)
+    return send_file(pdf_path, as_attachment=True, download_name="Inventario.pdf")
+
     
 @app.route('/inventario/importar', methods=['GET'])
 @login_required

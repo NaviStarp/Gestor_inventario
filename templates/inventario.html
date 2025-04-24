@@ -37,6 +37,9 @@
                         <i class="fas fa-trash mr-2"></i>Seleccionar para Borrar
                         </button>
                 </div>
+                <a href="{{ url_for('exportar_inventario_pdf') }}" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    <i class="fas fa-file-export mr-2"></i>Exportar
+                </a>
                
              </div>
                 {% endif %}

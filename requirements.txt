@@ -6,6 +6,7 @@ flask-cors==5.0.1
 Flask-Migrate==4.1.0
 Flask-SQLAlchemy==3.1.1
 Flask-WTF==1.2.2
+fpdf==1.7.2
 greenlet==3.1.1
 itsdangerous==2.2.0
 Jinja2==3.1.6
