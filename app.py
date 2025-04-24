@@ -701,7 +701,7 @@ def exportar_inventario_pdf():
     col_widths = {
         'numero': 20, 'marca': 25, 'modelo': 30, 
         'estado': 20, 'ubicacion': 25, 'serie_f': 30, 'serie_i': 30, 
-        'categoria': 25, 'cliente': 20, 'tipo': 20, 'observacion': 40
+        'categoria': 25, 'cliente': 20, 'tipo': 25, 'observacion': 40
     }
 
     tabla_width = sum([
