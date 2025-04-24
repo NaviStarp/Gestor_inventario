@@ -32,7 +32,7 @@
                             <th class="py-3 px-6 text-center">Tipo</th>
                             <th class="py-3 px-6 text-center">N° Serie</th>
                             <th class="py-3 px-6 text-center">N° Serie Interno</th>
-                            <th class="py-3 px-6 text-center overflow-x-scroll">Estado</th>
+                            <th class="py-3 px-6 text-center overflow-x-hidden">Estado</th>
                             <th class="py-3 px-6 text-center">Ubicación</th>
                             <th class="py-3 px-6 text-center">Fecha Entrega</th>
                             <th class="py-3 px-6 text-center">Fecha Recogida</th>
@@ -48,7 +48,7 @@
                             <td onclick="editarCampo(event, '{{ producto.id }}')" class="py-3 px-6 text-center">{{ producto.numero_serie }}</td>
                             <td onclick="editarCampo(event, '{{ producto.id }}')" class="py-3 px-6 text-center">{{ producto.numero_serie_i }}</td>
                             <td class="py-3 px-6 text-center">
-                                <button data-id="{{ producto.id }}" onclick="cambiarEstado('{{ producto.id }}')" class="px-2 py-1 rounded-full overflow-x-scroll min-w-24 
+                                <button data-id="{{ producto.id }}" onclick="cambiarEstado('{{ producto.id }}')" class="px-2 py-1 rounded-full overflow-x-hidden min-w-24 
                                     {% if producto.estado.value == 'Disponible' %}bg-green-500 text-white
                                     {% elif producto.estado.value == 'On Tour' %}bg-blue-500 text-white
                                     {% elif producto.estado.value == 'No Disponible' %}bg-red-500 text-white
@@ -56,10 +56,10 @@
                                     {{ producto.estado.value }}
                                 </button>
                             </td>
-                            <td class="py-3 px-6 text-center overflow-x-scroll">{{ producto.ubicacion }}</td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden">{{ producto.ubicacion }}</td>
                             <td class="py-3 px-6 text-center">{{ producto.fecha_entrega.strftime('%d/%m/%Y') if producto.fecha_entrega else 'N/A' }}</td>
                             <td class="py-3 px-6 text-center">{{ producto.fecha_recojida.strftime('%d/%m/%Y') if producto.fecha_recojida else 'N/A' }}</td>
-                            <td class="py-3 px-6 text-center overflow-x-scroll">{{ producto.observacion }}</td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden">{{ producto.observacion }}</td>
                             <td class="py-3 px-6 text-center">
                                 <div class="flex item-center justify-center">
                                     <a onclick="event.stopPropagation();editar_producto('{{ producto.id }}', '{{ producto.nombre }}', '{{ producto.tipo }}', 

@@ -501,22 +501,23 @@ def ver_categoria(id):
     categoria = Categoria.query.get_or_404(id)
     form = filtroInventario()
     
-    # Iniciar con la consulta base filtrada por la categoría
-    query = Inventario.query.filter_by(categoria_id=id).order_by(Inventario.tipo, Inventario.marca, Inventario.numero)
-    
-    # Pre-seleccionar la categoría en el formulario
-    form.categoria.data = id
-    
-    # Procesar el formulario si se envía como POST
-    if request.method == 'POST' and form.validate():
-        if form.estado.data:
-            query = query.filter(Inventario.estado == form.estado.data)
-        if form.cliente.data and form.cliente.data != 0:
-            query = query.filter(Inventario.cliente == form.cliente.data)
-        # No necesitamos filtrar por categoría de nuevo ya que ya está filtrado
+    # Iniciar con la consulta base
+    query = Inventario.query.order_by(Inventario.categoria_id,Inventario.tipo,Inventario.marca, Inventario.numero)
+    # Procesar el formulario solo si se envía como POST
+    if form.estado.data:
+        print("Filtrando por estado ", form.estado.data)
+        query = query.filter(Inventario.estado == form.estado.data)
+    if form.tipo.data and form.tipo.data != '0':  # Evitar filtrar cuando se selecciona "Todos"
+        query = query.filter(Inventario.tipo == form.tipo.data)
+    if form.categoria.data and form.categoria.data != 0:  # Evitar filtrar cuando se selecciona "Todas"
+        query = query.filter(Inventario.categoria_id == form.categoria.data)
+    if form.marca.data and form.marca.data != '0':
+        query = query.filter(Inventario.marca == form.marca.data)
     
     # Ejecutar la consulta final
     inventarios = query.all()
+    print(inventarios)
+    print(form.estado.data, form.tipo.data, form.categoria.data, form.marca.data)
     categorias = Categoria.query.filter(Categoria.id == id).all()
     
     return render_template('inventario.html', categoria=categoria, categorias=categorias,inventarios=inventarios, form=form,es_categoria=True)

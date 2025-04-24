@@ -91,7 +91,9 @@
                     <tbody class="text-white text-sm font-light">
                         {% for producto in inventarios %}
                         <tr class="border-b bg-gray-800 border-green-100 hover:bmin-w-24g-green-500">
-                            <td class="py-3 px-6 text-center"><span onclick="editarCampo('{{ producto.id }}','numero', '{{ producto.numero }}')">{{ producto.numero }}</span></td>
+                            <td class="py-3 px-6 text-center">
+                                <span class="w-full h-full block min-w-4 min-h-5" onclick="editarCampo('{{ producto.id }}','numero', '{{ producto.numero }}')">{{ producto.numero }}</span>
+                            </td>
                             <td class="py-3 px-6 text-center">
                                 {% if producto.categoria.nombre == 'SONIDO' %}
                                     <span  class="bg-sky-500 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
@@ -115,9 +117,9 @@
                                     <span  class="bg-gray-700 text-white px-2 py-1 rounded-full min-w-24 whitespace-nowrap">{{ producto.categoria.nombre }}</span>
                                 {% endif %}
                             </td>
-                            <td class="py-3 px-6 text-center"><span onclick="editarCampo('{{ producto.id }}','tipo', '{{ producto.tipo }}')">{{ producto.tipo }}</span></td>
-                            <td class="py-3 px-6 text-center"><span onclick="editarCampo('{{ producto.id }}','marca', '{{ producto.marca }}')">{{ producto.marca }}</span></td>
-                            <td class="py-3 px-6 text-center overflow-x-hidden"><span onclick="editarCampo('{{ producto.id }}','modelo', '{{ producto.modelo }}')">{{ producto.modelo }}</span></td>
+                            <td class="py-3 px-6 text-center"><span class="w-full h-full block min-w-4 min-h-5" onclick="editarCampo('{{ producto.id }}','tipo', '{{ producto.tipo }}')">{{ producto.tipo }}</span></td>
+                            <td class="py-3 px-6 text-center"><span class="w-full h-full block min-w-4 min-h-5" onclick="editarCampo('{{ producto.id }}','marca', '{{ producto.marca }}')">{{ producto.marca }}</span></td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden"><span class="w-full h-full block min-w-4 min-h-5" onclick="editarCampo('{{ producto.id }}','modelo', '{{ producto.modelo }}')">{{ producto.modelo }}</span></td>
                             <td class="py-3 px-6 text-center">
                                 <button data-id="{{ producto.id }}" onclick="cambiarEstado('{{ producto.id }}', '{{ producto.numero }}', '{{ producto.marca }}', '{{ producto.modelo }}', 
                                     '{{ producto.estado }}', '{{ producto.ubicacion }}', '{{ producto.observacion }}', '{{ producto.numero_serie_f }}', 
@@ -126,10 +128,10 @@
                                     {{ producto.estado }}
                                 </button>
                             </td>
-                            <td class="py-3 px-6 text-center overflow-x-hidden"><span onclick="editarCampo('{{ producto.id }}','ubicacion', '{{ producto.ubicacion }}')">{{ producto.ubicacion }}</span></td>
-                            <td class="py-3 px-6 text-center overflow-x-hidden"><span onclick="editarCampo('{{ producto.id }}','observacion', '{{ producto.observacion }}')">{{ producto.observacion }}</span></td>
-                            <td class="py-3 px-6 text-center overflow-x-hidden"><span onclick="editarCampo('{{ producto.id }}','numero_serie_f', '{{ producto.numero_serie_f }}')">{{ producto.numero_serie_f }}</span></td>
-                            <td class="py-3 px-6 text-center overflow-x-hidden whitespace-nowrap"><span onclick="editarCampo('{{ producto.id }}','numero_serie_i', '{{ producto.numero_serie_i }}')">{{ producto.numero_serie_i }}</span></td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden"><span class="w-full h-full block min-w-4 min-h-5" onclick="editarCampo('{{ producto.id }}','ubicacion', '{{ producto.ubicacion }}')">{{ producto.ubicacion }}</span></td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden"><span class="w-full h-full block min-w-4 min-h-5" onclick="editarCampo('{{ producto.id }}','observacion', '{{ producto.observacion }}')">{{ producto.observacion }}</span></td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden"><span class="w-full h-full block min-w-4 min-h-5" onclick="editarCampo('{{ producto.id }}','numero_serie_f', '{{ producto.numero_serie_f }}')">{{ producto.numero_serie_f }}</span></td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden whitespace-nowrap"><span class="w-full h-full block min-w-4 min-h-5" onclick="editarCampo('{{ producto.id }}','numero_serie_i', '{{ producto.numero_serie_i }}')">{{ producto.numero_serie_i }}</span></td>
                             <td class="py-3 px-6 text-center">
                                 <div class="flex item-center justify-center">
                                     <a onclick="event.stopPropagation();editar_inventario('{{ producto.id }}', '{{ producto.numero }}', '{{ producto.marca }}', '{{ producto.modelo }}', 
