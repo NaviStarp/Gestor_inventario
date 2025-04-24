@@ -502,7 +502,7 @@ def ver_categoria(id):
     form = filtroInventario()
     
     # Iniciar con la consulta base
-    query = Inventario.query.order_by(Inventario.categoria_id,Inventario.tipo,Inventario.marca, int(Inventario.numero))
+    query = Inventario.query.order_by(Inventario.categoria_id, Inventario.tipo, Inventario.marca, db.cast(Inventario.numero, db.Integer))
     # Procesar el formulario solo si se envía como POST
     if form.estado.data:
         print("Filtrando por estado ", form.estado.data)
