@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, Response
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -984,6 +984,45 @@ def utility_processor():
         def productos_por_categoria(categoria_id):
             return Inventario.query.filter_by(categoria_id=categoria_id).count()
         return dict(productos_por_categoria=productos_por_categoria)
+
+@app.route('/inventario/exportar/csv', methods=['GET'])
+@login_required
+def exportar_inventario():
+            try:
+                # Obtener todos los productos del inventario
+                inventarios = Inventario.query.all()
+
+                # Crear el archivo CSV en memoria
+                output = StringIO()
+                writer = csv.writer(output)
+
+                # Escribir encabezados
+                writer.writerow([
+                    'ID', 'Número', 'Marca', 'Modelo', 'Estado', 'Ubicación', 
+                    'Observación', 'Número Serie Fabricante', 'Número Serie Interno', 
+                    'Categoría', 'Cliente', 'Tipo'
+                ])
+
+                # Escribir datos del inventario
+                for item in inventarios:
+                    writer.writerow([
+                        item.id, item.numero, item.marca, item.modelo, item.estado, 
+                        item.ubicacion, item.observacion, item.numero_serie_f, 
+                        item.numero_serie_i, item.categoria.nombre if item.categoria else '',
+                        item.cliente.nombre if item.cliente else '', item.tipo
+                    ])
+
+                # Preparar la respuesta HTTP con el archivo CSV
+                output.seek(0)
+                return Response(
+                    output,
+                    mimetype='text/csv',
+                    headers={"Content-Disposition": "attachment;filename=inventario.csv"}
+                )
+            except Exception as e:
+                print(f"Error al exportar inventario: {e}")
+                flash('Error al exportar inventario', 'error')
+                return redirect(request.referrer)
 
 if __name__ == '__main__':
     with app.app_context():
