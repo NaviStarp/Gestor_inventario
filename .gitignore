@@ -1,4 +1,5 @@
 .venv
+inventario.pdf
 *.csv
 inventario.csv
 instance
