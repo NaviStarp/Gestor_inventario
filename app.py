@@ -728,7 +728,7 @@ def exportar_inventario_pdf():
 
     pdf.set_text_color(0, 0, 0)
 
-    inventarios = Inventario.query.all()
+    inventarios = Inventario.query.order_by(Inventario.categoria,Inventario.marca,Inventario.modelo,Inventario.numero).all()
 
     for item in inventarios:
         pdf.set_x(start_x)
