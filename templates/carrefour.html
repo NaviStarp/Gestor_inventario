@@ -43,10 +43,10 @@
                     <tbody class="text-white text-sm font-light">
                         {% for producto in productos %}
                         <tr class="border-b bg-gray-800 border-green-100 hover:bg-gray-700 hover:text-white cursor-pointer">
-                            <td onclick="editarCampo(event, '{{ producto.id }}')" class="py-3 px-6 text-center">{{ producto.nombre }}</td>
-                            <td onclick="editarCampo(event, '{{ producto.id }}')" class="py-3 px-6 text-center">{{ producto.tipo }}</td>
-                            <td onclick="editarCampo(event, '{{ producto.id }}')" class="py-3 px-6 text-center">{{ producto.numero_serie }}</td>
-                            <td onclick="editarCampo(event, '{{ producto.id }}')" class="py-3 px-6 text-center">{{ producto.numero_serie_i }}</td>
+                            <td onclick="editarCampo(event, '{{ producto.id }}')" name="nombre" class="py-3 px-6 text-center">{{ producto.nombre }}</td>
+                            <td onclick="editarCampo(event, '{{ producto.id }}')" name="tipo" class="py-3 px-6 text-center">{{ producto.tipo }}</td>
+                            <td onclick="editarCampo(event, '{{ producto.id }}')" name="numero_serie" class="py-3 px-6 text-center">{{ producto.numero_serie }}</td>
+                            <td onclick="editarCampo(event, '{{ producto.id }}')" name="numero_serie_i" class="py-3 px-6 text-center">{{ producto.numero_serie_i }}</td>
                             <td class="py-3 px-6 text-center">
                                 <button data-id="{{ producto.id }}" onclick="cambiarEstado('{{ producto.id }}')" class="px-2 py-1 rounded-full overflow-x-hidden min-w-24 
                                     {% if producto.estado.value == 'Disponible' %}bg-green-500 text-white
@@ -151,82 +151,73 @@
                 })
             }).then(response => {
                 if (!response.ok) {
-                    console.error('Error al actualizar el estado en el servidor');
+                    response.text().then(text => console.error('Error del servidor:', text));
                 }
             }).catch(error => {
                 console.error('Error de red:', error);
             });
         }
-/*
-        function editarCampo(event,id){
-            event.preventDefault();
-            const campo = event.target.name;
-            const valor = event.target.textContent.trim();
-            const input = document.createElement('input');
+        function editarCampo(event, id) {
+    event.preventDefault();
+    const campo = event.target.getAttribute('name'); // Usar getAttribute para obtener el nombre
+    if (!campo) {
+        console.error('El elemento no tiene un atributo "name"');
+        return;
+    }
+    
+    const valor = event.target.textContent.trim();
+    const input = document.createElement('input');
+    let replaced = false;
 
-            input.type = 'text';
-            input.name = campo;
-            input.value = valor;
-            input.className = 'bg-gray-700 text-white rounded px-2 mt-3 py-1';
+    input.type = 'text';
+    input.value = valor;
+    input.className = 'bg-gray-700 text-white rounded px-2 mt-3 py-1';
 
-            input.addEventListener('blur', (e) => {
-                const newValue = e.target.value;
-                if (newValue !== valor) {
-                    fetch(`/carrefour/editar_campo/${id}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            campo: campo,
-                            valor: newValue
-                        })
-                    }).then(response => {
-                        if (!response.ok) {
-                            console.error('Error al actualizar el campo en el servidor');
-                        }
-                    }).catch(error => {
-                        console.error('Error de red:', error);
+    const originalElement = event.target.cloneNode(true);
+
+    input.addEventListener('blur', (e) => {
+        if (replaced) return;
+        replaced = true;
+        const newValue = e.target.value;
+
+        if (newValue !== valor) {
+            fetch(`/carrefour/editar_campo/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    campo: campo,
+                    valor: newValue
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    originalElement.textContent = newValue;
+                    e.target.replaceWith(originalElement);
+                } else {
+                    return response.text().then(text => {
+                        console.error('Error del servidor:', text);
+                        alert('Error al actualizar el campo: ' + text);
+                        e.target.replaceWith(originalElement);
                     });
                 }
-                e.target.replaceWith(document.createTextNode(newValue));
+            })
+            .catch(error => {
+                console.error('Error de red:', error);
+                alert('Error de conexión');
+                e.target.replaceWith(originalElement);
             });
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    const newValue = e.target.value;
-                    if (newValue !== valor) {
-                        fetch(`/carrefour/editar_campo/${id}`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                campo: campo,
-                                valor: newValue
-                            })
-                        }).then(response => {
-                            if (!response.ok) {
-                                console.error('Error al actualizar el campo en el servidor');
-                            }
-                        }).catch(error => {
-                            console.error('Error de red:', error);
-                        });
-                    }
-                    e.target.replaceWith(document.createTextNode(newValue));
-                }
-            });
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    e.target.replaceWith(document.createTextNode(valor));
-                }
-            });
-            input.addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
+        } else {
+            e.target.replaceWith(originalElement);
+        }
+    });
 
-            event.target.replaceWith(input);
-            input.focus();
-        }*/
+    // Resto del código para key events...
+    
+    event.target.replaceWith(input);
+    input.focus();
+}
     </script>
 </body>
 </html>
