@@ -988,41 +988,41 @@ def utility_processor():
 @app.route('/inventario/exportar/csv', methods=['GET'])
 @login_required
 def exportar_inventario():
-            try:
-                # Obtener todos los productos del inventario
-                inventarios = Inventario.query.all()
+    try:
+        # Obtener todos los productos del inventario
+        inventarios = Inventario.query.all()
 
-                # Crear el archivo CSV en memoria
-                output = StringIO()
-                writer = csv.writer(output)
+        # Crear el archivo CSV en memoria
+        output = csv.StringIO()
+        writer = csv.writer(output)
 
-                # Escribir encabezados
-                writer.writerow([
-                    'ID', 'Número', 'Marca', 'Modelo', 'Estado', 'Ubicación', 
-                    'Observación', 'Número Serie Fabricante', 'Número Serie Interno', 
-                    'Categoría', 'Cliente', 'Tipo'
-                ])
+        # Escribir encabezados
+        writer.writerow([
+            'ID', 'Número', 'Marca', 'Modelo', 'Estado', 'Ubicación', 
+            'Observación', 'Número Serie Fabricante', 'Número Serie Interno', 
+            'Categoría', 'Cliente', 'Tipo'
+        ])
 
-                # Escribir datos del inventario
-                for item in inventarios:
-                    writer.writerow([
-                        item.id, item.numero, item.marca, item.modelo, item.estado, 
-                        item.ubicacion, item.observacion, item.numero_serie_f, 
-                        item.numero_serie_i, item.categoria.nombre if item.categoria else '',
-                        item.cliente.nombre if item.cliente else '', item.tipo
-                    ])
+        # Escribir datos del inventario
+        for item in inventarios:
+            writer.writerow([
+                item.id, item.numero, item.marca, item.modelo, item.estado, 
+                item.ubicacion, item.observacion, item.numero_serie_f, 
+                item.numero_serie_i, item.categoria.nombre if item.categoria else '',
+                item.cliente.nombre if item.cliente else '', item.tipo
+            ])
 
-                # Preparar la respuesta HTTP con el archivo CSV
-                output.seek(0)
-                return Response(
-                    output,
-                    mimetype='text/csv',
-                    headers={"Content-Disposition": "attachment;filename=inventario.csv"}
-                )
-            except Exception as e:
-                print(f"Error al exportar inventario: {e}")
-                flash('Error al exportar inventario', 'error')
-                return redirect(request.referrer)
+        # Preparar la respuesta HTTP con el archivo CSV
+        output.seek(0)
+        return Response(
+            output.getvalue(),
+            mimetype='text/csv',
+            headers={"Content-Disposition": "attachment;filename=inventario.csv"}
+        )
+    except Exception as e:
+        print(f"Error al exportar inventario: {e}")
+        flash('Error al exportar inventario', 'error')
+        return redirect(request.referrer)
 
 if __name__ == '__main__':
     with app.app_context():
