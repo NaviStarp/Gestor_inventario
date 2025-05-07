@@ -77,9 +77,9 @@
                </div>
         </div>
           
-        <div class="overflow-auto max-h-[500px]">
-            <table class="min-w-full bg-white rounded-lg">
-              <thead class="sticky top-0 bg-green-600 text-green-200 uppercase text-sm leading-normal z-30">
+        <div class="sticky top-0  overflow-auto max-h-[calc(100vh-200px)]">
+            <table class="sticky top-0 min-w-full bg-white rounded-lg">
+              <thead class="sticky top-0 bg-green-600 text-green-200 uppercase text-sm leading-normal z-5">
                         <tr>
                             <th class="py-3 px-6 text-center">Número</th>
                             <th class="py-3 px-6 text-center">Categoría</th>
@@ -92,41 +92,41 @@
                             <th class="py-3 px-6 text-center">N° Serie Fabricante</th>
                             <th class="py-3 px-6 text-center">N° Serie Interno</th>
                             <!-- <th class="py-3 px-6 text-center">Cliente</th> -->
-                            <th class="py-3 px-6 text-center">Acciones</th>
+                            <!-- <th class="py-3 px-6 text-center">Acciones</th> -->
                         </tr>
                     </thead>
                     <tbody class="text-white text-sm font-light">
                         {% for producto in inventarios %}
-                        <tr class="border-b bg-gray-800 border-green-100 hover:bmin-w-24g-green-500">
+                        <tr class="border-b bg-gray-800 border-green-100 hover:bg-green-500">
                             <td class="py-3 px-6 text-center">
-                                <span class="w-full h-full block min-w-4 min-h-5" onclick="editarCampo('{{ producto.id }}','numero', '{{ producto.numero }}')">{{ producto.numero }}</span>
+                                <span class="w-full h-full block min-w-4 min-h-5 editable" data-id="{{ producto.id }}" data-field="numero" data-value="{{ producto.numero }}">{{ producto.numero }}</span>
                             </td>
                             <td class="py-3 px-6 text-center">
                                 {% if producto.categoria.nombre == 'SONIDO' %}
-                                    <span  class="bg-sky-500 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
+                                    <span class="bg-sky-500 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap editable" data-id="{{ producto.id }}" data-field="categoria" data-value="{{ producto.categoria.nombre }}">{{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'ILUMINACION' %}
-                                    <span  class="bg-yellow-300 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
+                                    <span class="bg-yellow-300 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap editable" data-id="{{ producto.id }}" data-field="categoria" data-value="{{ producto.categoria.nombre }}">{{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'VIDEO' %}
-                                    <span  class="bg-fuchsia-500 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
+                                    <span class="bg-fuchsia-500 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap editable" data-id="{{ producto.id }}" data-field="categoria" data-value="{{ producto.categoria.nombre }}">{{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'ESTRUCTURAS' %}
-                                    <span  class="bg-slate-300 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
+                                    <span class="bg-slate-300 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap editable" data-id="{{ producto.id }}" data-field="categoria" data-value="{{ producto.categoria.nombre }}">{{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'BACKLINE' %}
-                                    <span  class="bg-amber-800 text-white px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
+                                    <span class="bg-amber-800 text-white px-2 py-1 rounded-full min-w-24 whitespace-nowrap editable" data-id="{{ producto.id }}" data-field="categoria" data-value="{{ producto.categoria.nombre }}">{{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'VARIOS' %}
-                                    <span  class="bg-slate-400 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
+                                    <span class="bg-slate-400 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap editable" data-id="{{ producto.id }}" data-field="categoria" data-value="{{ producto.categoria.nombre }}">{{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'ELECTRICIDAD' %}
-                                    <span  class="bg-green-600 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap"> {{ producto.categoria.nombre }}</span>
+                                    <span class="bg-green-600 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap editable" data-id="{{ producto.id }}" data-field="categoria" data-value="{{ producto.categoria.nombre }}">{{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'FX' %}
-                                    <span  class="bg-red-700 text-white px-2 py-1 rounded-full min-w-24 whitespace-nowrap">{{ producto.categoria.nombre }}</span>
+                                    <span class="bg-red-700 text-white px-2 py-1 rounded-full min-w-24 whitespace-nowrap editable" data-id="{{ producto.id }}" data-field="categoria" data-value="{{ producto.categoria.nombre }}">{{ producto.categoria.nombre }}</span>
                                 {% elif producto.categoria.nombre == 'EFECTOS DE LUCES' %}
-                                    <span  class="bg-orange-400 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap">{{ producto.categoria.nombre }}</span>
+                                    <span class="bg-orange-400 text-black px-2 py-1 rounded-full min-w-24 whitespace-nowrap editable" data-id="{{ producto.id }}" data-field="categoria" data-value="{{ producto.categoria.nombre }}">{{ producto.categoria.nombre }}</span>
                                 {% else %}
-                                    <span  class="bg-gray-700 text-white px-2 py-1 rounded-full min-w-24 whitespace-nowrap">{{ producto.categoria.nombre }}</span>
+                                    <span class="bg-gray-700 text-white px-2 py-1 rounded-full min-w-24 whitespace-nowrap editable" data-id="{{ producto.id }}" data-field="categoria" data-value="{{ producto.categoria.nombre }}">{{ producto.categoria.nombre }}</span>
                                 {% endif %}
                             </td>
-                            <td class="py-3 px-6 text-center"><span class="w-full h-full block min-w-4 min-h-5" onclick="editarCampo('{{ producto.id }}','tipo', '{{ producto.tipo }}')">{{ producto.tipo }}</span></td>
-                            <td class="py-3 px-6 text-center"><span class="w-full h-full block min-w-4 min-h-5" onclick="editarCampo('{{ producto.id }}','marca', '{{ producto.marca }}')">{{ producto.marca }}</span></td>
-                            <td class="py-3 px-6 text-center overflow-x-hidden"><span class="w-full h-full block min-w-4 min-h-5" onclick="editarCampo('{{ producto.id }}','modelo', '{{ producto.modelo }}')">{{ producto.modelo }}</span></td>
+                            <td class="py-3 px-6 text-center"><span class="w-full h-full block min-w-4 min-h-5  editable" data-id="{{ producto.id }}" data-field="tipo" data-value="{{ producto.tipo }}">{{ producto.tipo }}</span></td>
+                            <td class="py-3 px-6 text-center"><span class="w-full h-full block min-w-4 min-h-5 editable" data-id="{{ producto.id }}" data-field="marca" data-value="{{ producto.marca }}">{{ producto.marca }}</span></td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden"><span class="w-full h-full block min-w-4 min-h-5 editable" data-id="{{ producto.id }}" data-field="modelo" data-value="{{ producto.modelo }}">{{ producto.modelo }}</span></td>
                             <td class="py-3 px-6 text-center">
                                 <button data-id="{{ producto.id }}" onclick="cambiarEstado('{{ producto.id }}', '{{ producto.numero }}', '{{ producto.marca }}', '{{ producto.modelo }}', 
                                     '{{ producto.estado }}', '{{ producto.ubicacion }}', '{{ producto.observacion }}', '{{ producto.numero_serie_f }}', 
@@ -135,36 +135,22 @@
                                     {{ producto.estado }}
                                 </button>
                             </td>
-                            <td class="py-3 px-6 text-center overflow-x-hidden"><span class="w-full h-full block min-w-4 min-h-5" onclick="editarCampo('{{ producto.id }}','ubicacion', '{{ producto.ubicacion }}')">{{ producto.ubicacion }}</span></td>
-                            <td class="py-3 px-6 text-center overflow-x-hidden"><span class="w-full h-full block min-w-4 min-h-5" onclick="editarCampo('{{ producto.id }}','observacion', '{{ producto.observacion }}')">{{ producto.observacion }}</span></td>
-                            <td class="py-3 px-6 text-center overflow-x-hidden"><span class="w-full h-full block min-w-4 min-h-5" onclick="editarCampo('{{ producto.id }}','numero_serie_f', '{{ producto.numero_serie_f }}')">{{ producto.numero_serie_f }}</span></td>
-                            <td class="py-3 px-6 text-center overflow-x-hidden whitespace-nowrap"><span class="w-full h-full block min-w-4 min-h-5" onclick="editarCampo('{{ producto.id }}','numero_serie_i', '{{ producto.numero_serie_i }}')">{{ producto.numero_serie_i }}</span></td>
-                            <td class="py-3 px-6 text-center">
-                                <div class="flex item-center justify-center">
-                                    <a onclick="event.stopPropagation();editar_inventario('{{ producto.id }}', '{{ producto.numero }}', '{{ producto.marca }}', '{{ producto.modelo }}', 
-                                    '{{ producto.estado }}', '{{ producto.ubicacion }}', '{{ producto.observacion }}', '{{ producto.numero_serie_f }}', 
-                                    '{{ producto.numero_serie_i }}', '{{ producto.categoria.id }}', '{{ producto.cliente.id if producto.cliente else '' }}', 
-                                    '{{ producto.tipo }}')" class="text-yellow-600 hover:text-yellow-800 mr-3">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <form action="{{ url_for('eliminar_producto', id=producto.id) }}" onclick="event.stopPropagation();return confirm('¿Está seguro que desea eliminar este producto?')" method="POST" style="display:inline;">
-                                        <button type="submit" class="text-red-600 hover:text-red-800">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden"><span class="w-full h-full block min-w-4 min-h-5 editable" data-id="{{ producto.id }}" data-field="ubicacion" data-value="{{ producto.ubicacion }}">{{ producto.ubicacion }}</span></td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden"><span class="w-full h-full block min-w-4 min-h-5 editable" data-id="{{ producto.id }}" data-field="observacion" data-value="{{ producto.observacion }}">{{ producto.observacion }}</span></td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden"><span class="w-full h-full block min-w-4 min-h-5 editable" data-id="{{ producto.id }}" data-field="numero_serie_f" data-value="{{ producto.numero_serie_f }}">{{ producto.numero_serie_f }}</span></td>
+                            <td class="py-3 px-6 text-center overflow-x-hidden whitespace-nowrap"><span class="w-full h-full block min-w-4 min-h-5 editable" data-id="{{ producto.id }}" data-field="numero_serie_i" data-value="{{ producto.numero_serie_i }}">{{ producto.numero_serie_i }}</span></td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
-     
-    </main>
     {% include 'modales.html' %}
+    </main>
+    
     {% include 'footer.html' %}
     <script src="{{ url_for('static', filename='js/modales.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/tabla.js') }}"></script>
     <script>
     function editar_inventario(id, numero, marca, modelo, estado, ubicacion, observacion, numero_serie_f, numero_serie_i, categoria_id, cliente, tipo) {
             openModal('modal-inventario');
@@ -301,80 +287,92 @@
                 row.dataset.selected = row.dataset.selected === 'true' ? 'false' : 'true';
             };
             });
-            if(document.getElementById('eliminar-seleccionados')){
-                document.getElementById('eliminar-seleccionados').remove();
-                const toggleButton = document.createElement('button');
-                toggleButton.id = 'toggleBorrar';
-                toggleButton.textContent = 'Seleccionar para Borrar';
-                toggleButton.textContent = 'Eliminar Seleccionados';
-                toggleButton.className = 'bg-red-600 hover:bg-red-700 text-white font-bold py-2  px-4 rounded focus:outline-none focus:shadow-outline mt-4';
-                toggleButton.onclick = seleccionarBorrar();
-                contenedorPrincipol.appendChild(toggleButton);
-                return;
-            }else{
-                document.getElementById('toggleBorrar').remove();
+
+            if (document.getElementById('eliminar-seleccionados')) {
+            document.getElementById('eliminar-seleccionados').remove();
+            const toggleButton = document.createElement('button');
+            toggleButton.id = 'toggleBorrar';
+            toggleButton.textContent = 'Seleccionar para Borrar';
+            toggleButton.className = 'bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4';
+            toggleButton.onclick = seleccionarBorrar;
+            contenedorPrincipol.appendChild(toggleButton);
+            return;
+            } else {
+            document.getElementById('toggleBorrar').remove();
             }
 
             const deleteButton = document.createElement('button');
             deleteButton.id = 'eliminar-seleccionados';
             deleteButton.textContent = 'Eliminar Seleccionados';
             deleteButton.className = 'bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline';
-            deleteButton.onclick = async function () {
+            deleteButton.onclick = function () {
             const selectedRows = Array.from(document.querySelectorAll('tbody tr[data-selected="true"]'));
             const idsToDelete = selectedRows.map(row => {
                 return row.querySelector('button[data-id]').getAttribute('data-id');
             });
 
-            if (idsToDelete.length > 0 && confirm('¿Está seguro que desea eliminar los productos seleccionados?')) {
-                for (const id of idsToDelete) {
+            if (idsToDelete.length > 0) {
+                openModal('modal-confirmar-eliminar');
+                document.getElementById('cancelar-eliminar').addEventListener('click', function () {
+                document.getElementById('modal-confirmar-eliminar').classList.add('hidden');
+                });
+
+                document.getElementById('confirmar-eliminar').addEventListener('click', async function () {
                 try {
+                    for (const id of idsToDelete) {
                     const response = await fetch(`/inventario/eliminar/${id}`, {
-                    method: 'POST',
-                    headers: {
+                        method: 'POST',
+                        headers: {
                         'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ _method: 'DELETE' })
+                        },
+                        body: JSON.stringify({ _method: 'DELETE' })
                     });
 
                     if (!response.ok) {
-                    console.error(`Error al eliminar el producto con ID ${id}`);
+                        console.error(`Error al eliminar el producto con ID ${id}`);
                     }
+                    }
+
+                    selectedRows.forEach(row => {
+                    row.remove();
+                    });
+
+                    document.getElementById('modal-confirmar-eliminar').classList.add('hidden');
                 } catch (error) {
                     console.error('Error de red:', error);
                 }
-                }
-
-                selectedRows.forEach(row => {
-                row.remove();
+                closeAllModals();
                 });
+                
             }
-            }; 
+            };
+
             const cancelarButton = document.createElement('button');
             cancelarButton.textContent = 'Cancelar';
             cancelarButton.className = 'bg-gray-600 hover:bg-gray-700 text-white mr-2 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline';
             cancelarButton.onclick = function () {
-                const rows = document.querySelectorAll('tbody tr');
-                rows.forEach(row => {
-                    row.onclick = null;
-                    row.classList.remove('cursor-pointer');
-                    row.classList.remove('bg-red-500');
-                    row.classList.remove('bg-red-700');
-                    row.dataset.selected = 'false';
-                });
-                deleteButton.remove();
-                cancelarButton.remove();
-                const toggleButton = document.createElement('button');
-                toggleButton.id = 'toggleBorrar';
-                const icon = document.createElement('i');
-                icon.className = 'fas fa-trash mr-2';
-                toggleButton.appendChild(icon);
-                toggleButton.textContent = '🗑️ Seleccionar para Borrar';
-                toggleButton.className = 'bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline';
-                toggleButton.onclick = seleccionarBorrar;
-                contenedorPrincipol.appendChild(toggleButton);
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                row.onclick = null;
+                row.classList.remove('cursor-pointer');
+                row.classList.remove('bg-red-500');
+                row.classList.remove('bg-red-700');
+                row.dataset.selected = 'false';
+            });
+            deleteButton.remove();
+            cancelarButton.remove();
+            const toggleButton = document.createElement('button');
+            toggleButton.id = 'toggleBorrar';
+            const icon = document.createElement('i');
+            icon.className = 'fas fa-trash mr-2';
+            toggleButton.appendChild(icon);
+            toggleButton.textContent = '🗑️ Seleccionar para Borrar';
+            toggleButton.className = 'bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline';
+            toggleButton.onclick = seleccionarBorrar;
+            contenedorPrincipol.appendChild(toggleButton);
             };
-            contenedorPrincipol.appendChild(cancelarButton);
 
+            contenedorPrincipol.appendChild(cancelarButton);
             contenedorPrincipol.appendChild(deleteButton);
         }
 
