@@ -35,8 +35,8 @@
                             <th class="py-3 px-6 text-center">N° Serie Interno</th>
                             <th class="py-3 px-6 text-center overflow-x-hidden">Estado</th>
                             <th class="py-3 px-6 text-center">Ubicación</th>
-                            <th class="py-3 px-6 text-center">Fecha Entrega</th>
-                            <th class="py-3 px-6 text-center">Fecha Recogida</th>
+                            <!-- <th class="py-3 px-6 text-center">Fecha Entrega</th> 
+                             <th class="py-3 px-6 text-center">Fecha Recogida</th> -->
                             <th class="py-3 px-6 text-center">Observación</th>
                             <th class="py-3 px-6 text-center">Acciones</th>
                         </tr>
@@ -50,17 +50,27 @@
                             <td onclick="editarCampo(event, '{{ producto.id }}')" name="numero_serie" class="py-3 px-6 text-center">{{ producto.numero_serie }}</td>
                             <td onclick="editarCampo(event, '{{ producto.id }}')" name="numero_serie_i" class="py-3 px-6 text-center">{{ producto.numero_serie_i }}</td>
                             <td class="py-3 px-6 text-center">
-                                <button data-id="{{ producto.id }}" onclick="cambiarEstado('{{ producto.id }}')" class="px-2 py-1 rounded-full overflow-x-hidden min-w-24 
-                                    {% if producto.estado.value == 'Disponible' %}bg-green-500 text-white
+                                <button data-id="{{ producto.id }}" onclick="cambiarEstado('{{ producto.id }}')" 
+                                class="px-2 py-1 rounded-full overflow-x-hidden min-w-24 
+                                    {% if producto.estado.value == 'Disponible' and producto.cantidad == 0 %} bg-red-500 text-white
+                                    {% elif producto.estado.value == 'Disponible' and producto.cantidad <= 5 %} bg-orange-500 text-white
+                                    {% elif producto.estado.value == 'Disponible' %}bg-green-500 text-white
                                     {% elif producto.estado.value == 'On Tour' %}bg-blue-500 text-white
                                     {% elif producto.estado.value == 'No Disponible' %}bg-red-500 text-white
                                     {% endif %}">
+                                
+                                {% if producto.estado.value == 'Disponible' and producto.cantidad <= 0 %}
+                                    No Disponible
+                                {% elif producto.estado.value == 'Disponible' and producto.cantidad <= 5 %}
+                                    Pedir
+                                {% else %}
                                     {{ producto.estado.value }}
-                                </button>
+                                {% endif %}
+                            </button>                            
                             </td>
                             <td onclick="editarCampo(event, '{{ producto.id }}')" name="ubicacion" class="py-3 px-6 text-center overflow-x-hidden">{{ producto.ubicacion }}</td>
-                            <td onclick="editarCampo(event, '{{ producto.id }}')" name="fecha_entrega" class="py-3 px-6 text-center">{{ producto.fecha_entrega.strftime('%d/%m/%Y') if producto.fecha_entrega else 'N/A' }}</td>
-                            <td onclick="editarCampo(event, '{{ producto.id }}')" name="fecha_recojida" class="py-3 px-6 text-center">{{ producto.fecha_recojida.strftime('%d/%m/%Y') if producto.fecha_recojida else 'N/A' }}</td>
+                            <!-- <td onclick="editarCampo(event, '{{ producto.id }}')" name="fecha_entrega" class="py-3 px-6 text-center">{{ producto.fecha_entrega.strftime('%d/%m/%Y') if producto.fecha_entrega else 'N/A' }}</td> 
+                             <td onclick="editarCampo(event, '{{ producto.id }}')" name="fecha_recojida" class="py-3 px-6 text-center">{{ producto.fecha_recojida.strftime('%d/%m/%Y') if producto.fecha_recojida else 'N/A' }}</td> -->
                             <td onclick="editarCampo(event, '{{ producto.id }}')"  name="observacion" class="py-3 px-6 text-center overflow-x-hidden">{{ producto.observacion }}</td>
                             <td class="py-3 px-6 text-center">
                                 <div class="flex item-center justify-center">
@@ -120,7 +130,14 @@
             if (estado == 'Disponible') {
                 estado = 'On Tour';
                 button.className = 'px-2 py-1 rounded-full min-w-24 bg-blue-500 text-white';
-            } else if (estado == 'On Tour') {
+            } else if(estado == 'Pedir') {
+                estado = 'On Tour';
+                button.className = 'px-2 py-1 rounded-full min-w-24 bg-blue-500 text-white';
+            } else if (estado == 'Disponible' && button.classList.contains('bg-red-500')) {
+                estado = 'No Disponible';
+                button.className = 'px-2 py-1 rounded-full min-w-24 bg-red-500 text-white';
+            }
+            else if (estado == 'On Tour') {
                 estado = 'No Disponible';
                 button.className = 'px-2 py-1 rounded-full min-w-24 bg-red-500 text-white';
             } else if (estado == 'No Disponible') {
