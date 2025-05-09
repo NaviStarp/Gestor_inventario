@@ -69,6 +69,7 @@ class Producto_Carrefour(db.Model):
     estado = db.Column(db.Enum(Carrefour_Estado), nullable=False)
     ubicacion = db.Column(db.String(100), nullable=False)
     observacion = db.Column(db.String(255), nullable=True)
+    cantidad = db.Column(db.Integer,default=1)
 
 class tipo_movimiento(Enum):
     Añadir = 'Añadir'
@@ -321,12 +322,13 @@ def ver_categorias():
 @app.route('/carrefour', methods=['GET'])
 @login_required
 def ver_carrefour():
-    productos = Producto_Carrefour.query.all()
+    productos = Producto_Carrefour.query.order_by(Producto_Carrefour.nombre).all()
     return render_template('carrefour.html', productos=productos)
 
 @app.route('/carrefour/nuevo', methods=['POST'])
 @login_required
 def crear_producto_carrefour():
+    cantidad = request.form['cantidad']
     fecha_entrega = request.form['fecha_entrega']
     fecha_recojida = request.form['fecha_recojida']
     if request.form['fecha_entrega'] == '':
@@ -343,6 +345,7 @@ def crear_producto_carrefour():
         fecha_recojida=datetime.strptime(fecha_recojida, '%Y-%m-%d') if request.form['fecha_recojida'] else None,
         estado=request.form['estado'],
         ubicacion=request.form['ubicacion'],
+        cantidad=cantidad if cantidad else 1,
         observacion=request.form.get('observacion')
     )
     db.session.add(nuevo_producto)
@@ -1034,7 +1037,6 @@ if __name__ == '__main__':
             db.session.commit() # TEMPORAL
         inventarios = Inventario.query.all()
         for inventario in inventarios:
-            print(isinstance(inventario.numero, str))
             if isinstance(inventario.numero, str):  # Si es una cadena
                 inventario.numero = int(inventario.numero)  # Convertir a entero
         Contraseña.create_default_password()

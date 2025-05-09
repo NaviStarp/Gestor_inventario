@@ -28,6 +28,7 @@
                 <table class="min-w-full bg-white rounded-lg">
                     <thead>
                         <tr class="bg-gradient-to-r from-blue-700  to-red-600 text-white uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-center">Cantidad</th>
                             <th class="py-3 px-6 text-center">Nombre</th>
                             <th class="py-3 px-6 text-center">Tipo</th>
                             <th class="py-3 px-6 text-center">N° Serie</th>
@@ -43,6 +44,7 @@
                     <tbody class="text-white text-sm font-light">
                         {% for producto in productos %}
                         <tr class="border-b bg-gray-800 border-green-100 hover:bg-gray-700 hover:text-white cursor-pointer">
+                            <td onclick="editarCampo(event, '{{ producto.id }}')" name="cantidad" class="py-3 px-6 text-center">{{ producto.cantidad }}</td>
                             <td onclick="editarCampo(event, '{{ producto.id }}')" name="nombre" class="py-3 px-6 text-center">{{ producto.nombre }}</td>
                             <td onclick="editarCampo(event, '{{ producto.id }}')" name="tipo" class="py-3 px-6 text-center">{{ producto.tipo }}</td>
                             <td onclick="editarCampo(event, '{{ producto.id }}')" name="numero_serie" class="py-3 px-6 text-center">{{ producto.numero_serie }}</td>
@@ -56,17 +58,17 @@
                                     {{ producto.estado.value }}
                                 </button>
                             </td>
-                            <td class="py-3 px-6 text-center overflow-x-hidden">{{ producto.ubicacion }}</td>
-                            <td class="py-3 px-6 text-center">{{ producto.fecha_entrega.strftime('%d/%m/%Y') if producto.fecha_entrega else 'N/A' }}</td>
-                            <td class="py-3 px-6 text-center">{{ producto.fecha_recojida.strftime('%d/%m/%Y') if producto.fecha_recojida else 'N/A' }}</td>
-                            <td class="py-3 px-6 text-center overflow-x-hidden">{{ producto.observacion }}</td>
+                            <td onclick="editarCampo(event, '{{ producto.id }}')" name="ubicacion" class="py-3 px-6 text-center overflow-x-hidden">{{ producto.ubicacion }}</td>
+                            <td onclick="editarCampo(event, '{{ producto.id }}')" name="fecha_entrega" class="py-3 px-6 text-center">{{ producto.fecha_entrega.strftime('%d/%m/%Y') if producto.fecha_entrega else 'N/A' }}</td>
+                            <td onclick="editarCampo(event, '{{ producto.id }}')" name="fecha_recojida" class="py-3 px-6 text-center">{{ producto.fecha_recojida.strftime('%d/%m/%Y') if producto.fecha_recojida else 'N/A' }}</td>
+                            <td onclick="editarCampo(event, '{{ producto.id }}')"  name="observacion" class="py-3 px-6 text-center overflow-x-hidden">{{ producto.observacion }}</td>
                             <td class="py-3 px-6 text-center">
                                 <div class="flex item-center justify-center">
                                     <a onclick="event.stopPropagation();editar_producto('{{ producto.id }}', '{{ producto.nombre }}', '{{ producto.tipo }}', 
                                     '{{ producto.numero_serie }}', '{{ producto.numero_serie_i }}', '{{ producto.estado.value }}', 
                                     '{{ producto.ubicacion }}', '{{ producto.fecha_entrega.strftime('%Y-%m-%d') if producto.fecha_entrega else '' }}', 
                                     '{{ producto.fecha_recojida.strftime('%Y-%m-%d') if producto.fecha_recojida else '' }}', 
-                                    '{{ producto.observacion }}')" class="text-yellow-600 hover:text-yellow-800 mr-3">
+                                    '{{ producto.observacion }}','{{producto.cantidad}}')" class="text-yellow-600 hover:text-yellow-800 mr-3">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <form action="{{ url_for('eliminar_producto_carrefour', id=producto.id) }}" onclick="event.stopPropagation();return confirm('¿Está seguro que desea eliminar este producto?')" method="POST" style="display:inline;">
@@ -85,17 +87,16 @@
                 </table>
             </div>
         </div>
-    </main>
     {% include 'modales.html' %}
+    </main>
     {% include 'footer.html' %}
     <script src="{{ url_for('static', filename='js/modales.js') }}"></script>
     <script>
-    function editar_producto(id, nombre, tipo, numero_serie, numero_serie_i, estado, ubicacion, fecha_entrega, fecha_recojida, observacion) {
+    function editar_producto(id, nombre, tipo, numero_serie, numero_serie_i, estado, ubicacion, fecha_entrega, fecha_recojida, observacion,cantidad) {
         openModal('modal-carrefour');
         console.log(id, nombre, tipo, numero_serie, numero_serie_i, estado, ubicacion, fecha_entrega, fecha_recojida, observacion);
         document.getElementById('carrefour-nombre').value = nombre;
         document.getElementById('carrefour-tipo').value = tipo;
-        document.getElementById('carrefour-numero').value = id;
         document.getElementById('carrefour-numero-serie-f').value = numero_serie;
         document.getElementById('carrefour-numero-serie-i').value = numero_serie_i;
         if(estado === 'On Tour')
@@ -107,6 +108,7 @@
         document.getElementById('carrefour-fecha-entrega').value = fecha_entrega;
         document.getElementById('carrefour-fecha-recojida').value = fecha_recojida;
         document.getElementById('carrefour-observacion').value = observacion;
+        document.getElementById('carrefour-cantidad').value = cantidad;
         document.querySelector('#modal-carrefour form').action = `/carrefour/editar/${id}`;
     }
         
