@@ -1026,6 +1026,47 @@ def exportar_inventario():
         print(f"Error al exportar inventario: {e}")
         flash('Error al exportar inventario', 'error')
         return redirect(request.referrer)
+@app.route('/carrefour/exportar/csv', methods=['GET'])
+@login_required
+def exportar_carrefour():
+    try:
+        # Obtener todos los productos de Carrefour
+        productos = Producto_Carrefour.query.all()
+
+        # Crear el archivo CSV en memoria
+        output = csv.StringIO()
+        writer = csv.writer(output)
+
+        # Escribir encabezados
+        writer.writerow([
+            'ID', 'Número Serie', 'Número Serie Interno', 'Nombre', 'Tipo', 
+            'Fecha Entrega', 'Fecha Recojida', 'Estado', 'Ubicación', 
+            'Observación', 'Cantidad'
+        ])
+
+        # Escribir datos de los productos
+        for producto in productos:
+            writer.writerow([
+                producto.id, producto.numero_serie, producto.numero_serie_i, 
+                producto.nombre, producto.tipo, 
+                producto.fecha_entrega.strftime('%Y-%m-%d') if producto.fecha_entrega else '',
+                producto.fecha_recojida.strftime('%Y-%m-%d') if producto.fecha_recojida else '',
+                producto.estado.value, producto.ubicacion, 
+                producto.observacion if producto.observacion else '', 
+                producto.cantidad
+            ])
+
+        # Preparar la respuesta HTTP con el archivo CSV
+        output.seek(0)
+        return Response(
+            output.getvalue(),
+            mimetype='text/csv',
+            headers={"Content-Disposition": "attachment;filename=carrefour.csv"}
+        )
+    except Exception as e:
+        print(f"Error al exportar productos Carrefour: {e}")
+        flash('Error al exportar productos Carrefour', 'error')
+        return redirect(request.referrer)
 
 if __name__ == '__main__':
     with app.app_context():
